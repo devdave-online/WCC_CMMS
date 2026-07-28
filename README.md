@@ -105,9 +105,9 @@ See the [LICENSE](LICENSE) file for full details.
 
 WCC is free and will stay free.  
 
-If it helps your plant, you can support continued development here:  
+If it helped you out and you want to say thanks, you can buy me a coffee here:
 → [Buy me a coffee on Ko-fi](https://ko-fi.com/cszd)  
-→ [Revolut](https://revolut.me/cszd)
+→ [Buy me a coffee on Revolut](https://revolut.me/cszd)
 
 ---
 
