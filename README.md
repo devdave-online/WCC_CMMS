@@ -41,26 +41,6 @@ Built for the people who actually keep the lines running.
 
 ---
 
-## Screenshots
-
-<!-- Replace these with your real screenshots -->
-
-### Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
-
-### Work Orders
-![Work Orders](docs/screenshots/tickets.png)
-
-### Inventory
-![Inventory](docs/screenshots/inventory.png)
-
-### Asset Register
-![Assets](docs/screenshots/assets.png)
-
-### Android Companion
-![Companion](docs/screenshots/companion.png)
-
----
 
 ## Quick Start
 
