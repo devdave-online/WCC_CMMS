@@ -1,3 +1,67 @@
+Workshop Control Center (WCC)
+Copyright (c) 2026 David Zoltan Csiki
+
+================================================================================
+OPEN BETA NOTICE
+================================================================================
+
+WCC is released as OPEN BETA (version OB1.0.0 and any later builds still labeled 
+as open beta).
+
+It is free to try on your own equipment so you can evaluate it for workshop and 
+factory use.
+
+Like most software in active development, things may change, occasionally break, 
+or require adjustments on your side.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
+David Zoltan Csiki (the author and licensor) is not responsible for:
+- lost data
+- unexpected downtime
+- production interruptions
+- any other issues arising from installing, configuring, or using this software
+
+You are fully responsible for how you deploy and secure your own installation 
+(accounts, passwords, network access, database access, backups, updates, and 
+any hardening if the host is placed on a shared or internet-facing network).
+
+Do not treat WCC as a certified safety system or a replacement for professional 
+engineering judgment. Validate it thoroughly for your plant before relying on 
+it for day-to-day operations.
+
+This notice is in addition to the warranty disclaimer and limitation of liability 
+contained in the Apache License 2.0 (Sections 7 and 8) below.
+
+================================================================================
+"Commons Clause" License Condition v1.0
+================================================================================
+
+The Software is provided to you by the Licensor under the License, as defined 
+below, subject to the following condition.
+
+Without limiting other conditions in the License, the grant of rights under the 
+License will not include, and the License does not grant to you, the right to 
+Sell the Software.
+
+For purposes of the foregoing, "Sell" means practicing any or all of the rights 
+granted to you under the License to provide to third parties, for a fee or other 
+consideration (including without limitation fees for hosting or consulting / 
+support services related to the Software), a product or service whose value 
+derives, entirely or substantially, from the functionality of the Software.
+
+Any license notice or attribution required by the License must also include this 
+Commons Clause License Condition notice.
+
+Software: Workshop Control Center (WCC)
+License:  Apache License 2.0
+Licensor: David Zoltan Csiki
+
+================================================================================
+Apache License, Version 2.0
+================================================================================
+
+
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -199,3 +263,27 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+================================================================================
+APPLIED COPYRIGHT NOTICE
+================================================================================
+
+Copyright 2026 David Zoltan Csiki
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+This project is further subject to the "Commons Clause" License Condition v1.0 
+set forth above in this file.
+
+Licensor: David Zoltan Csiki
+Software: Workshop Control Center (WCC)
