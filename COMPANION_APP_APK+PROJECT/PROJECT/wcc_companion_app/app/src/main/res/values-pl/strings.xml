@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=pl · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">How to navigate</string>
+    <string name="cd_profile">Profile</string>
+    <string name="cd_theme">Toggle theme</string>
+    <string name="cd_language">Język</string>
+    <string name="badge_live">Na żywo</string>
+    <string name="badge_syncing">Syncing</string>
+    <string name="badge_offline">Offline</string>
+    <string name="badge_off_plant">Off-plant</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d unsynced</string>
+    <string name="badge_conflict">Conflict · %1$d</string>
+    <string name="nav_swipe_warn">Navigation is by swiping — tap ? to learn the gestures.</string>
+    <string name="language_picker_title">Język</string>
+    <string name="rail_tickets">Zgłoszenia</string>
+    <string name="rail_work_orders">Zlecenia</string>
+    <string name="rail_equipment">Equipment</string>
+    <string name="rail_toolings">Toolings</string>
+    <string name="rail_inventory">Inventory</string>
+    <string name="rail_history">History</string>
+    <string name="rail_tickets_desc">Active maintenance tickets requiring immediate technician intervention.</string>
+    <string name="rail_work_orders_desc">Scheduled corrective tasks and assigned maintenance activities.</string>
+    <string name="rail_equipment_desc">Asset registry — search, scan tags, inspect machine info.</string>
+    <string name="rail_toolings_desc">Tooling registry — same pattern as Equipment.</string>
+    <string name="rail_inventory_desc">Parts stock levels and locations.</string>
+    <string name="rail_history_desc">Past closed events and completed work orders.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">Server</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Zaloguj</string>
+    <string name="login_server_hint">e.g. 192.168.0.152</string>
+    <string name="biometric_gate_title">App locked on this device</string>
+    <string name="biometric_gate_body">Fingerprint, face, or device PIN unlocks the floor app. This setting never leaves the handset.</string>
+    <string name="biometric_unlock">Odblokuj</string>
+    <string name="biometric_use_password">Use password instead</string>
+    <string name="mine_all">All · %1$d</string>
+    <string name="mine_mine">Mine · %1$d</string>
+    <string name="outbox_title">Sync queue</string>
+    <string name="outbox_retry">Retry now</string>
+    <string name="outbox_close">Zamknij</string>
+</resources>

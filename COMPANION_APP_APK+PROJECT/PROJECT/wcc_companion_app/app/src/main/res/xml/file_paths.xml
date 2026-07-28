@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="evidence_cache" path="evidence_capture/" />
+    <files-path name="evidence_files" path="evidence/" />
+</paths>

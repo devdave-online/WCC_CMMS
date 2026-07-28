@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=es · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">Cómo navegar</string>
+    <string name="cd_profile">Perfil</string>
+    <string name="cd_theme">Cambiar tema</string>
+    <string name="cd_language">Idioma</string>
+    <string name="badge_live">En vivo</string>
+    <string name="badge_syncing">Sincronizando</string>
+    <string name="badge_offline">Sin conexión</string>
+    <string name="badge_off_plant">Fuera de planta</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d sin sync</string>
+    <string name="badge_conflict">Conflicto · %1$d</string>
+    <string name="nav_swipe_warn">La navegación es por deslizamiento — toque ? para aprender gestos.</string>
+    <string name="language_picker_title">Idioma</string>
+    <string name="rail_tickets">Tickets</string>
+    <string name="rail_work_orders">Órdenes de trabajo</string>
+    <string name="rail_equipment">Equipos</string>
+    <string name="rail_toolings">Herramientas</string>
+    <string name="rail_inventory">Inventario</string>
+    <string name="rail_history">Historial</string>
+    <string name="rail_tickets_desc">Tickets de mantenimiento activos que requieren intervención inmediata.</string>
+    <string name="rail_work_orders_desc">Tareas correctivas programadas y mantenimiento asignado.</string>
+    <string name="rail_equipment_desc">Registro de activos — buscar, escanear, inspeccionar.</string>
+    <string name="rail_toolings_desc">Registro de herramientas — mismo patrón que equipos.</string>
+    <string name="rail_inventory_desc">Niveles de stock y ubicaciones.</string>
+    <string name="rail_history_desc">Eventos cerrados y OT completadas.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">Servidor</string>
+    <string name="login_username">Usuario</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="login_server_hint">e.g. 192.168.0.152</string>
+    <string name="biometric_gate_title">App bloqueada en este dispositivo</string>
+    <string name="biometric_gate_body">Huella, rostro o PIN desbloquean. Solo en este teléfono.</string>
+    <string name="biometric_unlock">Desbloquear</string>
+    <string name="biometric_use_password">Usar contraseña</string>
+    <string name="mine_all">Todos · %1$d</string>
+    <string name="mine_mine">Míos · %1$d</string>
+    <string name="outbox_title">Cola de sync</string>
+    <string name="outbox_retry">Reintentar</string>
+    <string name="outbox_close">Cerrar</string>
+</resources>

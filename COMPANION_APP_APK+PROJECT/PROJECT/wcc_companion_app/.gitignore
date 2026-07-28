@@ -1,0 +1,29 @@
+*.iml
+.gradle
+/local.properties
+local.properties
+/.idea/
+.DS_Store
+/build
+/app/build
+**/build/
+/captures
+.externalNativeBuild
+.cxx
+
+# Secrets / machine / distribution artifacts
+app/google-services.json
+*.jks
+*.keystore
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Local QA dumps (regenerate on device; do not publish)
+qa_*/
+qa_*/
+
+# Optional large dumps
+ai_ctxt/REPOMIX_SOURCE_WALL.txt
+**/REPOMIX_SOURCE_WALL.txt

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=ms · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">Cara navigasi</string>
+    <string name="cd_profile">Profil</string>
+    <string name="cd_theme">Ganti tema</string>
+    <string name="cd_language">Bahasa</string>
+    <string name="badge_live">Langsung</string>
+    <string name="badge_syncing">Menyinkronkan</string>
+    <string name="badge_offline">Luring</string>
+    <string name="badge_off_plant">Di luar pabrik</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d belum sinkron</string>
+    <string name="badge_conflict">Konflik · %1$d</string>
+    <string name="nav_swipe_warn">Navigasi dengan menggeser — ketuk ? untuk mempelajari gestur.</string>
+    <string name="language_picker_title">Bahasa</string>
+    <string name="rail_tickets">Tiket</string>
+    <string name="rail_work_orders">Perintah Kerja</string>
+    <string name="rail_equipment">Peralatan</string>
+    <string name="rail_toolings">Perkakas</string>
+    <string name="rail_inventory">Inventaris</string>
+    <string name="rail_history">Riwayat</string>
+    <string name="rail_tickets_desc">Tiket pemeliharaan aktif yang butuh intervensi teknisi segera.</string>
+    <string name="rail_work_orders_desc">Tugas korektif terjadwal dan pemeliharaan yang ditugaskan.</string>
+    <string name="rail_equipment_desc">Registri aset — cari, pindai tag, lihat info mesin.</string>
+    <string name="rail_toolings_desc">Registri perkakas — pola sama dengan Peralatan.</string>
+    <string name="rail_inventory_desc">Stok suku cadang dan lokasi.</string>
+    <string name="rail_history_desc">Peristiwa tertutup dan perintah kerja selesai.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">Server</string>
+    <string name="login_username">Nama pengguna</string>
+    <string name="login_password">Kata sandi</string>
+    <string name="login_button">Masuk</string>
+    <string name="login_server_hint">mis. 192.168.0.152</string>
+    <string name="biometric_gate_title">Aplikasi terkunci di perangkat ini</string>
+    <string name="biometric_gate_body">Sidik jari, wajah, atau PIN membuka aplikasi lantai. Pengaturan hanya di perangkat.</string>
+    <string name="biometric_unlock">Buka kunci</string>
+    <string name="biometric_use_password">Gunakan kata sandi</string>
+    <string name="mine_all">Semua · %1$d</string>
+    <string name="mine_mine">Milik saya · %1$d</string>
+    <string name="outbox_title">Antrian sinkron</string>
+    <string name="outbox_retry">Coba lagi</string>
+    <string name="outbox_close">Tutup</string>
+</resources>

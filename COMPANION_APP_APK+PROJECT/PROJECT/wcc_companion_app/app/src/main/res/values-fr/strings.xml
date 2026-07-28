@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=fr · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">Comment naviguer</string>
+    <string name="cd_profile">Profil</string>
+    <string name="cd_theme">Changer le thème</string>
+    <string name="cd_language">Langue</string>
+    <string name="badge_live">En ligne</string>
+    <string name="badge_syncing">Sync…</string>
+    <string name="badge_offline">Hors ligne</string>
+    <string name="badge_off_plant">Hors usine</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d non sync</string>
+    <string name="badge_conflict">Conflit · %1$d</string>
+    <string name="nav_swipe_warn">Navigation par balayage — touchez ? pour les gestes.</string>
+    <string name="language_picker_title">Langue</string>
+    <string name="rail_tickets">Tickets</string>
+    <string name="rail_work_orders">Ordres de travail</string>
+    <string name="rail_equipment">Équipement</string>
+    <string name="rail_toolings">Outillage</string>
+    <string name="rail_inventory">Stock</string>
+    <string name="rail_history">Historique</string>
+    <string name="rail_tickets_desc">Tickets de maintenance actifs nécessitant une intervention immédiate.</string>
+    <string name="rail_work_orders_desc">Tâches correctives planifiées et maintenance assignée.</string>
+    <string name="rail_equipment_desc">Registre des actifs — rechercher, scanner, inspecter.</string>
+    <string name="rail_toolings_desc">Registre d\'outillage — même modèle que l\'équipement.</string>
+    <string name="rail_inventory_desc">Niveaux de stock et emplacements.</string>
+    <string name="rail_history_desc">Événements clôturés et OT terminés.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">Serveur</string>
+    <string name="login_username">Identifiant</string>
+    <string name="login_password">Mot de passe</string>
+    <string name="login_button">Connexion</string>
+    <string name="login_server_hint">e.g. 192.168.0.152</string>
+    <string name="biometric_gate_title">App verrouillée sur cet appareil</string>
+    <string name="biometric_gate_body">Empreinte, visage ou code déverrouille l\'app. Réglage local uniquement.</string>
+    <string name="biometric_unlock">Déverrouiller</string>
+    <string name="biometric_use_password">Utiliser le mot de passe</string>
+    <string name="mine_all">Tous · %1$d</string>
+    <string name="mine_mine">Mien · %1$d</string>
+    <string name="outbox_title">File de sync</string>
+    <string name="outbox_retry">Réessayer</string>
+    <string name="outbox_close">Fermer</string>
+</resources>

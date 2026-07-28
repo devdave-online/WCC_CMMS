@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Open Beta 1.0.0 — do not cloud-backup session credentials or plant URL session.
+  Auto Backup (API < 31) uses this file.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="wcc_prefs.xml" />
+</full-backup-content>

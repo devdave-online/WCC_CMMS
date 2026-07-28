@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=ru · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">Как перемещаться</string>
+    <string name="cd_profile">Профиль</string>
+    <string name="cd_theme">Сменить тему</string>
+    <string name="cd_language">Язык</string>
+    <string name="badge_live">Онлайн</string>
+    <string name="badge_syncing">Синхр…</string>
+    <string name="badge_offline">Офлайн</string>
+    <string name="badge_off_plant">Вне завода</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d не синхр.</string>
+    <string name="badge_conflict">Конфликт · %1$d</string>
+    <string name="nav_swipe_warn">Навигация свайпами — нажмите ?, чтобы изучить жесты.</string>
+    <string name="language_picker_title">Язык</string>
+    <string name="rail_tickets">Заявки</string>
+    <string name="rail_work_orders">Наряды</string>
+    <string name="rail_equipment">Оборудование</string>
+    <string name="rail_toolings">Оснастка</string>
+    <string name="rail_inventory">Склад</string>
+    <string name="rail_history">История</string>
+    <string name="rail_tickets_desc">Активные заявки, требующие срочного вмешательства.</string>
+    <string name="rail_work_orders_desc">Плановые работы и назначенное ТО.</string>
+    <string name="rail_equipment_desc">Реестр активов — поиск, сканирование, осмотр.</string>
+    <string name="rail_toolings_desc">Реестр оснастки — как оборудование.</string>
+    <string name="rail_inventory_desc">Остатки и ячейки.</string>
+    <string name="rail_history_desc">Закрытые события и завершённые наряды.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">Сервер</string>
+    <string name="login_username">Логин</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_button">Войти</string>
+    <string name="login_server_hint">e.g. 192.168.0.152</string>
+    <string name="biometric_gate_title">Приложение заблокировано на устройстве</string>
+    <string name="biometric_gate_body">Отпечаток, лицо или PIN. Настройка только на этом телефоне.</string>
+    <string name="biometric_unlock">Разблокировать</string>
+    <string name="biometric_use_password">Войти паролем</string>
+    <string name="mine_all">Все · %1$d</string>
+    <string name="mine_mine">Мои · %1$d</string>
+    <string name="outbox_title">Очередь синхр.</string>
+    <string name="outbox_retry">Повторить</string>
+    <string name="outbox_close">Закрыть</string>
+</resources>

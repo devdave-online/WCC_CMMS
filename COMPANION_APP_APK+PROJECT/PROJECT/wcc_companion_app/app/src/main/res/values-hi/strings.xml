@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=hi · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC कंपैनियन</string>
+    <string name="cd_help">नेविगेट कैसे करें</string>
+    <string name="cd_profile">प्रोफ़ाइल</string>
+    <string name="cd_theme">थीम बदलें</string>
+    <string name="cd_language">भाषा</string>
+    <string name="badge_live">लाइव</string>
+    <string name="badge_syncing">सिंक हो रहा है</string>
+    <string name="badge_offline">ऑफ़लाइन</string>
+    <string name="badge_off_plant">प्लांट से बाहर</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d अनसिंक</string>
+    <string name="badge_conflict">टकराव · %1$d</string>
+    <string name="nav_swipe_warn">नेविगेशन स्वाइप से होता है — जेस्चर सीखने के लिए ? टैप करें।</string>
+    <string name="language_picker_title">भाषा</string>
+    <string name="rail_tickets">टिकट</string>
+    <string name="rail_work_orders">वर्क ऑर्डर</string>
+    <string name="rail_equipment">उपकरण</string>
+    <string name="rail_toolings">टूलींग</string>
+    <string name="rail_inventory">इन्वेंटरी</string>
+    <string name="rail_history">इतिहास</string>
+    <string name="rail_tickets_desc">तत्काल तकनीशियन हस्तक्षेप की आवश्यकता वाले सक्रिय रखरखाव टिकट।</string>
+    <string name="rail_work_orders_desc">निर्धारित सुधारात्मक कार्य और असाइन किए गए रखरखाव।</string>
+    <string name="rail_equipment_desc">संपत्ति रजिस्ट्री — खोजें, टैग स्कैन करें, मशीन जानकारी देखें।</string>
+    <string name="rail_toolings_desc">टूलींग रजिस्ट्री — उपकरण जैसा पैटर्न।</string>
+    <string name="rail_inventory_desc">पार्ट स्टॉक स्तर और स्थान।</string>
+    <string name="rail_history_desc">पिछली बंद घटनाएँ और पूर्ण वर्क ऑर्डर।</string>
+    <string name="login_title">WCC कंपैनियन</string>
+    <string name="login_server">सर्वर</string>
+    <string name="login_username">उपयोगकर्ता नाम</string>
+    <string name="login_password">पासवर्ड</string>
+    <string name="login_button">साइन इन</string>
+    <string name="login_server_hint">उदा. 192.168.0.152</string>
+    <string name="biometric_gate_title">इस डिवाइस पर ऐप लॉक है</string>
+    <string name="biometric_gate_body">फ़िंगरप्रिंट, चेहरा या डिवाइस PIN फ़्लोर ऐप खोलता है। यह सेटिंग हैंडसेट पर ही रहती है।</string>
+    <string name="biometric_unlock">अनलॉक</string>
+    <string name="biometric_use_password">इसके बजाय पासवर्ड उपयोग करें</string>
+    <string name="mine_all">सभी · %1$d</string>
+    <string name="mine_mine">मेरे · %1$d</string>
+    <string name="outbox_title">सिंक कतार</string>
+    <string name="outbox_retry">अभी पुनः प्रयास</string>
+    <string name="outbox_close">बंद करें</string>
+</resources>

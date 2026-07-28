@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=ar · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">كيفية التنقل</string>
+    <string name="cd_profile">الملف</string>
+    <string name="cd_theme">تبديل السمة</string>
+    <string name="cd_language">اللغة</string>
+    <string name="badge_live">مباشر</string>
+    <string name="badge_syncing">مزامنة</string>
+    <string name="badge_offline">غير متصل</string>
+    <string name="badge_off_plant">خارج المصنع</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d غير مزامن</string>
+    <string name="badge_conflict">تعارض · %1$d</string>
+    <string name="nav_swipe_warn">التنقل بالسحب — اضغط ؟ لتعلم الإيماءات.</string>
+    <string name="language_picker_title">اللغة</string>
+    <string name="rail_tickets">التذاكر</string>
+    <string name="rail_work_orders">أوامر العمل</string>
+    <string name="rail_equipment">المعدات</string>
+    <string name="rail_toolings">الأدوات</string>
+    <string name="rail_inventory">المخزون</string>
+    <string name="rail_history">السجل</string>
+    <string name="rail_tickets_desc">تذاكر صيانة نشطة تتطلب تدخلاً فورياً.</string>
+    <string name="rail_work_orders_desc">مهام تصحيحية مجدولة وصيانة مسندة.</string>
+    <string name="rail_equipment_desc">سجل الأصول — بحث، مسح، فحص.</string>
+    <string name="rail_toolings_desc">سجل الأدوات — نفس نمط المعدات.</string>
+    <string name="rail_inventory_desc">مستويات المخزون والمواقع.</string>
+    <string name="rail_history_desc">أحداث مغلقة وأوامر مكتملة.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">الخادم</string>
+    <string name="login_username">اسم المستخدم</string>
+    <string name="login_password">كلمة المرور</string>
+    <string name="login_button">تسجيل الدخول</string>
+    <string name="login_server_hint">e.g. 192.168.0.152</string>
+    <string name="biometric_gate_title">التطبيق مقفل على هذا الجهاز</string>
+    <string name="biometric_gate_body">البصمة أو الوجه أو رمز الجهاز يفتح التطبيق. الإعداد محلي فقط.</string>
+    <string name="biometric_unlock">فتح القفل</string>
+    <string name="biometric_use_password">استخدم كلمة المرور</string>
+    <string name="mine_all">الكل · %1$d</string>
+    <string name="mine_mine">خاصتي · %1$d</string>
+    <string name="outbox_title">قائمة المزامنة</string>
+    <string name="outbox_retry">أعد المحاولة</string>
+    <string name="outbox_close">إغلاق</string>
+</resources>

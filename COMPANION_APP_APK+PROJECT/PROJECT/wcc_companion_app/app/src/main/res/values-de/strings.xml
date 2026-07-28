@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WCC Companion · locale=de · generated from tools/gen_locale_strings.py -->
+<resources>
+    <string name="app_name">WCC Companion</string>
+    <string name="cd_help">Navigation</string>
+    <string name="cd_profile">Profil</string>
+    <string name="cd_theme">Design wechseln</string>
+    <string name="cd_language">Sprache</string>
+    <string name="badge_live">Live</string>
+    <string name="badge_syncing">Sync…</string>
+    <string name="badge_offline">Offline</string>
+    <string name="badge_off_plant">Außerhalb Anlage</string>
+    <string name="badge_offline_unsynced">%1$s · %2$d offen</string>
+    <string name="badge_conflict">Konflikt · %1$d</string>
+    <string name="nav_swipe_warn">Navigation per Wischen — tippen Sie ? für Gesten.</string>
+    <string name="language_picker_title">Sprache</string>
+    <string name="rail_tickets">Tickets</string>
+    <string name="rail_work_orders">Arbeitsaufträge</string>
+    <string name="rail_equipment">Anlagen</string>
+    <string name="rail_toolings">Werkzeuge</string>
+    <string name="rail_inventory">Lager</string>
+    <string name="rail_history">Verlauf</string>
+    <string name="rail_tickets_desc">Aktive Wartungstickets mit sofortigem Handlungsbedarf.</string>
+    <string name="rail_work_orders_desc">Geplante Korrekturaufgaben und zugewiesene Wartung.</string>
+    <string name="rail_equipment_desc">Anlagenregister — suchen, scannen, prüfen.</string>
+    <string name="rail_toolings_desc">Werkzeugregister — gleiches Muster wie Anlagen.</string>
+    <string name="rail_inventory_desc">Bestände und Lagerorte.</string>
+    <string name="rail_history_desc">Geschlossene Ereignisse und erledigte AAs.</string>
+    <string name="login_title">WCC Companion</string>
+    <string name="login_server">Server</string>
+    <string name="login_username">Benutzername</string>
+    <string name="login_password">Passwort</string>
+    <string name="login_button">Anmelden</string>
+    <string name="login_server_hint">e.g. 192.168.0.152</string>
+    <string name="biometric_gate_title">App auf diesem Gerät gesperrt</string>
+    <string name="biometric_gate_body">Fingerabdruck, Gesicht oder PIN entsperren. Nur lokal.</string>
+    <string name="biometric_unlock">Entsperren</string>
+    <string name="biometric_use_password">Passwort verwenden</string>
+    <string name="mine_all">Alle · %1$d</string>
+    <string name="mine_mine">Meine · %1$d</string>
+    <string name="outbox_title">Sync-Warteschlange</string>
+    <string name="outbox_retry">Erneut versuchen</string>
+    <string name="outbox_close">Schließen</string>
+</resources>

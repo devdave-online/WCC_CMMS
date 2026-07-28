@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Open Beta 1.0.0 — exclude session prefs from cloud backup & device transfer.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="wcc_prefs.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="wcc_prefs.xml" />
+    </device-transfer>
+</data-extraction-rules>
