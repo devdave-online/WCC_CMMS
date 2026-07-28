@@ -1,0 +1,44 @@
+# WCC CMMS — webroot hardening.
+# Config-only: no PHP behaviour changes, so nothing in the app can break.
+
+# 1. No directory browsing anywhere. Without this, /migrations/, /inc/, /uploads/
+#    etc. hand an attacker a full file inventory before they even try a login.
+Options -Indexes
+
+# 2. Never serve source/data/config files, whatever folder they sit in.
+#    schema.sql, migrations/*.sql and ai_agent.ini were all downloadable.
+<FilesMatch "\.(sql|md|ini|log|bak|old|dist|sh|bat|yml|yaml|lock|json5)$">
+    Require all denied
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# 3. Dotfiles (.env, .git*, .htpasswd, editor droppings).
+<FilesMatch "^\.">
+    Require all denied
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# composer.json / package.json leak dependency versions -> known-CVE shopping list.
+<FilesMatch "^(composer|package)(-lock)?\.json$">
+    Require all denied
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# 4. Baseline response headers.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), payment=()"
+    # Strips the "PHP/8.x" version banner where PHP is run as a module.
+    Header always unset X-Powered-By
+</IfModule>
+
+# 5. Don't advertise the exact Apache build in error pages.
+ServerSignature Off

@@ -1,0 +1,48 @@
+{
+  "WCC": {
+    "prefer": "WCC",
+    "note": "Brand acronym — do not translate"
+  },
+  "ticket": {
+    "meaning": "Unplanned maintenance intervention / breakdown event on the shop floor",
+    "avoid": "IT helpdesk ticket unless that is the only natural term",
+    "related_keys": ["nav.tickets"]
+  },
+  "work order": {
+    "meaning": "Planned or preventive maintenance job (WO)",
+    "avoid": "Confusing with ticket",
+    "related_keys": ["nav.work_orders"]
+  },
+  "PM": {
+    "meaning": "Preventive Maintenance",
+    "prefer": "Keep PM acronym or expand once in parentheses",
+    "related_keys": ["nav.pm_calendar"]
+  },
+  "takeover": {
+    "meaning": "Technician accepts and works an open ticket"
+  },
+  "closeout": {
+    "meaning": "Supervisor sign-off; ticket becomes CLOSED and goes to history"
+  },
+  "hold": {
+    "meaning": "Ticket paused (waiting on parts, vendor, or information)"
+  },
+  "escalate": {
+    "meaning": "Hand ticket up to higher skill level or supervisor"
+  },
+  "tooling": {
+    "meaning": "Physical tools, fixtures, dies — not software development tooling",
+    "related_keys": ["nav.tooling"]
+  },
+  "ledger": {
+    "meaning": "List/table screen with search and filters (assets, inventory, etc.)"
+  },
+  "PIC": {
+    "meaning": "Person In Charge named on a ticket",
+    "prefer_keep_or_expand": true
+  },
+  "badge number": {
+    "meaning": "Employee I-badge / public-safe ID used for login",
+    "related_keys": ["login.username"]
+  }
+}

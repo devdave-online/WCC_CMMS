@@ -1,0 +1,55 @@
+<?php
+require_once __DIR__ . '/shift_calendar.php';
+
+function get_current_month_operations_kpi($pdo) {
+    // 1. Fetch holidays
+    $holidays_stmt = $pdo->query("SELECT setting_value FROM app_settings WHERE setting_key = 'plant_holidays'");
+    $holidays_json = $holidays_stmt->fetchColumn() ?: '[]';
+    $plant_holidays = json_decode($holidays_json, true) ?? [];
+
+    $SHIFT_START = '06:00:00';
+    $SHIFT_END = '22:00:00';
+    $WORKING_DAYS = [1, 2, 3, 4, 5];
+    $calendar = new ShiftCalendar($SHIFT_START, $SHIFT_END, $WORKING_DAYS, $plant_holidays);
+
+    $first_day = date('Y-m-01');
+    // For MTD, we only consider up to today. ShiftCalendar getScheduledMinutesInDateRange already caps at time().
+    $last_day = date('Y-m-t'); 
+
+    // Fetch closed tickets this month
+    $stmt = $pdo->prepare("
+        SELECT t.ticket_id, t.report_date, t.report_time,
+               MIN(a.action_start) AS first_action,
+               MAX(a.action_end)   AS last_action,
+               SUM(TIMESTAMPDIFF(MINUTE, a.action_start, a.action_end)) AS active_labor_minutes
+        FROM active_tickets t
+        LEFT JOIN ticket_actions a ON t.ticket_id = a.ticket_id
+        WHERE t.status = 'CLOSED'
+          AND t.report_date >= ? AND t.report_date <= ?
+        GROUP BY t.ticket_id
+    ");
+    $stmt->execute([$first_day, $last_day]);
+    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $total_mttr = 0; $count_mttr = 0;
+    $total_failures = count($tickets);
+
+    foreach ($tickets as $t) {
+        if ($t['first_action'] && $t['last_action']) {
+            $mttr = max(0, (int)$t['active_labor_minutes']);
+            $total_mttr += $mttr; 
+            $count_mttr++;
+        }
+    }
+
+    $avg_mttr = $count_mttr > 0 ? round($total_mttr / $count_mttr) : 0;
+    $scheduled_mins = $calendar->getScheduledMinutesInDateRange($first_day, $last_day);
+    $scheduled_hours = $scheduled_mins / 60;
+    $mtbf_hours = $total_failures > 0 ? round($scheduled_hours / $total_failures, 1) : round($scheduled_hours, 1);
+
+    return [
+        'mtbf' => $mtbf_hours,
+        'mttr' => $avg_mttr,
+        'failures' => $total_failures
+    ];
+}

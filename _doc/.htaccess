@@ -1,0 +1,8 @@
+# Disable execution of scripts in the documents directory
+Options -Indexes
+RemoveHandler .php .phtml .php3 .php4 .php5 .pl .py .jsp .asp .htm .shtml .sh .cgi
+AddType text/plain .php .phtml .php3 .php4 .php5 .pl .py .jsp .asp .htm .shtml .sh .cgi
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|htm|shtml|sh|cgi)$">
+    Require all denied
+</FilesMatch>

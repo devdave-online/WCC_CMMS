@@ -1,0 +1,1193 @@
+{
+    "started": "2026-07-26T19:46:19+02:00",
+    "finished": "2026-07-26T19:46:23+02:00",
+    "fail_count": 23,
+    "cases": [
+        {
+            "section": "Runner",
+            "id": "bootstrap_login",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:toolings.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:setup_vault_toolings.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:equipment.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:setup_vault_equipment.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:upload_document.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:get_tooling_bom.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:get_tooling_docs.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:submit_ticket.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:csrf.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:rbac.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:nav.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "lint:login.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:equipment.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:equipment_labels.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "redirect_stub:equipment_list.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "library_skip:label_lib.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:setup_vault_equipment.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:setup_vault_toolings.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:toolings.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "redirect_stub:toolings_list.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:ajax_get_audit_details.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:inventory.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:inventory_audit.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:pr_document.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:purchase_orders.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:purchase_requests.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:setup_vault_vendors.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:vendors.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "redirect_stub:vendors_list.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:active_tickets.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:closeout.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:pm_calendar.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:quick_resolve.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:takeover.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:wo_takeover.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:work_orders.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:admin_backup.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:admin_panel.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:app_settings.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:setup_vault_departments.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:users.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:users_list.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:setup_vault_lines.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:history.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:setup_vault_analytics.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "auth_pattern:statistics.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "library_skip:tracking_stepper.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "module_page_count",
+            "status": "OK",
+            "detail": "35"
+        },
+        {
+            "section": "Static",
+            "id": "csrf_require",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "csrf_require_json",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "artifact:migrations/0017_create_toolings.sql",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "artifact:migrations/0018_create_tooling_bom.sql",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "artifact:migrations/0019_create_tooling_documents.sql",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "artifact:api/get_tooling_bom.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "artifact:api/get_tooling_docs.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "artifact:api/upload_document.php",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "table:toolings",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "table:tooling_bom",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "table:tooling_documents",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "table:equipment",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "table:equipment_bom",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Static",
+            "id": "table:active_tickets",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "unauth_toolings_no_500",
+            "status": "OK",
+            "detail": "HTTP 302"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "admin_login",
+            "status": "OK",
+            "detail": "a.rivera"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "csrf_token_present",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:login",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:docs_public",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:my_profile",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:my_profile",
+            "status": "OK",
+            "detail": "Profile"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:change_password",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:tickets_hub",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:tickets_hub",
+            "status": "OK",
+            "detail": "Ticket"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:active_tickets",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:active_tickets",
+            "status": "OK",
+            "detail": "parent-row"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:active_tickets",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:active_tickets",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:work_orders",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:work_orders",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:work_orders",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:pm_calendar",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:pm_calendar",
+            "status": "OK",
+            "detail": "PM"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:takeover",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:closeout",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:quick_resolve",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:wo_takeover",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:equipment_ledger",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:equipment_ledger",
+            "status": "OK",
+            "detail": "ledgerTable"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:equipment_ledger",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "column_search:equipment_ledger",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:equipment_ledger",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "api_bom:equipment_ledger",
+            "status": "OK",
+            "detail": "rows=10"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "api_docs:equipment_ledger",
+            "status": "OK",
+            "detail": "rows=0"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:equipment_list_redirect",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:equipment_vault",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:equipment_vault",
+            "status": "OK",
+            "detail": "vaultTable"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:equipment_vault",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:equipment_vault",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:toolings_ledger",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:toolings_ledger",
+            "status": "OK",
+            "detail": "ledgerTable"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:toolings_ledger",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "column_search:toolings_ledger",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:toolings_ledger",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "api_bom:toolings_ledger",
+            "status": "OK",
+            "detail": "rows=2"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "api_docs:toolings_ledger",
+            "status": "OK",
+            "detail": "rows=0"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:toolings_vault",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:toolings_vault",
+            "status": "OK",
+            "detail": "vaultTable"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:toolings_vault",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:toolings_vault",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker_docs_modal:toolings_vault",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker_bom_modal:toolings_vault",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:prod_lines_vault",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:inventory",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:inventory",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:inventory_audit",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:vendors_list",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:vendors",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:vendors_vault",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:purchase_requests",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:purchase_requests",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:purchase_orders",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:history",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "search_ui:history",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "accordion:history",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:tracking_stepper",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:users_list",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:users",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:admin_panel",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "marker:admin_panel",
+            "status": "OK",
+            "detail": "Admin"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:app_settings",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:departments_vault",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:admin_backup",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:statistics",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:analytics_vault",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_get_equipment",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json:api_get_equipment",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_get_equipment_bom",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json:api_get_equipment_bom",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json_success:api_get_equipment_bom",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_get_equipment_docs",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json:api_get_equipment_docs",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json_success:api_get_equipment_docs",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_get_tooling_bom",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json:api_get_tooling_bom",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json_success:api_get_tooling_bom",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_get_tooling_docs",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json:api_get_tooling_docs",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json_success:api_get_tooling_docs",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_notifications",
+            "status": "SKIP",
+            "detail": "HTTP 403 (perm)"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "load:api_get_team",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "HTTP-Smoke",
+            "id": "json:api_get_team",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Search",
+            "id": "fetch:equipment",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:toolings",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:equipment_vault",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:toolings_vault",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:active_tickets",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:history",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:work_orders",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Search",
+            "id": "fetch:inventory",
+            "status": "FAIL",
+            "detail": "got login page (session lost)"
+        },
+        {
+            "section": "Tickets",
+            "id": "csrf_ready",
+            "status": "OK",
+            "detail": ""
+        },
+        {
+            "section": "Tickets",
+            "id": "active_tickets_load",
+            "status": "OK",
+            "detail": "no parent-row (empty ok)"
+        },
+        {
+            "section": "Tickets",
+            "id": "create_ticket",
+            "status": "SKIP",
+            "detail": "pass --mutate to create a QA ticket"
+        },
+        {
+            "section": "Assets",
+            "id": "equip_bom",
+            "status": "FAIL",
+            "detail": "{\"status\":\"error\",\"success\":false,\"message\":\"Authentication required.\"}"
+        },
+        {
+            "section": "Assets",
+            "id": "equip_docs",
+            "status": "FAIL",
+            "detail": "{\"status\":\"error\",\"success\":false,\"message\":\"Authentication required.\"}"
+        },
+        {
+            "section": "Assets",
+            "id": "equipment_bom_link",
+            "status": "FAIL",
+            "detail": "View Linked Parts / openBOMModal missing"
+        },
+        {
+            "section": "Assets",
+            "id": "tooling_bom",
+            "status": "FAIL",
+            "detail": "{\"status\":\"error\",\"success\":false,\"message\":\"Authentication required.\"}"
+        },
+        {
+            "section": "Assets",
+            "id": "tooling_docs",
+            "status": "FAIL",
+            "detail": "{\"status\":\"error\",\"success\":false,\"message\":\"Authentication required.\"}"
+        },
+        {
+            "section": "Assets",
+            "id": "tooling_bom_link",
+            "status": "FAIL",
+            "detail": "View Linked Parts missing on ledger"
+        },
+        {
+            "section": "Assets",
+            "id": "tooling_bom_api_wired",
+            "status": "FAIL",
+            "detail": "ledger JS not calling get_tooling_bom"
+        },
+        {
+            "section": "Assets",
+            "id": "tooling_docs_link",
+            "status": "FAIL",
+            "detail": "docs link missing"
+        },
+        {
+            "section": "Assets",
+            "id": "vault_has:Manage_BOM",
+            "status": "FAIL",
+            "detail": "missing"
+        },
+        {
+            "section": "Assets",
+            "id": "vault_has:Docs",
+            "status": "FAIL",
+            "detail": "missing"
+        },
+        {
+            "section": "Assets",
+            "id": "vault_has:Code_Configurator",
+            "status": "FAIL",
+            "detail": "missing"
+        },
+        {
+            "section": "Assets",
+            "id": "vault_has:vaultTable",
+            "status": "FAIL",
+            "detail": "missing"
+        },
+        {
+            "section": "Assets",
+            "id": "vault_has:toolingDocsModal",
+            "status": "FAIL",
+            "detail": "missing"
+        },
+        {
+            "section": "Assets",
+            "id": "vault_label_symbology_ui",
+            "status": "FAIL",
+            "detail": "missing"
+        },
+        {
+            "section": "Assets",
+            "id": "create_tooling",
+            "status": "SKIP",
+            "detail": "pass --mutate to create/soft-delete tooling"
+        },
+        {
+            "section": "Inventory",
+            "id": "inventory_page",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "Inventory",
+            "id": "inventory_search_ui",
+            "status": "FAIL",
+            "detail": "no search markers len=7269"
+        },
+        {
+            "section": "Inventory",
+            "id": "inventory_audit",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "Procurement",
+            "id": "load:pr",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "Procurement",
+            "id": "load:po",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "Procurement",
+            "id": "load:vendors",
+            "status": "OK",
+            "detail": "HTTP 200"
+        },
+        {
+            "section": "Procurement",
+            "id": "pr_create",
+            "status": "SKIP",
+            "detail": "use tests/api_procurement_smoke.php for model; pass --mutate for future PR create"
+        },
+        {
+            "section": "REST-Companion",
+            "id": "notifications",
+            "status": "OK",
+            "detail": "HTTP 401"
+        },
+        {
+            "section": "REST-Companion",
+            "id": "rest_v1_no_key",
+            "status": "OK",
+            "detail": "HTTP 401"
+        },
+        {
+            "section": "REST-Companion",
+            "id": "companion_toolings",
+            "status": "OK",
+            "detail": "HTTP 401"
+        },
+        {
+            "section": "REST-Companion",
+            "id": "rest_with_key",
+            "status": "SKIP",
+            "detail": "no user api_key in DB"
+        },
+        {
+            "section": "Legacy",
+            "id": "security_gates",
+            "status": "OK",
+            "detail": "exit 0"
+        }
+    ],
+    "by_section": {
+        "Runner": {
+            "OK": 1,
+            "FAIL": 0,
+            "SKIP": 0
+        },
+        "Static": {
+            "OK": 62,
+            "FAIL": 0,
+            "SKIP": 0
+        },
+        "HTTP-Smoke": {
+            "OK": 87,
+            "FAIL": 0,
+            "SKIP": 1
+        },
+        "Search": {
+            "OK": 0,
+            "FAIL": 8,
+            "SKIP": 0
+        },
+        "Tickets": {
+            "OK": 2,
+            "FAIL": 0,
+            "SKIP": 1
+        },
+        "Assets": {
+            "OK": 0,
+            "FAIL": 14,
+            "SKIP": 1
+        },
+        "Inventory": {
+            "OK": 2,
+            "FAIL": 1,
+            "SKIP": 0
+        },
+        "Procurement": {
+            "OK": 3,
+            "FAIL": 0,
+            "SKIP": 1
+        },
+        "REST-Companion": {
+            "OK": 3,
+            "FAIL": 0,
+            "SKIP": 1
+        },
+        "Legacy": {
+            "OK": 1,
+            "FAIL": 0,
+            "SKIP": 0
+        }
+    }
+}

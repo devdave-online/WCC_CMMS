@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Gmail">
+  <!-- Lightweight Gmail-style envelope mark for the About modal -->
+  <rect x="4" y="8" width="40" height="32" rx="4" fill="#fff" stroke="#e0e0e0"/>
+  <path d="M6 12l18 13L42 12" fill="none" stroke="#EA4335" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 36V14l12 9" fill="none" stroke="#4285F4" stroke-width="3" stroke-linecap="round"/>
+  <path d="M42 36V14l-12 9" fill="none" stroke="#34A853" stroke-width="3" stroke-linecap="round"/>
+  <path d="M6 36h36" fill="none" stroke="#FBBC05" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

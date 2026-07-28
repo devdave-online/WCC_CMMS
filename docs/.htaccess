@@ -1,0 +1,6 @@
+# Chapter fragments are included by /docs.php from disk; they are not pages on
+# their own and would render as orphan HTML if fetched directly.
+Require all denied
+<IfModule !mod_authz_core.c>
+Deny from all
+</IfModule>

@@ -1,0 +1,551 @@
+<?php
+include 'auth.php';
+require_perm('manage_users');
+require_once 'rbac.php';
+
+// Enterprise centralized DB connection (highest quality)
+require_once __DIR__ . '/inc/db.php';
+$pdo = get_wcc_db_connection();
+
+try {
+    // Handle new user creation
+    if (isset($_POST['action']) && $_POST['action'] === 'create_user') {
+        $username = trim($_POST['username'] ?? '');
+        $email    = trim($_POST['email'] ?? '');
+        $full_name = trim($_POST['full_name'] ?? '');
+        $phone    = trim($_POST['phone'] ?? '');
+        $department = trim($_POST['department'] ?? '');
+        $role     = (int)($_POST['role_level'] ?? 1);
+        $status   = $_POST['status'] ?? 'active';
+        $workshop_id = !empty($_POST['workshop_id']) ? (int)$_POST['workshop_id'] : null;
+        $notes    = trim($_POST['notes'] ?? '');
+        $pw       = password_hash('password', PASSWORD_DEFAULT);
+
+        // Collect permission overrides from checkboxes
+        $overrides = [];
+        foreach (array_keys(PERMISSION_LABELS) as $pkey) {
+            $default = ROLE_PERMISSIONS[$role][$pkey] ?? false;
+            $posted  = isset($_POST['perm_' . $pkey]);
+            if ($posted !== $default) {
+                $overrides[$pkey] = $posted;
+            }
+        }
+        $perms_json = !empty($overrides) ? json_encode($overrides) : null;
+
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, full_name, phone, department, password_hash, role_level, permissions_json, status, workshop_id, notes, must_change_password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+        $stmt->execute([$username, $email ?: null, $full_name ?: null, $phone ?: null, $department ?: null, $pw, $role, $perms_json, $status, $workshop_id, $notes ?: null]);
+        header("Location: users.php");
+        exit;
+    }
+
+    // Handle password reset
+    if (isset($_POST['trigger_reset_password'])) {
+        if (!can('reset_passwords')) {
+            die("Access Denied: You do not have permission to reset passwords.");
+        }
+        $edit_uid = (int)($_POST['edit_user_id'] ?? 0);
+        if ($edit_uid > 0) {
+            $pw = password_hash('password', PASSWORD_DEFAULT);
+            $pdo->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?")->execute([$pw, $edit_uid]);
+        }
+        header("Location: users.php?reset_success=1");
+        exit;
+    }
+
+    // Handle full user save (profile + permissions) - industry standard inline editor
+    if (isset($_POST['action']) && $_POST['action'] === 'save_user') {
+        $edit_uid   = (int)($_POST['edit_user_id'] ?? 0);
+        
+        // Profile fields
+        $email = trim($_POST['email'] ?? '');
+        $full_name = trim($_POST['full_name'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $status = $_POST['status'] ?? 'active';
+        $notes = trim($_POST['notes'] ?? '');
+
+        $pdo->prepare("UPDATE users SET email = ?, full_name = ?, phone = ?, status = ?, notes = ? WHERE user_id = ?")
+            ->execute([$email ?: null, $full_name ?: null, $phone ?: null, $status, $notes ?: null, $edit_uid]);
+
+        // Permissions
+        $edit_role  = (int)$pdo->query("SELECT role_level FROM users WHERE user_id = $edit_uid")->fetchColumn();
+        $overrides  = [];
+        foreach (array_keys(PERMISSION_LABELS) as $pkey) {
+            $default = ROLE_PERMISSIONS[$edit_role][$pkey] ?? false;
+            $posted  = isset($_POST['perm_' . $pkey]);
+            if ($posted !== $default) {
+                $overrides[$pkey] = $posted;
+            }
+        }
+        $perms_json = !empty($overrides) ? json_encode($overrides) : null;
+        $pdo->prepare("UPDATE users SET permissions_json = ? WHERE user_id = ?")->execute([$perms_json, $edit_uid]);
+
+        // Simple audit log (if table exists)
+        try {
+            $pdo->prepare("INSERT INTO audit_log (actor_user_id, action, entity_type, entity_id, notes) VALUES (?, 'user.update', 'user', ?, 'Profile/permissions updated by admin')")
+                ->execute([$_SESSION['user_id'] ?? null, $edit_uid]);
+        } catch (Exception $e) {}
+
+        header("Location: users.php");
+        exit;
+    }
+
+    // Reset permissions to pure role defaults (useful "copy from role" UX)
+    if (isset($_POST['action']) && $_POST['action'] === 'reset_permissions') {
+        $edit_uid = (int)($_POST['edit_user_id'] ?? 0);
+        $pdo->prepare("UPDATE users SET permissions_json = NULL WHERE user_id = ?")->execute([$edit_uid]);
+        header("Location: users.php");
+        exit;
+    }
+
+    $stmt  = $pdo->query("SELECT * FROM users ORDER BY user_id ASC");
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // For location select in add form
+    $workshops = [];
+    try {
+        $workshops = $pdo->query("SELECT workshop_id, name FROM workshops ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) { /* workshops table may not exist yet */ }
+} catch (PDOException $e) { die("DB Error: " . $e->getMessage()); }
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>User Management</title>
+    <style>
+        .filter-token {
+            background: var(--panel-bg);
+            border: 1px solid var(--text-accent);
+            border-radius: 16px;
+            padding: 4px 12px;
+            font-size: 0.85em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.2s ease-out;
+        }
+        .filter-token span { font-weight: bold; color: var(--text-accent); }
+        .filter-token-close { cursor: pointer; color: #ef4444; font-weight: bold; transition: transform 0.2s; }
+        .filter-token-close:hover { transform: scale(1.2); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+    <script>
+        let activeFilters = [];
+        let filterIdCounter = 0;
+        let activeColumnIndex = -1;
+
+        function getColumnName(index) {
+            let th = document.querySelector("#usersTable thead tr").children[index];
+            return th ? (th.innerText || th.textContent).trim() : "Column";
+        }
+
+        function createFilterToken(colIndex, query) {
+            let colName = getColumnName(colIndex);
+            let id = 'filter-' + filterIdCounter++;
+            activeFilters.push({ id: id, colIndex: colIndex, query: query.toUpperCase() });
+            
+            let area = document.getElementById('activeFiltersArea');
+            let token = document.createElement('div');
+            token.id = id;
+            token.className = 'filter-token';
+            token.innerHTML = '<span>' + colName + ':</span> ' + query + ' <div class="filter-token-close" onclick="removeFilterToken(\'' + id + '\')">✖</div>';
+            area.appendChild(token);
+        }
+
+        function removeFilterToken(id) {
+            activeFilters = activeFilters.filter(f => f.id !== id);
+            let token = document.getElementById(id);
+            if (token) token.remove();
+            filterTable();
+        }
+
+        function handleSearchInput(ev) {
+            if (ev.key === 'Enter' && activeColumnIndex > -1 && ev.target.value.trim() !== '') {
+                lockToken();
+            } else {
+                filterTable();
+            }
+        }
+
+        function lockToken() {
+            var input = document.getElementById("ledgerSearch");
+            var query = input.value.trim();
+            if (query !== '' && activeColumnIndex > -1) {
+                createFilterToken(activeColumnIndex, query);
+                input.value = '';
+                resetSearchPosition();
+            }
+        }
+
+        function filterTable() {
+            var input = document.getElementById("ledgerSearch");
+            var globalFilter = input.value.toUpperCase();
+            var table = document.getElementById("usersTable");
+            var tr = table.getElementsByClassName("parent-row");
+
+            for (let i = 0; i < tr.length; i++) {
+                let matchFound = true;
+                let tds = tr[i].getElementsByTagName("td");
+
+                for (let f of activeFilters) {
+                    let cell = tds[f.colIndex];
+                    if (cell) {
+                        let txt = cell.textContent || cell.innerText;
+                        if (txt.toUpperCase().indexOf(f.query) === -1) {
+                            matchFound = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (matchFound && globalFilter !== "") {
+                    if (activeColumnIndex > -1) {
+                        let cell = tds[activeColumnIndex];
+                        if (cell) {
+                            let txt = cell.textContent || cell.innerText;
+                            if (txt.toUpperCase().indexOf(globalFilter) === -1) matchFound = false;
+                        }
+                    } else {
+                        let globalMatch = false;
+                        for (let j = 0; j < tds.length; j++) { 
+                            if (tds[j]) {
+                                let txt = tds[j].textContent || tds[j].innerText;
+                                if (txt.toUpperCase().indexOf(globalFilter) > -1) {
+                                    globalMatch = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!globalMatch) matchFound = false;
+                    }
+                }
+
+                if (matchFound) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                    tr[i].classList.remove('is-expanded');
+                    let nextRow = tr[i].nextElementSibling;
+                    if (nextRow && nextRow.classList.contains('child-row')) {
+                        nextRow.style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function allowDrop(ev) { ev.preventDefault(); }
+        function dragSearch(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function dropSearch(ev, thElement) {
+            ev.preventDefault();
+            var container = document.getElementById("searchContainerOrig");
+            var input = document.getElementById("ledgerSearch");
+            var lockBtn = document.getElementById("lockTokenBtn");
+            var colIndex = Array.from(thElement.parentNode.children).indexOf(thElement);
+            var query = input.value.trim();
+
+            if (query !== '') {
+                createFilterToken(colIndex, query);
+                input.value = '';
+                resetSearchPosition();
+            } else {
+                thElement.appendChild(container);
+                container.style.marginTop = '10px';
+                input.style.width = '100%';
+                input.placeholder = 'Type & click 📌 to Lock';
+                activeColumnIndex = colIndex;
+                lockBtn.style.display = 'block';
+                input.focus();
+                filterTable();
+            }
+        }
+
+        function resetSearchPosition() {
+            let wrapper = document.getElementById('searchWrapper');
+            let container = document.getElementById('searchContainerOrig');
+            let input = document.getElementById('ledgerSearch');
+            let lockBtn = document.getElementById('lockTokenBtn');
+            
+            wrapper.appendChild(container);
+            container.style.marginTop = '0';
+            input.style.width = '360px';
+            input.placeholder = 'Search users... (Drag to column)';
+            lockBtn.style.display = 'none';
+            activeColumnIndex = -1;
+            filterTable();
+        }
+
+        function exportUsers() {
+            const table = document.getElementById('usersTable');
+            let csv = [];
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('th, td');
+                let rowData = [];
+                cols.forEach(col => {
+                    let text = col.innerText.trim().replace(/"/g, '""');
+                    rowData.push('"' + text + '"');
+                });
+                csv.push(rowData.join(','));
+            });
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = 'users_export.csv';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetPerms(userId) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.innerHTML = `
+                <input type="hidden" name="action" value="reset_permissions">
+                <input type="hidden" name="edit_user_id" value="${userId}">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function filterPerms(input, userId) {
+            const grid = document.getElementById('permGrid-' + userId);
+            const term = input.value.toLowerCase();
+            grid.querySelectorAll('label').forEach(label => {
+                const text = label.textContent.toLowerCase();
+                label.style.display = text.includes(term) ? '' : 'none';
+            });
+        }
+    </script>
+</head>
+<body><?php include 'nav.php'; ?>
+
+<div class="dashboard-container">
+    <?php if (isset($_GET['reset_success'])): ?>
+        <div style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            ✅ Password successfully reset to default ('password').
+        </div>
+    <?php endif; ?>
+    <div class="header-flex" style="margin-bottom:10px;">
+        <h2>User Management (RBAC)</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <div id="searchWrapper">
+                <div id="searchContainerOrig" style="display:inline-block; position:relative; width:100%;" draggable="true" ondragstart="dragSearch(event)">
+                    <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-secondary); pointer-events:none; font-size:1.1em;">🔍</span>
+                        <input type="text" id="ledgerSearch" onkeyup="handleSearchInput(event)" ondblclick="resetSearchPosition()" placeholder="Search users... (Drag to column)" style="width:360px; padding:8px 35px 8px 35px; border-radius:20px; border: 1px solid var(--text-accent); background:var(--input-bg); color:var(--text-primary); transition: all 0.3s; box-sizing: border-box;">
+                    <span id="lockTokenBtn" onclick="lockToken()" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1em; transition: transform 0.2s;" title="Lock Token" onmouseover="this.style.transform='translateY(-50%) scale(1.2)'" onmouseout="this.style.transform='translateY(-50%) scale(1)'">🔒</span>
+                </div>
+            </div>
+            <button class="btn" onclick="document.getElementById('addModal').style.display='block'">+ Add User</button>
+            <button class="btn" onclick="exportUsers()">Export CSV</button>
+        </div>
+    </div>
+    <div id="activeFiltersArea" style="display:flex; gap:8px; margin-bottom:15px; flex-wrap:wrap; min-height:30px;"></div>
+    
+    <div class="table-container" style="overflow-x:auto;">
+        <table class="data-table" id="usersTable">
+            <thead>
+                <tr>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">User ID</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Email</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Full Name</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Username</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Role</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Status</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Last Login</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Location</th>
+                    <th ondrop="dropSearch(event, this)" ondragover="allowDrop(event)">Created</th>
+                </tr>
+            </thead>
+            <tbody>
+        <?php foreach($items as $u): 
+            $roles = [1=>'Operator', 2=>'Technician', 3=>'Supervisor', 4=>'Admin'];
+            $role_name = $roles[$u['role_level']] ?? 'Unknown';
+            $perms = wcc_get_permissions((int)$u['role_level'], $u['permissions_json']);
+        ?>
+            <tr class="parent-row" data-id="<?= $u['user_id'] ?>">
+                <td>
+                    <span class="row-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </span>
+                    <?= htmlspecialchars($u['user_id']) ?>
+                </td>
+                <td><?= htmlspecialchars($u['email'] ?? '—') ?></td>
+                <td><?= htmlspecialchars($u['full_name'] ?? '—') ?></td>
+                <td style="font-weight:bold; color:var(--text-accent);"><?= htmlspecialchars($u['username']) ?></td>
+                <td><span style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:12px; font-size:0.85em; font-weight:600; color:var(--text-accent);">L<?= $u['role_level'] ?> — <?= $role_name ?></span></td>
+                <td>
+                    <?php $st = $u['status'] ?? 'active'; $stColor = $st === 'active' ? '#10b981' : ($st === 'inactive' ? '#ef4444' : '#f59e0b'); ?>
+                    <span style="background:<?= $stColor ?>22; color:<?= $stColor ?>; padding:2px 8px; border-radius:10px; font-size:0.8em; font-weight:600; text-transform:uppercase;"><?= htmlspecialchars($st) ?></span>
+                </td>
+                <td><?= !empty($u['last_login']) ? date('Y-m-d H:i', strtotime($u['last_login'])) : '—' ?></td>
+                <td><?= htmlspecialchars($u['workshop_id'] ?? '—') ?></td>
+                <td><?= htmlspecialchars($u['created_at']) ?></td>
+            </tr>
+            <tr class="child-row" id="details-<?= $u['user_id'] ?>">
+                <td colspan="9">
+                    <div class="child-content" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        <span style="font-size: 0.9em; color:var(--text-secondary);">User ID: <strong style="color:var(--text-primary);"><?= htmlspecialchars($u['user_id']) ?></strong> &nbsp;|&nbsp; Role: <strong style="color:var(--text-accent);"><?= $role_name ?></strong></span>
+                        <form method="POST" style="margin:0;">
+                            <input type="hidden" name="action" value="save_user">
+                            <input type="hidden" name="edit_user_id" value="<?= $u['user_id'] ?>">
+
+                            <!-- Quick Profile Edit (industry leading: editable core fields inline) -->
+                            <div style="margin-bottom:15px; padding:10px; background:var(--panel-bg); border-radius:8px; border:1px solid var(--panel-border);">
+                                <div style="font-weight:600; margin-bottom:6px; color:var(--text-accent);">Profile</div>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.85em;">
+                                    <div>
+                                        <label>Email</label>
+                                        <input type="email" name="email" value="<?= htmlspecialchars($u['email'] ?? '') ?>" style="width:100%; padding:4px; border:1px solid var(--input-border); border-radius:4px; background:var(--input-bg); color:var(--text-primary);">
+                                    </div>
+                                    <div>
+                                        <label>Full Name</label>
+                                        <input type="text" name="full_name" value="<?= htmlspecialchars($u['full_name'] ?? '') ?>" style="width:100%; padding:4px; border:1px solid var(--input-border); border-radius:4px; background:var(--input-bg); color:var(--text-primary);">
+                                    </div>
+                                    <div>
+                                        <label>Phone</label>
+                                        <input type="text" name="phone" value="<?= htmlspecialchars($u['phone'] ?? '') ?>" style="width:100%; padding:4px; border:1px solid var(--input-border); border-radius:4px; background:var(--input-bg); color:var(--text-primary);">
+                                    </div>
+                                    <div>
+                                        <label>Status</label>
+                                        <select name="status" style="width:100%; padding:4px; border:1px solid var(--input-border); border-radius:4px; background:var(--input-bg); color:var(--text-primary);">
+                                            <option value="active" <?= ($u['status'] ?? 'active') == 'active' ? 'selected' : '' ?>>Active</option>
+                                            <option value="inactive" <?= ($u['status'] ?? '') == 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                                            <option value="pending" <?= ($u['status'] ?? '') == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="margin-top:6px;">
+                                    <label style="font-size:0.8em;">Notes</label>
+                                    <textarea name="notes" rows="1" style="width:100%; padding:4px; border:1px solid var(--input-border); border-radius:4px; background:var(--input-bg); color:var(--text-primary); font-size:0.8em;"><?= htmlspecialchars($u['notes'] ?? '') ?></textarea>
+                                </div>
+                            </div>
+                            
+                            <?php 
+                            $grouped = [];
+                            foreach(PERMISSION_LABELS as $key => $meta) {
+                                $grouped[$meta['group']][$key] = $meta['label'];
+                            }
+                            ?>
+                            <!-- 
+                            These checkboxes control access to specific pages/zones in the app.
+                            - 'manage_settings' unlocks admin_panel.php + app_settings.php + branding + some setup vaults.
+                            - 'manage_users' unlocks the RBAC user editor.
+                            - 'view_xxx' / 'manage_xxx' control visibility + hard gates on the corresponding pages (see require_perm calls).
+                            - my_profile.php is deliberately NOT gated here (self-service exception for all roles).
+                            -->
+                            <input type="text" id="permSearch-<?= $u['user_id'] ?>" placeholder="Search permissions..." onkeyup="filterPerms(this, <?= $u['user_id'] ?>)" style="margin-bottom:8px; width:100%; padding:5px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary); font-size:0.85em;">
+                            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;" id="permGrid-<?= $u['user_id'] ?>">
+                                <?php foreach($grouped as $group_name => $group_perms): ?>
+                                    <div style="margin-bottom: 10px;">
+                                        <div style="font-size:0.8em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:5px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:3px; letter-spacing:1px;"><?= htmlspecialchars($group_name) ?></div>
+                                        <?php foreach($group_perms as $pkey => $plabel): 
+                                            $has_perm = $perms[$pkey] ?? false;
+                                        ?>
+                                            <label style="display:flex; align-items:center; gap:8px; font-size:0.9em; margin-bottom:6px; cursor:pointer;">
+                                                <input type="checkbox" name="perm_<?= $pkey ?>" <?= $has_perm ? 'checked' : '' ?> style="width:auto; margin:0;">
+                                                <span style="<?= $has_perm ? 'color: #10b981; font-weight:bold;' : 'color: var(--text-primary);' ?>">
+                                                    <?= $has_perm ? '✓ ' : '' ?><?= htmlspecialchars($plabel) ?>
+                                                </span>
+                                            </label>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div> <!-- end permGrid -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; gap: 8px; flex-wrap: wrap;">
+                                <button type="submit" class="nav-btn primary" style="font-size: 0.9em;">Save Profile & Permissions</button>
+                                <button type="button" class="nav-btn" onclick="if(confirm('Reset permissions to role defaults?')) { resetPerms(<?= $u['user_id'] ?>); }" style="font-size: 0.85em;">Reset Perms to Role</button>
+                                <?php if(can('reset_passwords')): ?>
+                                <button type="submit" name="trigger_reset_password" value="1" class="nav-btn secondary" style="font-size: 0.85em; border: 1px solid #ef4444; color: #ef4444; background: transparent;" onclick="return confirm('Are you sure you want to reset this users password to the default password?');">Reset Password</button>
+                                <?php endif; ?>
+                            </div>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="addModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
+    <h2 style="color:var(--text-primary); margin-top:0;">Register New User</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="create_user">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+                <label style="color:var(--text-secondary); display:block; margin-top:10px;">Email *</label>
+                <input type="email" name="email" required style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            </div>
+            <div>
+                <label style="color:var(--text-secondary); display:block; margin-top:10px;">Username *</label>
+                <input type="text" name="username" required style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+                <label style="color:var(--text-secondary); display:block; margin-top:10px;">Full Name</label>
+                <input type="text" name="full_name" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            </div>
+            <div>
+                <label style="color:var(--text-secondary); display:block; margin-top:10px;">Phone</label>
+                <input type="text" name="phone" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+                <label style="color:var(--text-secondary); display:block; margin-top:10px;">Department</label>
+                <input type="text" name="department" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            </div>
+            <div>
+                <label style="color:var(--text-secondary); display:block; margin-top:10px;">Status</label>
+                <select name="status" style="width:100%; box-sizing:border-box; padding:8px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+                    <option value="active">Active</option>
+                    <option value="pending">Pending Invite</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+        </div>
+
+        <label style="color:var(--text-secondary); display:block; margin-top:10px;">Location / Workshop</label>
+        <select name="workshop_id" style="width:100%; box-sizing:border-box; padding:8px; margin-bottom: 10px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            <option value="">-- No specific location --</option>
+            <?php foreach ($workshops as $w): ?>
+                <option value="<?= $w['workshop_id'] ?>"><?= htmlspecialchars($w['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+
+        <label style="color:var(--text-secondary); display:block;">Role Level *</label>
+        <select name="role_level" required style="width:100%; box-sizing:border-box; padding:8px; margin-bottom: 10px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);">
+            <option value="1">1 - Operator</option>
+            <option value="2">2 - Technician</option>
+            <option value="3">3 - Supervisor</option>
+            <option value="4">4 - Admin</option>
+        </select>
+
+        <label style="color:var(--text-secondary); display:block;">Notes</label>
+        <textarea name="notes" rows="2" style="width:100%; box-sizing:border-box; padding:8px; margin-bottom: 10px; border-radius:4px; background:var(--input-bg); border:1px solid var(--input-border); color:var(--text-primary);"></textarea>
+        
+        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <span style="color:#ef4444; font-size:0.9em;"><strong>Note:</strong> New users are created with the default password <code>password</code> and <strong>must change it on first login</strong>. They inherit base permissions for their role.</span>
+        </div>
+
+        <button type="submit" class="nav-btn primary" style="width:100%;">Create & Invite User</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
+

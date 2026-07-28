@@ -1,0 +1,59 @@
+{
+  "last_updated": "2026-07-28",
+  "version": "OB1.0.0",
+  "files": [
+    {
+      "file": "AGENT_INSTRUCTIONS.md",
+      "role": "mandatory_start",
+      "priority": 1
+    },
+    {
+      "file": "PRODUCT_STATUS.md",
+      "role": "product_owner_status",
+      "priority": 2
+    },
+    {
+      "file": "OVERVIEW.md",
+      "role": "domain_overview",
+      "priority": 3
+    },
+    {
+      "file": "ARCHITECTURE.md",
+      "role": "code_map",
+      "priority": 4
+    },
+    {
+      "file": "DATA_MODEL.md",
+      "role": "schema_semantics",
+      "priority": 5
+    },
+    {
+      "file": "KEY_FLOWS.md",
+      "role": "workflows",
+      "priority": 6
+    },
+    {
+      "file": "CONVENTIONS.md",
+      "role": "coding_ui_standards",
+      "priority": 7
+    },
+    {
+      "file": "REST_API.md",
+      "role": "integration_api",
+      "priority": 8
+    },
+    {
+      "file": "context.json",
+      "role": "machine_readable",
+      "priority": 9
+    },
+    {
+      "file": "README.md",
+      "role": "folder_readme",
+      "priority": 10
+    }
+  ],
+  "bootstrap": "ai_agent.ini",
+  "generator": "generate-context.php",
+  "print_summary": "print-init-summary.php"
+}

@@ -1,0 +1,43 @@
+; =============================================================================
+; WCC CMMS - Environment / Personal AI Agent Overrides
+; =============================================================================
+; Copy this file to "ai_agent.local.ini" (do NOT commit it to version control).
+;
+; Any AI agent can be instructed to also load ai_agent.local.ini after
+; the main ai_agent.ini. This allows per-machine or per-user tweaks
+; without modifying the shared project configuration.
+;
+; Loading order recommended for agents:
+;   1. ai_agent.ini          (project-wide, committed)
+;   2. ai_agent.local.ini    (local overrides, gitignored)
+;
+; Example usage in an agent prompt:
+;   "Load ai_agent.ini from the project root, then apply any settings
+;    from ai_agent.local.ini if it exists."
+; =============================================================================
+
+[project]
+; You can override the version seen by this agent instance if needed
+; version = OB1.0.0-local-experiment
+
+[initialization]
+; Add extra files this agent should read in addition to the standard set
+extra_must_read = 
+    ; my-personal-notes.md
+
+[context_layer]
+; Point to a different context folder if experimenting
+; folder = _ai_ctxt-experiment
+
+[api]
+; Override the base URL if running on a different host/port
+; base_url = http://localhost:8080/api/v1/
+
+[rules_for_agents]
+; Add agent-specific reminders for this environment
+; 7 = Remember that on this machine the DB is running on port 3307
+
+[personal]
+; Free-form section for anything the user/agent wants to remember
+; preferred_model = (your AI AGENT of choice — do not hardcode vendor names in shared docs)
+; notes = "Be extra careful with production_lines changes right now"
