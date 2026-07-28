@@ -1,0 +1,96 @@
+# ========================
+# Operating System files
+# ========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ========================
+# IDE & Editor
+# ========================
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+.project
+.settings/
+.classpath
+
+# ========================
+# PHP / Web
+# ========================
+/vendor/
+composer.lock
+.env
+.env.*
+!.env.example
+*.log
+/storage/
+/cache/
+/tmp/
+/temp/
+/uploads/
+/backups/
+/node_modules/
+
+# ========================
+# Database
+# ========================
+*.sql.gz
+*.sqlite
+*.db
+/sql/*.local.sql
+
+# ========================
+# Android Companion
+# ========================
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+build/
+.gradle/
+local.properties
+*.iml
+.externalNativeBuild/
+.cxx/
+*.jks
+*.keystore
+
+# ========================
+# XAMPP / Local Server
+# ========================
+/xampp/
+/htdocs/
+*.pid
+
+# ========================
+# AI / Agent temporary files
+# ========================
+# Keep the official ai_ctxt and ai_agent.ini
+# Ignore temporary agent outputs
+/ai_temp/
+/agent_output/
+*.agent.log
+
+# ========================
+# Misc
+# ========================
+*.bak
+*.swp
+*.swo
+*~
+.cache/
