@@ -1,3 +1,6 @@
+![WCC_Login](/img/docs/login.png)
+
+
 # Workshop Control Center (WCC)
 
 **Free. Unlimited seats. Source available.**
