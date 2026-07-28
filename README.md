@@ -1,7 +1,9 @@
 # WCC_CMMS
 Free unlimited-seat CMMS with 34 languages, online+offline Android companion, and full AI agent support (ai_agent.ini + ai_ctxt). Source available.
 
-1What WCC Is
+1.
+What WCC Is
+
 WCC is a complete, enterprise-grade maintenance management system — and it is free. Not a trial. Not a crippled community edition with the useful features behind a paywall. The whole thing: full ticket lifecycle, preventive maintenance, asset management with printed QR labels, a real inventory ledger, end-to-end procurement with separation of duties, live KPIs, granular role-based access, and a REST API — yours to run on your own hardware, for as many users as you like, forever.
 
 Commercial CMMS platforms charge per seat per month. That pricing model quietly decides who is allowed to record work — and the answer is always "as few people as possible," because every login costs money. So the operator who spotted the fault, the storekeeper who has the part, and the supervisor who signs the purchase all end up sharing one account or working around the system. The record stops reflecting reality, and a maintenance system whose data you cannot trust is worse than a whiteboard.
@@ -37,8 +39,10 @@ Single-organisation. One installation serves one company, with full support for 
 Web-first, with a companion app for scanning. The interface adapts to handheld screens; camera-based QR scanning lives in a separate Android app, because a shop-floor intranet usually has no HTTPS and browsers require it for camera access.
 The licence, in plain terms
 Apache 2.0 with the Commons Clause. Use it, modify it, and run it for your own operations indefinitely — including commercially. The single restriction: you may not sell the software itself or offer it as a paid hosted service. Run it for your plant, for free, for good.
-Orientation
-2Installation
+
+2. 
+Installation
+
 WCC is raw PHP and MySQL with no build step, no package manager and no framework. Deployment is copying files and importing a database — there is nothing to compile and nothing to keep running except your web server.
 
 Requirements
@@ -72,8 +76,10 @@ If you imported the demo database instead, the accounts described in Demo Data a
 
 A 30-second go-live check
 Before a server goes public, three quick confirmations: your admin password is set, your database user is scoped, and .htaccess is active — request /schema.sql and confirm you get a 403. A 403 means Apache is honouring the project's security rules (see Hardening); if it downloads instead, enable AllowOverride All for the directory. That is the whole checklist.
-Orientation
-3A Guided Tour
+
+3. 
+A Guided Tour
+
 This chapter walks the shortest path that touches every major part of the system: a machine breaks, somebody reports it, a technician fixes it consuming a part, and the numbers move. If you read one chapter before demonstrating WCC, read this one.
 
 The application shell
@@ -108,8 +114,10 @@ h.bakker	Storekeeper	Fulfil purchase orders and receive goods — but never appr
 c.whitfield	Viewer	Read-only.
 Worth demonstrating deliberately
 Sign in as h.bakker and try to approve a purchase order. The Storekeeper can ship, receive and close orders but cannot approve the spend — the separation between "who authorises money" and "who moves goods" is enforced server-side, not merely hidden. That distinction is what auditors ask about.
-Architecture
-4Code Structure
+
+4.
+Code Structure
+
 WCC has no framework, no router and no autoloader. A URL maps to a file on disk, that file includes what it needs, and it prints HTML. If you can read PHP you can read this codebase without learning anything else first — which is the point, because the people most likely to maintain a plant's CMMS are plant engineers, not full-time web developers.
 
 Folder map
@@ -165,8 +173,11 @@ Data is fetched before any output. That ordering is deliberate: it means a datab
 
 The permission gate is the security boundary
 require_perm() at the top of the file is what actually protects the page. The sidebar hides links the user cannot use, but that is a courtesy — typing the URL directly hits the same gate. Any new page without a require_perm() call is public to every logged-in user, whatever the navigation shows.
-Architecture
-5Request Lifecycle
+
+
+5.
+Request Lifecycle
+
 This chapter follows a single request from the browser to the rendered page, naming what runs at each step. It is the fastest way to understand where to put something new — or where to look when something misbehaves.
 
 From URL to HTML
@@ -206,8 +217,10 @@ The effect for an end user is that a problem produces a tidy, branded message in
 
 A note for developers verifying changes
 Because errors surface as the friendly page rather than raw PHP text, confirm a page by loading it and checking the rendered result and the PHP error log — not by scanning the output for the words "Fatal error", which the handler deliberately never emits. php -l checks syntax only; it does not execute the page.
-Architecture
-6Design System
+
+6.
+Design System
+
 There is one stylesheet, css/global.css, and one behaviour script, js/wcc-ui.js. No CSS framework, no build step, no utility classes. Pages style themselves by using design tokens, so a theme change is a variable change rather than a search-and-replace across a hundred files.
 
 Tokens
@@ -249,8 +262,9 @@ If WebGL is unavailable it simply never appears.
 Users can switch it off in My Profile → Visual Preferences; the preference is per-browser (localStorage) so someone on an old shop-floor PC can disable it without affecting anyone else.
 One subtlety worth recording: because WCC is a multi-page application, every navigation is a fresh document, and the animation clock would restart from zero on each one — the ribbon visibly snapping back to its opening shape on every menu click. The elapsed time is therefore carried in sessionStorage and resumed, so motion is continuous across pages. It is per-tab by design, so two open tabs each keep their own unbroken ribbon rather than fighting over one shared clock.
 
-Data
-7Database Schema
+7.
+Database Schema
+
 Forty tables, all InnoDB, all utf8mb4. Every query in the application is a prepared statement — there is no ORM and no query builder, so what you read in a page is the SQL that runs.
 
 The shape of the data
@@ -304,8 +318,10 @@ notifications	Per-user alerts with type, severity, link and read flag.
 rate_limit	Failed-login counters keyed on IP and endpoint.
 Tables that are intentionally empty
 Several tables exist and are never written by the current code: eam_directory, ticket_parts_consumed, system_audit_logs, scheduled_reports and notification_broadcast. They are schema left over from earlier designs, superseded by inventory_ledger, audit_log and notifications. They are harmless, but do not build against them expecting data to appear.
-Data
-8Migrations
+
+8.
+Migrations
+
 Schema changes are numbered SQL files in migrations/, applied in order by a small runner and recorded so they never run twice. There is no rollback mechanism — forward-only, which for a system whose database you are expected to back up before touching is the honest trade.
 
 How migrations run
@@ -331,8 +347,9 @@ When you need a table's exact shape, ask the database
 DESCRIBE table_name or a query against information_schema.columns is always authoritative. The schema summary in Database Schema was read directly from a running installation for exactly this reason — the database is the definitive record of its own structure.
 To regenerate a clean schema baseline at any time, the built-in backup tooling produces a full mysqldump; a --no-data dump gives you a structure-only reference whenever you want one.
 
-Security
-9Authentication
+9.
+Authentication
+
 Authentication answers "who is this?". Authorisation — covered in Roles & Permissions — answers "what may they do?". This chapter is the first question only.
 
 The login flow
@@ -367,8 +384,10 @@ Administrators with reset_passwords can reset another user's password; they cann
 Self-service change lives in My Profile and requires the current password.
 First-run convenience
 On a brand-new installation with no users, the login page seeds a starter admin account so you can get straight in — and immediately requires you to set your own password before anything else. A clean, guided first login with no manual account creation needed.
-Security
-10Roles & Permissions
+
+10.
+Roles & Permissions
+
 WCC has 24 permissions across 6 roles, and both are editable. Because seats cost nothing, everyone who touches the work can have an account — which only works if permissions are fine-grained enough that giving someone access does not give them everything.
 
 The permission model
@@ -418,8 +437,9 @@ Hiding a control is not a control
 Every layer above the page gate is presentation. If you add a page or an endpoint and forget require_perm() / require_api_perm(), it is reachable by every authenticated user regardless of what the sidebar shows. When reviewing a change, check the gate, not the menu.
 A denied page renders an Access Denied panel with the sidebar intact, at HTTP 200 rather than 403. That is a deliberate UX choice — the user can navigate away instead of hitting a dead end — but it means automated checks must assert on the page content, not the status code.
 
-Security
-11Hardening
+11.
+Hardening
+
 This chapter covers everything protecting the application below the permission layer: request forgery, query safety, what the web server will hand out, and what happens to uploaded files.
 
 CSRF protection
@@ -459,10 +479,12 @@ Uploads are validated on extension, checked with is_uploaded_file(), size-capped
 Responses carry nosniff and a restrictive Content-Security-Policy, so a file that lies about its type is not reinterpreted as script.
 Serving files, and gating them if you need to
 Attachments are served directly by the web server with generated, non-guessable filenames — fast and simple, and the right default for manuals and photos. If a particular deployment stores commercially sensitive documents and wants every download to require a login, route uploads/ through a small PHP gatekeeper that checks the session before streaming the file. Both approaches are supported; choose per deployment based on how sensitive your attachments are.
-Workflows
-12Ticket Lifecycle
-A ticket is one fault on one machine, from the moment somebody notices it to the moment the line runs again. It is the busiest object in the system and the source of nearly every metric, so this chapter is worth reading closely.
 
+12.
+Ticket Lifecycle
+
+A ticket is one fault on one machine, from the moment somebody notices it to the moment the line runs again. It is the busiest object in the system and the source of nearly every metric, so this chapter is worth reading closely.
+![Open_ticket](/img/docs/ticket_open.png)
 The state machine
   OPEN ──────────► PENDING ──────────► CLOSED
   reported         taken over,          work finished,
@@ -485,7 +507,11 @@ A repeat-fault warning appears if the same machine has recent similar events.
 Ticket IDs
 Format is TK-YYMMDD-NNN — a per-day sequence, e.g. TK-260722-014. Compact, chronologically sortable, and readable over a radio. The ID is always allocated by the server; a client-supplied one is ignored, because ticket_id is the primary key and a chosen value could collide with an existing ticket. Allocation retries on contention, so simultaneous registrations from several terminals all succeed.
 Takeover and Evil Maid locking
+
 Taking over a ticket
+
+![Ticket_pending](/img/docs/ticket_pending.png)
+
 Taking over a ticket logs the intervention details and shifts it to PENDING.
 Taking over a ticket stamps the technician's name and starts the clock. From that point the ticket is bound to that person: another user cannot close out work they did not do, even if they have the permission in general.
 
@@ -493,7 +519,11 @@ This is called "Evil Maid" protection in the codebase, and it exists for a munda
 
 People are identified by name
 Intervention records carry the technician's display name, so history reads as people rather than login IDs — "Sara Lindqvist closed this", not "user 5". Reporting resolves every spelling a person's work may be filed under, so a technician's stats are always complete regardless of how any individual record was entered.
+
 Closeout
+
+![Closeout](/img/docs/ticket_closed.png)
+
 Closing out a ticket
 Closing the ticket (CLOSED state) deducts consumed parts and archives the record.
 Closeout is where the record becomes worth having. It captures:
@@ -507,17 +537,24 @@ Two side effects fire automatically. Consuming a part that drops to its minimum 
 Stock is never driven negative
 If a technician records using more of a part than the system believes is on the shelf, the consumption is capped at the quantity on hand and the ledger records what was actually taken. A stock level that has gone negative is not information, it is a bug waiting to be discovered during a stock count.
 History and repeat detection
+
+![Repeat_detection](/img/docs/ticket_history.png)
+
 Ticket History
 The historical archive of all closed interventions.
 Closed tickets move to _rpt/history.php — searchable and filterable, and the input to the "top repeat offenders" ranking on the KPI dashboard. A machine appearing there repeatedly is the system telling you that fixing the symptom is not working and the PM interval or the root cause needs attention.
 
 Nothing is deleted. Tickets are archived rather than removed, so a machine's full fault history remains available for as long as you keep the database.
 
-Workflows
-13Work Orders & PM
+13.
+Work Orders & PM
+
 A ticket is reactive — something broke. A work order is planned: a job scheduled in advance, usually preventive maintenance, sometimes an improvement or an inspection. Both consume time and parts, and both feed the same metrics.
 
 Work order states
+
+![States](/img/docs/pm_modal.png)
+
 Work order details
 Viewing a work order in progress.
 Status	Means
@@ -541,6 +578,9 @@ If a checklist's tasks total 120 minutes and someone marks the whole thing compl
 Where enabled, technicians can attach photos to individual checklist tasks — useful for "show me the state of the belt before you changed it" evidence.
 
 The calendar
+
+![Calendar](/img/docs/pm_calendar.png)
+
 PM Calendar
 The Preventive Maintenance calendar overview.
 _maint/pm_calendar.php shows the month with each work order colour-coded by urgency. On handheld screens it becomes an agenda list rather than a grid.
@@ -555,11 +595,16 @@ Marker	Meaning
 ❌	Cancelled or Missed
 Two completion rates are shown beneath the grid: annual and current-month, each the proportion of scheduled work actually completed. The month figure is the one to watch — the annual number is slow to move and slow to warn you.
 
-Workflows
-14Assets & Labels
+
+14.
+Assets & Labels
+
 Everything else in WCC points at a machine. If the asset register is wrong, the fault history, the PM schedule and the reliability numbers are all wrong with it — so this is the part worth getting right before you load anything else.
 
 The asset register
+
+![Register](/img/docs/asset_list.png)
+
 Asset Register
 The master equipment list.
 _eam/setup_vault_equipment.php is the master list. Each record carries far more than a name, because the questions asked of a CMMS six months in are rarely "what is it called":
@@ -574,6 +619,9 @@ Placement	workshop, line, station	Where is it, and what stops when it does?
 Criticality is the field that earns its keep. A is "the line stops", B is "we work around it", C is "we notice eventually". It drives prioritisation everywhere and is worth setting honestly — if everything is A, nothing is.
 
 Workshops, lines and stations
+
+![Workshops](/img/docs/asset_detail.png)
+
 Asset Details
 Detailed view of an asset showing its position in the hierarchy.
 Workshop  ──►  Production Line  ──►  Equipment
@@ -608,8 +656,10 @@ Selection is per-asset or in batch with select-all, so commissioning a new line 
 
 Scanning is the companion app's job
 WCC's web interface can print labels but cannot read them. Browsers refuse camera access without HTTPS, and shop-floor intranets typically have none — so scanning lives in the separate Android companion app, which talks to the same REST API. This is a constraint of the environment, not a gap in the product.
-Workflows
-15Inventory
+
+15.
+Inventory
+
 Inventory in a CMMS exists to answer one question at 3am: do we have the part? Everything else — valuation, reorder points, consumption analysis — is downstream of keeping that answer true.
 
 The status column — read the whole store at a glance
@@ -630,7 +680,11 @@ The badges are live: they read current stock and purchase-order data on every lo
 
 Tuning it
 The amber "approaching" band (how far above minimum still warns) and each part's lifecycle (Active / Phasing Out / Obsolete) are set together in Admin Panel → Inventory Health. The band is a single percentage; lifecycle is per-part.
+
 The parts master
+
+![Parts_master](/img/docs/inventory_ledger.png)
+
 Parts Master
 The inventory catalogue and stock levels.
 _logi/inventory.php holds the catalogue. The fields that do real work:
@@ -645,7 +699,11 @@ primary_vendor_id	Who to buy it from. Without one, WCC can warn but cannot order
 standard_lead_time / expedited_lead_time	Days to delivery — the difference between "reorder now" and "reorder yesterday".
 aisle / rack / shelf / bin_code	Where it physically is. A part nobody can find is out of stock.
 lifecycle_status	Active, Phasing Out or Obsolete — so you learn about a discontinued part before you need it.
+
 The ledger is the truth
+
+![Inv](/img/docs/inventory_modal.png)
+
 Inventory Details
 Detailed view of an inventory item and its logistics.
 stock_level is a running total. inventory_ledger is the record of how it got there — an immutable row per movement, carrying the signed quantity, the reason, and a reference back to whatever caused it.
@@ -683,11 +741,16 @@ A part with no vendor cannot be ordered
 If primary_vendor_id is empty, WCC notifies the people holding manage_inventory that stock is low and stops there. It will not invent a supplier. This is the "nothing silently guesses" rule in practice — and the reason to check that critical spares actually have a vendor set.
 A manual Run reorder check button on the inventory page sweeps every part using the same helper, for use after a stock count or an import.
 
-Workflows
-16Procurement
+
+16.
+Procurement
+
 Procurement is where a maintenance system touches money, which is why it is the part most likely to be audited. WCC models the whole path — request, approval, fulfilment, receipt, budget — with the authorising and receiving roles deliberately separated.
 
 The nine stages
+
+![9_stages](/img/docs/po_list.png)
+
 Purchase Orders List
 The main Purchase Orders ledger overview.
 Draft → Pending Approval → Issued → Shipped → In Transit
@@ -717,6 +780,9 @@ Auto-approvals write a log entry explaining why they were approved without a hum
 Emergency bypass
 Orders can be flagged as emergency, recorded in is_emergency_bypass. The flag does not remove the approval requirement — it marks the order so that expedited purchases are visible afterwards rather than invisible.
 Storekeeper fulfilment
+
+![Storekepp_fulf](/img/docs/po_details.png)
+
 PO Tracking Details
 Tracking a partially received Purchase Order and its line items.
 Once an order is Issued, it belongs to whoever holds fulfill_purchase_orders — the Storekeeper role. They move it through shipping, transit and receipt.
@@ -733,8 +799,10 @@ Budget is consumed when the order reaches Fully Received, not when it is approve
 
 Two document types attach to an order: a generated requisition PDF, and an uploaded supplier invoice — both stored in po_documents, so the paperwork sits with the order rather than in somebody's mailbox.
 
-Workflows
-17Notifications
+
+17.
+Notifications
+
 Notifications exist so that work waiting on somebody actually reaches them. The design is deliberately unambitious — no websockets, no push service, no live polling — because a maintenance system's alerts need to be reliable, not instant.
 
 How notifications work
@@ -779,11 +847,16 @@ Safe to run twice
 Sent buckets are recorded in the notification's own type field (skill_exp:<id>:<bucket>), so re-running the job — after downtime, or twice by accident — sends nothing extra. A reminder system that spams on retry gets muted, and a muted alert is worse than none.
 Once a certification has actually lapsed, the holder's managers are told as well. Someone working without a valid LOTO authorisation is not only their own problem.
 
-Features in Depth
-18Working with Tables
+
+18.
+Working with Tables
+
 Most of WCC is tables — tickets, work orders, parts, orders, users, ledger entries. They all share the same interaction model, so learning it once applies everywhere. This chapter covers the parts that are not obvious from looking at them, particularly the filter tokens, which are the single most useful feature most users never discover.
 
 Drag-to-filter tokens
+
+![search](/img/docs/ticket_history.png)
+
 Drag-to-filter
 A filtered table view showing active search tokens and expanded rows.
 The search box above a table is draggable. Drag it onto a column header and it becomes a filter scoped to that column.
@@ -835,8 +908,10 @@ Export CSV from User Management, for the current directory.
 Print / PDF on the KPI dashboard, using a print stylesheet that drops the sidebar and page chrome and keeps the figures.
 Exports contain what the query returned, not what is on screen — so a filtered view and an export can differ. Set the date range you want before exporting.
 
-Features in Depth
-19The Admin Panel
+
+19.
+The Admin Panel
+
 _mgmt/admin_panel.php is the hub for everything administrative. Rather than burying configuration in a settings tree, it presents thirteen tiles — some open a configurator in place, some navigate to a full management page.
 
 The tile board
@@ -875,8 +950,10 @@ Two further administrative pages are reached from the sidebar rather than a tile
 
 A tile is not a permission
 Tiles are filtered by permission, but the protection is the require_perm() call on the destination page — not the absence of a tile. Someone who knows the URL reaches the same gate. Never treat "they cannot see the tile" as access control.
-Features in Depth
-20Skills & Proficiencies
+
+20.
+Skills & Proficiencies
+
 WCC tracks competence two ways, and they are frequently confused because they sit side by side in the same column. Understanding that they are separate systems is the whole chapter.
 
 Two separate systems
@@ -910,6 +987,9 @@ A chip shows the tier medal, the category icon, the proficiency name, the catego
 Proficiencies appear in four places, rendered identically: your own profile, the Users Directory detail panel, the User Management detail panel, and the 🏆 badge popover.
 
 The Skill Configurator
+
+![skill_cinfig](/img/docs/skills_config.png)
+
 Skills Configurator
 Mapping equipment categories to gamified proficiencies.
 Reached from User Management, the configurator maps an equipment category to a proficiency name and an icon — for example Machining → ⚙️ Machining Specialist.
@@ -934,8 +1014,10 @@ Warnings are also pushed as notifications at 30, 20, 10, 5 and 3 days, and again
 
 Renewing a certification
 To renew, add the certification again with the new expiry date and remove the old entry — a quick two-step that also leaves the lapsed one visible until you clear it.
-Features in Depth
-21Equipment in Depth
+
+21.
+Equipment in Depth
+
 Assets & Labels covers what an equipment record holds. This chapter covers the four things attached to it that make the register operationally useful rather than merely a list.
 
 Bill of materials
@@ -982,8 +1064,10 @@ Select machines individually or with select-all, then print as a batch — commi
 
 Codes are generated locally
 Both symbologies render on your own hardware — a vendored barcode library in the browser, or native ZPL commands on the Zebra. Nothing is sent to an external service to produce a label, which is what makes this work on an isolated plant network.
-Features in Depth
-22Configurators
+
+22.
+Configurators
+
 WCC has no single settings tree. Configuration lives next to the feature it configures, gated by that feature's permission — so the people who own a process own its rules, rather than everything funnelling through a general administrator. This chapter is the index of where each configurator actually lives.
 
 The placement rule
@@ -1037,11 +1121,16 @@ Label & Printer Setup	Equipment Vault	Equipment in Depth
 PM Configurator · PM Checklists	Admin Panel	Work Orders & PM
 Production Lines	Admin Panel	Assets & Labels
 Department budgets	Department Management	Procurement
-Features in Depth
-23Self-Service
+
+23.
+Self-Service
+
 my_profile.php is reachable by every logged-in user regardless of role — it carries no permission gate, deliberately, because everyone owns their own account. It is also the one screen a technician is likely to open by choice rather than because a job sent them there.
 
 Your performance dashboard
+
+![perf_dashb](/img/docs/self_service.png)
+
 Self-Service Dashboard
 Your personal performance stats and recent activity.
 Figure	Counts
@@ -1080,11 +1169,16 @@ My Profile → Visual Preferences. The setting is stored per browser (localStora
 It also disables itself when the tab is hidden, honours prefers-reduced-motion, and never appears on hardware without WebGL.
 Personal timeout only shortens
 You can set a stricter idle timeout than the plant default, not a longer one. If your administrator sets 30 minutes, you cannot give yourself four hours — the shared-terminal risk is the reason the global setting exists.
-Analysis
-24KPIs & Reporting
+
+24.
+KPIs & Reporting
+
 The KPI dashboard (_rpt/statistics.php) is where recorded work becomes an argument for budget. Nothing on it is entered by hand — every figure is derived from tickets and their action records.
 
 What each KPI means
+
+![kpi](/img/docs/kpi_dashboard.png)
+
 KPI Dashboard
 The main KPI tracking dashboard and trend charts.
 Metric	Question it answers	Direction
@@ -1145,11 +1239,16 @@ MTTR is the elapsed repair window — response-to-resolution once work starts. T
 Ghost Time includes On Hold. When a ticket is explicitly paused (usually awaiting a part), that wait is a named slice of Ghost — so "we were slow" and "we were blocked waiting for stores" are never confused.
 MTBF is measured against scheduled operating time, not the calendar — a machine is not "failing" while the plant is closed. A period with no failures shows a gap rather than a value, since there is no interval between failures to average.
 Availability is fleet-wide by default — every machine, including the ones that never failed — with a one-click toggle to the focused "failed assets only" view. Plant MTBF is likewise rolled up across the whole fleet.
-Operations
-25Data Administration
+
+25.
+Data Administration
+
 Admin Panel → Data Administration holds the three operations that can destroy an installation: backup, restore and flush. It is gated by manage_settings, every action requires a CSRF token, and every action is written to the audit log.
 
 Backup
+
+![backup](/img/docs/data_admin.png)
+
 Data Administration
 The Data Administration center for backups, restores, and flushes.
 A full mysqldump of the entire database — schema, data, routines and events — written to backups/ with a timestamped filename. You can download it or keep it on the server.
@@ -1180,8 +1279,10 @@ CSRF + permission on every POST	Cross-site triggering and unauthorised use.
 Audit entry per action	Silent destruction. data.backup, data.restore, data.flush.
 Reserved for trusted operators on public installs
 Backup, restore and flush are powerful by nature and are gated on manage_settings. For a public-facing installation, WCC's configuration flag can switch these operations off entirely, so a public demo can offer the full application while keeping the destructive tools out of reach. Restrict them to accounts you fully control, or disable them — your choice per deployment.
-Operations
-26Demo Data
+
+26.
+Demo Data
+
 An empty CMMS demonstrates nothing. Every screen shows "no records", the KPI dashboard is blank, and there is no way to tell a working system from a broken one. WCC ships a seeder that builds a complete, believable plant with nine months of operating history.
 
 The seeder
@@ -1216,8 +1317,10 @@ For a permanently public demo, run the seeder nightly from cron. Each run resets
 
 Demo accounts share one password
 All eleven use Demo2026!. That is a demonstration convenience and nothing else — never leave those accounts on a system holding real plant data.
-Operations
-27REST API v1
+
+27.
+REST API v1
+
 The REST API exists so machines and other applications can use WCC — the Android companion app is its main consumer. It enforces the same permission model as the web interface, against the same data.
 
 Authentication
@@ -1279,8 +1382,10 @@ People fields hold names
 tech_name, pic and announced_by carry a person's name rather than a numeric ID, so records read naturally. When filtering by person on the server, wcc_tech_aliases() from inc/techident.php resolves every spelling a person's work may be filed under, so results are always complete.
 The /me response includes both role (formatted, e.g. "L4 — Admin") and role_name (bare, e.g. "Admin"), both derived live from role_definitions. Since roles are editable, read the role from these fields rather than mapping level numbers to names in your client.
 
-Operations
-28Deployment
+
+28.
+Deployment
+
 WCC deploys as files plus a database. This chapter covers the two situations that actually occur — a machine inside the plant, and a server anyone on the internet can reach — because they need very different decisions.
 
 Local deployment
@@ -1323,8 +1428,10 @@ On Windows use Task Scheduler with the full PHP path (C:\xampp\php\php.exe) and 
 
 Test a restore before you need one
 An untested backup is a hope. At least once, restore a dump into a scratch database and sign in. That is the only thing that proves the file is complete — and it is how the 15-table-versus-40-table gap described in Data Administration would have been caught years earlier.
-Operations
-29Troubleshooting
+
+29.
+Troubleshooting
+
 Symptoms that have actually occurred, with the cause and the fix. Most were diagnosed the slow way at least once, which is why they are written down.
 
 Common issues
@@ -1370,8 +1477,10 @@ Per user, in My Profile → Visual Preferences. The setting is stored per browse
 Can I delete old tickets?
 You can, via Data Administration, but consider not to. Ticket history is what makes MTBF, repeat-offender analysis and machine lifetime cost possible. Archive the database instead.
 
-Operations
-30AI Agent Handoff
+
+30.
+AI Agent Handoff
+
 WCC is designed to be handed to an AI AGENT. A context layer at the project root lets any AI AGENT acquire the same understanding of the codebase in one read, rather than rediscovering it file by file and guessing at the conventions in between.
 
 This matters beyond novelty. Agents that infer conventions from whatever file they happen to open will invent a second way of doing everything. The context layer exists to make the project's actual decisions explicit and unmissable.
