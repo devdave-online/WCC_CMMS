@@ -47,10 +47,10 @@ Built for the people who actually keep the lines running.
 
 ## Quick Start
 
-1. Clone the repository
-2. Point your web server to the project
-3. Import the database
-4. Open the app and log in
+1. Clone or download the repository
+2. Point your web server to the project or configure it on XAMPP
+3. Import the database ( create workshop_db -> import workshop_db.sql )
+4. Open the app and log in ( admin/password )
 5. Change the default password
 
 **Requirements:**
@@ -104,7 +104,10 @@ See the [LICENSE](LICENSE) file for full details.
 ## Support the Project
 
 WCC is free and will stay free.  
-If it helps your plant and you want to support continued development, you can buy me a coffee.
+
+If it helps your plant, you can support continued development here:  
+→ [Buy me a coffee on Ko-fi](https://ko-fi.com/cszd)  
+→ [Revolut](https://revolut.me/cszd)
 
 ---
 
