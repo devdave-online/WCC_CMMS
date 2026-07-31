@@ -221,6 +221,17 @@ require_once __DIR__ . '/inc/head.php';
         margin: 0 auto 14px;
         box-shadow: 0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);
     }
+    .login-docs-link {
+        text-align: center;
+        margin: 18px 0 0;
+        font-size: 0.95em;
+    }
+    .login-docs-link a {
+        color: var(--text-accent);
+        font-weight: 700;
+        text-decoration: none;
+    }
+    .login-docs-link a:hover { text-decoration: underline; }
 </style>
 
 <button type="button" id="loginThemeToggle" onclick="toggleTheme()" aria-label="<?= __e('login.switch_theme') ?>" title="<?= __e('nav.switch_theme') ?>">
@@ -259,6 +270,9 @@ require_once __DIR__ . '/inc/head.php';
         </div>
         <button type="submit" class="btn btn-primary btn-block" style="font-size:1.05em; padding:12px;"><?= __e('btn.login') ?></button>
     </form>
+    <p class="login-docs-link">
+        <a href="/docs.php"><?= __e('login.open_docs') ?></a>
+    </p>
 </div>
 
 <script>

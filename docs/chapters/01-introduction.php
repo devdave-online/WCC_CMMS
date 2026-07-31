@@ -88,6 +88,22 @@
 </ul>
 
 <div class="docs-note">
+    <span class="t">📱 Get the Android companion</span>
+    The companion handles QR/DataMatrix scanning, works fully offline, and syncs when it
+    reconnects — built for shop floors with no reliable network.
+    <p style="margin:12px 0 0;">
+        <a href="/COMPANION_APP_APK+PROJECT/WCC-Companion-OB1.0.0.apk" download
+           style="display:inline-block;padding:9px 18px;background:var(--text-accent);color:#0f172a;
+                  border-radius:8px;font-weight:700;text-decoration:none;">
+            ⬇ Download the APK (OB1.0.0)
+        </a>
+        <span style="margin-left:10px;font-size:.88em;color:var(--text-secondary);">
+            Android 8+ · sideload · source in the repository
+        </span>
+    </p>
+</div>
+
+<div class="docs-note">
     <span class="t">The licence, in plain terms</span>
     Apache 2.0 with the Commons Clause. Use it, modify it, and run it for your own operations
     indefinitely — including commercially. The single restriction: you may not sell the

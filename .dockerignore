@@ -12,3 +12,13 @@ docker/          # DB snapshot is mounted into the DB container, never web-serve
 Dockerfile
 docker-compose.yml
 DOCKER.md
+
+# Repo extras that must never ship inside the container:
+# the Android companion project (90 MB), a raw DB dump, and a code archive.
+IMPOT_TO_DB/
+base_bak/
+
+# Companion app: ship the APK so the demo can offer it for download,
+# but leave the Android sources, build artefacts and the duplicate archive out.
+COMPANION_APP_APK+PROJECT/PROJECT/
+COMPANION_APP_APK+PROJECT/*.rar

@@ -59,6 +59,15 @@ require_once __DIR__ . '/inc/head.php';
         font-size: 1.15em; font-weight: 800; color: var(--text-accent);
         margin-bottom: 4px; text-decoration: none;
     }
+    .docs-home-link {
+        display: inline-block;
+        font-size: var(--fs-xs);
+        color: var(--text-muted);
+        text-decoration: none;
+        margin: 0 0 var(--space-3);
+        font-weight: 600;
+    }
+    .docs-home-link:hover { color: var(--text-accent); }
     .docs-version { font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: var(--space-4); }
 
     .docs-search {
@@ -194,7 +203,8 @@ require_once __DIR__ . '/inc/head.php';
 
     <!-- ── Sidebar ─────────────────────────────────────────────────── -->
     <nav class="docs-nav" aria-label="Documentation contents">
-        <a href="/index.php" class="docs-brand"><img src="/img/wcc-orb.png" alt="" class="wcc-docs-mark" width="22" height="22" decoding="async"> WCC Manual</a>
+        <a href="/docs.php" class="docs-brand"><img src="/img/wcc-orb.png" alt="" class="wcc-docs-mark" width="22" height="22" decoding="async"> WCC Manual</a>
+        <a href="/login.php" class="docs-home-link">← <?= __e('docs.back_to_login') ?></a>
         <div class="docs-version">
             Version <?= htmlspecialchars(json_decode(@file_get_contents(__DIR__ . '/version.json'), true)['version'] ?? '1.00') ?>
             · <?= count($flat) ?> chapters

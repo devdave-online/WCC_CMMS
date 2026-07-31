@@ -94,3 +94,14 @@ local.properties
 *.swo
 *~
 .cache/
+
+# ========================
+# Never commit (added after audit)
+# ========================
+# Raw database dumps contain password hashes — keep them off a public repo.
+/archive/**/backups/
+/IMPOT_TO_DB/
+/base_bak/
+*.rar
+# ...but the shipped companion APK is deliberately tracked (git add -f).
+!COMPANION_APP_APK+PROJECT/WCC-Companion-OB1.0.0.apk
