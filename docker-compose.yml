@@ -37,6 +37,10 @@ services:
       # database, delete records, or take over accounts. Delete this line (or set it
       # to 0) when running your own instance — every feature unlocks.
       WCC_DEMO_MODE: "1"
+      # Only addresses listed here may set X-Forwarded-For/Proto. This is the
+      # Docker bridge range, i.e. the Caddy container in front of us. Without it
+      # every visitor would share one apparent IP and throttle each other.
+      WCC_TRUSTED_PROXIES: "172.16.0.0/12,127.0.0.1"
     ports:
       - "8080:80"
     depends_on:
@@ -44,5 +48,32 @@ services:
         condition: service_healthy   # app waits until the demo has finished loading
     restart: unless-stopped
 
+  # ---------------------------------------------------------------------------
+  # HTTPS front door — OPT-IN, only starts with:  docker compose --profile public up -d
+  #
+  # Plain `docker compose up` (the local/self-host case) leaves this out entirely,
+  # so nobody trying WCC on their laptop waits on certificate issuance.
+  #
+  # Requires ports 80 and 443 open to the internet, and WCC_PUBLIC_HOST to be a
+  # hostname that resolves to this machine.
+  # ---------------------------------------------------------------------------
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["public"]
+    environment:
+      WCC_PUBLIC_HOST: ${WCC_PUBLIC_HOST:-141.147.117.183.nip.io}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # certificates live here — MUST persist or every
+      - caddy_config:/config   # restart re-requests and burns Let's Encrypt quota
+    depends_on:
+      - app
+    restart: unless-stopped
+
 volumes:
   wcc_db_data:
+  caddy_data:
+  caddy_config:

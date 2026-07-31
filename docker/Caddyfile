@@ -1,0 +1,36 @@
+# WCC CMMS — public demo reverse proxy.
+#
+# Caddy terminates TLS and forwards to the app container. It obtains and renews a
+# real Let's Encrypt certificate automatically over HTTP-01, so ports 80 AND 443
+# must be reachable from the internet.
+#
+# The hostname comes from WCC_PUBLIC_HOST (set in docker-compose.yml). Any name
+# that resolves to this server works — a domain you own, or an nip.io/sslip.io
+# wildcard host such as 141.147.117.183.nip.io when you have no domain.
+#
+# Caddy redirects http:// to https:// on its own; no extra rule needed.
+
+{$WCC_PUBLIC_HOST} {
+	encode zstd gzip
+
+	# Real client address + scheme for the app: inc/ratelimit.php honours
+	# X-Forwarded-For only from WCC_TRUSTED_PROXIES, and inc/session.php reads
+	# X-Forwarded-Proto to decide the Secure cookie flag.
+	reverse_proxy app:80 {
+		header_up X-Real-IP {remote_host}
+	}
+
+	# Sensible hardening headers for a public showcase.
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options    "nosniff"
+		X-Frame-Options           "SAMEORIGIN"
+		Referrer-Policy           "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

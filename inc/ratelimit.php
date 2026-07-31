@@ -11,10 +11,54 @@
 
 require_once __DIR__ . '/db.php';
 
-/** Best-effort client IP. Proxy headers are deliberately ignored (trivially spoofed). */
+/**
+ * Is $ip inside $cidr ("10.0.0.0/8", or a bare address)? IPv4 only — enough for
+ * naming a container network or a loopback proxy.
+ */
+function wcc_ip_in_cidr(string $ip, string $cidr): bool
+{
+    $cidr = trim($cidr);
+    if ($cidr === '') return false;
+    if (!str_contains($cidr, '/')) return $ip === $cidr;
+
+    [$net, $bits] = explode('/', $cidr, 2);
+    $ipL  = ip2long($ip);
+    $netL = ip2long($net);
+    $bits = (int)$bits;
+    if ($ipL === false || $netL === false || $bits < 0 || $bits > 32) return false;
+
+    $mask = $bits === 0 ? 0 : (-1 << (32 - $bits)) & 0xFFFFFFFF;
+    return (($ipL & $mask) === ($netL & $mask));
+}
+
+/**
+ * Best-effort client IP.
+ *
+ * X-Forwarded-For is trivially spoofed, so it is honoured ONLY when the request
+ * actually arrives from a proxy we operate — listed in WCC_TRUSTED_PROXIES
+ * (comma-separated IPs/CIDRs; docker-compose sets it when Caddy fronts the app).
+ * With the variable unset — the normal LAN install — behaviour is unchanged and
+ * the header is ignored completely.
+ *
+ * This matters: behind a reverse proxy every visitor shares the proxy's address,
+ * so without it one person failing a login would throttle everybody.
+ */
 function wcc_client_ip(): string
 {
-    return substr((string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'), 0, 45);
+    $remote = (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+
+    $trusted = getenv('WCC_TRUSTED_PROXIES');
+    if ($trusted !== false && $trusted !== '') {
+        foreach (explode(',', $trusted) as $range) {
+            if (!wcc_ip_in_cidr($remote, $range)) continue;
+            $fwd = (string)($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '');
+            if ($fwd === '') break;
+            $client = trim(explode(',', $fwd)[0]);          // left-most = original client
+            if (filter_var($client, FILTER_VALIDATE_IP)) return substr($client, 0, 45);
+            break;
+        }
+    }
+    return substr($remote, 0, 45);
 }
 
 /**

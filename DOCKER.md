@@ -39,6 +39,41 @@ docker compose down        # stop (keeps the database)
 docker compose down -v     # stop and wipe the DB — next 'up' reloads a fresh demo
 ```
 
+## Publishing it with HTTPS (optional)
+
+To expose the demo on the internet with a real certificate, start the extra
+`caddy` service. It obtains and renews a free Let's Encrypt certificate on its
+own — no manual certificate handling.
+
+```bash
+# hostname must resolve to this machine; with no domain, use a wildcard-DNS host
+export WCC_PUBLIC_HOST=demo.example.com          # or 203.0.113.10.nip.io
+docker compose --profile public up -d --build
+```
+
+Requirements:
+
+- **Ports 80 and 443 reachable from the internet.** Port 80 is used for the
+  ACME HTTP-01 challenge; without it no certificate can be issued.
+- **`WCC_PUBLIC_HOST` must resolve to this server.** Any real hostname works.
+  With no domain, `<your-ip>.nip.io` resolves to that IP and is perfectly valid
+  for a certificate.
+
+Caddy redirects `http://` to `https://` automatically. Certificates are stored in
+the `caddy_data` volume — keep it, or every restart re-requests one and burns
+Let's Encrypt quota.
+
+`docker compose up -d` **without** `--profile public` runs the plain local stack
+with no certificate machinery, which is what you want on a laptop or a LAN.
+
+### Behind a proxy
+
+`WCC_TRUSTED_PROXIES` (already set in `docker-compose.yml`) lists the addresses
+allowed to set `X-Forwarded-For`/`X-Forwarded-Proto`. Only requests coming from
+those addresses have the headers honoured, so the login throttle sees each real
+visitor instead of lumping everyone behind the proxy's single address. Leave it
+unset on a direct LAN install and the headers are ignored entirely.
+
 ## Notes
 
 - The app reads its DB settings from environment variables (`WCC_DB_*`), set in
