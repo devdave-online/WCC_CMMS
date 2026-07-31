@@ -1,0 +1,2590 @@
+CREATE DATABASE IF NOT EXISTS `workshop_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `workshop_db`;
+-- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
+--
+-- Host: 127.0.0.1    Database: wcc_demo_build
+-- ------------------------------------------------------
+-- Server version	10.4.32-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `active_tickets`
+--
+
+DROP TABLE IF EXISTS `active_tickets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `active_tickets` (
+  `ticket_id` varchar(50) NOT NULL,
+  `equip_id` int(11) NOT NULL,
+  `report_date` date DEFAULT NULL,
+  `report_time` time DEFAULT NULL,
+  `announced_by` varchar(100) DEFAULT NULL,
+  `pic` varchar(100) DEFAULT NULL,
+  `fault_desc` text DEFAULT NULL,
+  `priority` varchar(50) DEFAULT 'normal',
+  `status` varchar(50) DEFAULT 'OPEN',
+  `closed_by` varchar(100) DEFAULT 'Unknown',
+  `closed_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `event_class` varchar(32) NOT NULL DEFAULT 'failure' COMMENT 'Reliability event class (failure|induced|inspection|no_fault|setup|request); see inc/kpi.php',
+  PRIMARY KEY (`ticket_id`),
+  KEY `equip_id` (`equip_id`),
+  KEY `idx_deleted_at` (`deleted_at`),
+  CONSTRAINT `active_tickets_ibfk_1` FOREIGN KEY (`equip_id`) REFERENCES `equipment` (`equip_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `active_tickets`
+--
+
+LOCK TABLES `active_tickets` WRITE;
+/*!40000 ALTER TABLE `active_tickets` DISABLE KEYS */;
+INSERT INTO `active_tickets` VALUES ('TK-251103-068',1,'2025-11-03','08:38:07','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','normal','CLOSED','Taro Yamamoto',NULL,'2025-11-03 06:38:07',NULL,'failure'),('TK-251105-008',9,'2025-11-05','20:01:32','Marc Dubois','Jide Okafor','Laser cutter head crash on nest start','critical','PENDING',NULL,NULL,'2025-11-05 18:01:32',NULL,'failure'),('TK-251106-283',24,'2025-11-06','11:55:05','Elise Moreau','Katerina Novak','Crane hoist limit switch intermittent','high','CLOSED','Katerina Novak',NULL,'2025-11-06 09:55:05',NULL,'failure'),('TK-251106-311',2,'2025-11-06','17:44:21','Elise Moreau','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2025-11-06 15:44:21',NULL,'failure'),('TK-251107-085',24,'2025-11-07','07:29:15','Rui Silva','Sara Lindqvist','Crane hoist limit switch intermittent','low','CLOSED','Sara Lindqvist',NULL,'2025-11-07 05:29:15',NULL,'failure'),('TK-251107-288',1,'2025-11-07','12:26:06','Elise Moreau','Taro Yamamoto','Coolant pressure low, tool wear increasing','critical','CLOSED','Taro Yamamoto',NULL,'2025-11-07 10:26:06',NULL,'failure'),('TK-251111-205',7,'2025-11-11','07:41:53','Marc Dubois','Jide Okafor','Weld quality NOK, porosity in seam','low','CLOSED','Jide Okafor',NULL,'2025-11-11 05:41:53',NULL,'failure'),('TK-251112-069',4,'2025-11-12','17:07:09','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','critical','CLOSED','Taro Yamamoto',NULL,'2025-11-12 15:07:09',NULL,'failure'),('TK-251112-225',15,'2025-11-12','21:58:35','Marc Dubois','Sara Lindqvist','Conveyor belt tracking off to one side','low','CLOSED','Sara Lindqvist',NULL,'2025-11-12 19:58:35',NULL,'failure'),('TK-251113-107',24,'2025-11-13','10:19:59','Elise Moreau','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2025-11-13 08:19:59',NULL,'failure'),('TK-251113-206',9,'2025-11-13','10:20:21','Elise Moreau','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2025-11-13 08:20:21',NULL,'failure'),('TK-251114-095',9,'2025-11-14','14:35:07','Rui Silva','Sara Lindqvist','Weld quality NOK, porosity in seam','high','CLOSED','Sara Lindqvist',NULL,'2025-11-14 12:35:07',NULL,'failure'),('TK-251118-239',24,'2025-11-18','21:44:04','Elise Moreau','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2025-11-18 19:44:04',NULL,'failure'),('TK-251119-154',5,'2025-11-19','17:15:38','Elise Moreau','Jide Okafor','Guard door interlock will not reset','critical','CLOSED','Jide Okafor',NULL,'2025-11-19 15:15:38',NULL,'failure'),('TK-251119-322',18,'2025-11-19','15:27:08','Rui Silva','Taro Yamamoto','Thermoformer seal temperature unstable','high','CLOSED','Taro Yamamoto',NULL,'2025-11-19 13:27:08',NULL,'failure'),('TK-251121-014',19,'2025-11-21','08:58:11','Elise Moreau','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2025-11-21 06:58:11',NULL,'failure'),('TK-251121-081',20,'2025-11-21','07:31:06','Elise Moreau','Taro Yamamoto','Coder printing faint, missing characters','critical','CLOSED','Taro Yamamoto',NULL,'2025-11-21 05:31:06',NULL,'failure'),('TK-251123-406',13,'2025-11-23','10:26:11','Elise Moreau','Katerina Novak','Leak test bench failing good parts','normal','CLOSED','Katerina Novak',NULL,'2025-11-23 08:26:11',NULL,'failure'),('TK-251125-187',16,'2025-11-25','12:48:27','Elise Moreau','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2025-11-25 10:48:27',NULL,'failure'),('TK-251126-321',17,'2025-11-26','14:04:19','Marc Dubois','Katerina Novak','Vision rig rejecting at 12 percent','low','CLOSED','Katerina Novak',NULL,'2025-11-26 12:04:19',NULL,'failure'),('TK-251126-368',19,'2025-11-26','16:03:00','Rui Silva','Sara Lindqvist','Palletiser stops, pattern incomplete','low','CLOSED','Sara Lindqvist',NULL,'2025-11-26 14:03:00',NULL,'failure'),('TK-251126-371',24,'2025-11-26','13:54:37','Elise Moreau','Taro Yamamoto','Crane hoist limit switch intermittent','normal','CLOSED','Taro Yamamoto',NULL,'2025-11-26 11:54:37',NULL,'failure'),('TK-251127-031',7,'2025-11-27','12:57:51','Elise Moreau','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2025-11-27 10:57:51',NULL,'failure'),('TK-251128-180',1,'2025-11-28','13:10:50','Marc Dubois','Taro Yamamoto','Tool changer stalls mid-swap','high','CLOSED','Taro Yamamoto',NULL,'2025-11-28 11:10:50',NULL,'failure'),('TK-251129-177',4,'2025-11-29','11:29:57','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2025-11-29 09:29:57',NULL,'failure'),('TK-251130-200',1,'2025-11-30','16:08:42','Rui Silva','Katerina Novak','Coolant pressure low, tool wear increasing','normal','CLOSED','Katerina Novak',NULL,'2025-11-30 14:08:42',NULL,'failure'),('TK-251130-326',22,'2025-11-30','13:25:09','Priya Nair','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2025-11-30 11:25:09',NULL,'failure'),('TK-251130-414',23,'2025-11-30','06:49:59','Rui Silva','Taro Yamamoto','Chiller low delta-T, machines running warm','critical','CLOSED','Taro Yamamoto',NULL,'2025-11-30 04:49:59',NULL,'failure'),('TK-251201-021',6,'2025-12-01','16:30:56','Rui Silva','Jide Okafor','Hydraulic power pack noisy, foaming oil','low','CLOSED','Jide Okafor',NULL,'2025-12-01 14:30:56',NULL,'failure'),('TK-251201-140',9,'2025-12-01','10:07:20','Elise Moreau','Jide Okafor','Laser cutter head crash on nest start','low','CLOSED','Jide Okafor',NULL,'2025-12-01 08:07:20',NULL,'failure'),('TK-251201-160',8,'2025-12-01','11:48:19','Priya Nair','Jide Okafor','Robot in fault, brake release error','high','CLOSED','Jide Okafor',NULL,'2025-12-01 09:48:19',NULL,'failure'),('TK-251202-338',9,'2025-12-02','13:18:39','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','low','CLOSED','Jide Okafor',NULL,'2025-12-02 11:18:39',NULL,'failure'),('TK-251203-190',18,'2025-12-03','15:18:20','Priya Nair','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2025-12-03 13:18:20',NULL,'failure'),('TK-251203-216',23,'2025-12-03','18:04:36','Elise Moreau','Taro Yamamoto','Chiller low delta-T, machines running warm','critical','CLOSED','Taro Yamamoto',NULL,'2025-12-03 16:04:36',NULL,'failure'),('TK-251205-053',9,'2025-12-05','16:49:52','Elise Moreau','Jide Okafor','Press brake not holding pressure','high','CLOSED','Jide Okafor',NULL,'2025-12-05 14:49:52',NULL,'failure'),('TK-251205-188',12,'2025-12-05','08:59:06','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2025-12-05 06:59:06',NULL,'failure'),('TK-251213-043',6,'2025-12-13','14:13:06','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','critical','CLOSED','Jide Okafor',NULL,'2025-12-13 12:13:06',NULL,'failure'),('TK-251213-189',17,'2025-12-13','14:27:39','Elise Moreau','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2025-12-13 12:27:39',NULL,'failure'),('TK-251213-385',16,'2025-12-13','07:17:27','Marc Dubois','Katerina Novak','Nutrunner torque out of window','high','CLOSED','Katerina Novak',NULL,'2025-12-13 05:17:27',NULL,'failure'),('TK-251214-388',18,'2025-12-14','06:14:16','Marc Dubois','Sara Lindqvist','Thermoformer seal temperature unstable','low','CLOSED','Sara Lindqvist',NULL,'2025-12-14 04:14:16',NULL,'failure'),('TK-251216-090',3,'2025-12-16','11:58:13','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','critical','CLOSED','Taro Yamamoto',NULL,'2025-12-16 09:58:13',NULL,'failure'),('TK-251216-278',19,'2025-12-16','18:10:44','Priya Nair','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2025-12-16 16:10:44',NULL,'failure'),('TK-251216-330',5,'2025-12-16','15:52:49','Elise Moreau','Katerina Novak','Guard door interlock will not reset','critical','CLOSED','Katerina Novak',NULL,'2025-12-16 13:52:49',NULL,'failure'),('TK-251217-099',16,'2025-12-17','13:54:51','Priya Nair','Katerina Novak','Nutrunner torque out of window','low','CLOSED','Katerina Novak',NULL,'2025-12-17 11:54:51',NULL,'failure'),('TK-251219-168',20,'2025-12-19','14:02:19','Priya Nair','Sara Lindqvist','Thermoformer seal temperature unstable','critical','CLOSED','Sara Lindqvist',NULL,'2025-12-19 12:02:19',NULL,'failure'),('TK-251219-299',17,'2025-12-19','09:37:57','Elise Moreau','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2025-12-19 07:37:57',NULL,'failure'),('TK-251219-351',6,'2025-12-19','07:00:46','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2025-12-19 05:00:46',NULL,'failure'),('TK-251220-055',16,'2025-12-20','19:33:16','Priya Nair','Katerina Novak','Nutrunner torque out of window','low','CLOSED','Katerina Novak',NULL,'2025-12-20 17:33:16',NULL,'failure'),('TK-251220-356',1,'2025-12-20','17:37:49','Rui Silva','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2025-12-20 15:37:49',NULL,'failure'),('TK-251221-002',3,'2025-12-21','08:49:38','Priya Nair',NULL,'Coolant pressure low, tool wear increasing','critical','OPEN',NULL,NULL,'2025-12-21 06:49:38',NULL,'failure'),('TK-251222-244',1,'2025-12-22','10:33:15','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','normal','CLOSED','Taro Yamamoto',NULL,'2025-12-22 08:33:15',NULL,'failure'),('TK-251222-289',4,'2025-12-22','16:55:18','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','critical','CLOSED','Taro Yamamoto',NULL,'2025-12-22 14:55:18',NULL,'failure'),('TK-251224-066',5,'2025-12-24','18:31:08','Elise Moreau','Jide Okafor','Guard door interlock will not reset','normal','CLOSED','Jide Okafor',NULL,'2025-12-24 16:31:08',NULL,'failure'),('TK-251224-208',13,'2025-12-24','19:37:15','Marc Dubois','Jide Okafor','Leak test bench failing good parts','low','CLOSED','Jide Okafor',NULL,'2025-12-24 17:37:15',NULL,'failure'),('TK-251225-041',24,'2025-12-25','11:10:37','Elise Moreau','Katerina Novak','Crane hoist limit switch intermittent','high','CLOSED','Katerina Novak',NULL,'2025-12-25 09:10:37',NULL,'failure'),('TK-251226-028',8,'2025-12-26','14:09:10','Elise Moreau','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2025-12-26 12:09:10',NULL,'failure'),('TK-251228-050',8,'2025-12-28','07:53:06','Marc Dubois','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2025-12-28 05:53:06',NULL,'failure'),('TK-251229-023',2,'2025-12-29','17:52:47','Rui Silva','Taro Yamamoto','Spindle overheat alarm on cycle start','high','CLOSED','Taro Yamamoto',NULL,'2025-12-29 15:52:47',NULL,'failure'),('TK-251229-047',2,'2025-12-29','07:09:30','Rui Silva','Taro Yamamoto','Axis servo fault F-0031 on rapid move','high','CLOSED','Taro Yamamoto',NULL,'2025-12-29 05:09:30',NULL,'failure'),('TK-251229-230',13,'2025-12-29','16:44:18','Priya Nair','Katerina Novak','Leak test bench failing good parts','normal','CLOSED','Katerina Novak',NULL,'2025-12-29 14:44:18',NULL,'failure'),('TK-251229-324',20,'2025-12-29','06:33:50','Priya Nair','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2025-12-29 04:33:50',NULL,'failure'),('TK-251230-248',8,'2025-12-30','07:19:13','Priya Nair','Jide Okafor','Robot in fault, brake release error','critical','CLOSED','Jide Okafor',NULL,'2025-12-30 05:19:13',NULL,'failure'),('TK-251231-040',21,'2025-12-31','14:18:39','Priya Nair','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2025-12-31 12:18:39',NULL,'failure'),('TK-251231-401',15,'2025-12-31','10:35:57','Priya Nair','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2025-12-31 08:35:57',NULL,'failure'),('TK-260101-169',18,'2026-01-01','07:50:34','Priya Nair','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-01-01 05:50:34',NULL,'failure'),('TK-260101-362',13,'2026-01-01','21:59:57','Marc Dubois','Katerina Novak','Leak test bench failing good parts','normal','CLOSED','Katerina Novak',NULL,'2026-01-01 19:59:57',NULL,'failure'),('TK-260101-379',15,'2026-01-01','14:29:57','Marc Dubois','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-01-01 12:29:57',NULL,'failure'),('TK-260102-120',13,'2026-01-02','20:31:28','Priya Nair','Katerina Novak','Leak test bench failing good parts','high','CLOSED','Katerina Novak',NULL,'2026-01-02 18:31:28',NULL,'failure'),('TK-260103-030',10,'2026-01-03','14:21:39','Rui Silva','Jide Okafor','Laser cutter head crash on nest start','critical','CLOSED','Jide Okafor',NULL,'2026-01-03 12:21:39',NULL,'failure'),('TK-260103-071',15,'2026-01-03','12:23:06','Rui Silva','Sara Lindqvist','Conveyor belt tracking off to one side','critical','CLOSED','Sara Lindqvist',NULL,'2026-01-03 10:23:06',NULL,'failure'),('TK-260104-013',17,'2026-01-04','13:19:16','Elise Moreau','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-01-04 11:19:16',NULL,'failure'),('TK-260105-365',17,'2026-01-05','19:45:49','Elise Moreau','Taro Yamamoto','Vision rig rejecting at 12 percent','normal','CLOSED','Taro Yamamoto',NULL,'2026-01-05 17:45:49',NULL,'failure'),('TK-260105-409',17,'2026-01-05','16:09:06','Priya Nair','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-01-05 14:09:06',NULL,'failure'),('TK-260106-065',6,'2026-01-06','20:16:59','Elise Moreau','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-01-06 18:16:59',NULL,'failure'),('TK-260106-089',4,'2026-01-06','11:28:46','Priya Nair','Taro Yamamoto','Spindle overheat alarm on cycle start','high','CLOSED','Taro Yamamoto',NULL,'2026-01-06 09:28:46',NULL,'failure'),('TK-260107-114',3,'2026-01-07','12:50:46','Elise Moreau','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-01-07 10:50:46',NULL,'failure'),('TK-260107-295',7,'2026-01-07','21:31:24','Marc Dubois','Jide Okafor','Press brake not holding pressure','low','CLOSED','Jide Okafor',NULL,'2026-01-07 19:31:24',NULL,'failure'),('TK-260108-137',15,'2026-01-08','19:18:03','Rui Silva','Jide Okafor','Conveyor belt tracking off to one side','normal','CLOSED','Jide Okafor',NULL,'2026-01-08 17:18:03',NULL,'failure'),('TK-260109-175',6,'2026-01-09','18:50:14','Priya Nair','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-01-09 16:50:14',NULL,'failure'),('TK-260110-390',20,'2026-01-10','09:36:26','Priya Nair','Taro Yamamoto','Palletiser stops, pattern incomplete','normal','CLOSED','Taro Yamamoto',NULL,'2026-01-10 07:36:26',NULL,'failure'),('TK-260112-113',4,'2026-01-12','10:53:03','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','high','CLOSED','Taro Yamamoto',NULL,'2026-01-12 08:53:03',NULL,'failure'),('TK-260112-192',20,'2026-01-12','20:32:32','Priya Nair','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-01-12 18:32:32',NULL,'failure'),('TK-260113-115',15,'2026-01-13','19:04:42','Elise Moreau','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-01-13 17:04:42',NULL,'failure'),('TK-260114-229',7,'2026-01-14','10:42:52','Elise Moreau','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-01-14 08:42:52',NULL,'failure'),('TK-260114-233',17,'2026-01-14','15:18:35','Elise Moreau','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-01-14 13:18:35',NULL,'failure'),('TK-260116-001',4,'2026-01-16','12:21:05','Rui Silva',NULL,'Spindle overheat alarm on cycle start','high','OPEN',NULL,NULL,'2026-01-16 10:21:05',NULL,'failure'),('TK-260116-341',16,'2026-01-16','20:25:38','Priya Nair','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-01-16 18:25:38',NULL,'failure'),('TK-260117-026',3,'2026-01-17','19:51:53','Marc Dubois','Taro Yamamoto','Tool changer stalls mid-swap','low','CLOSED','Taro Yamamoto',NULL,'2026-01-17 17:51:53',NULL,'failure'),('TK-260117-075',10,'2026-01-17','10:11:06','Rui Silva','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-01-17 08:11:06',NULL,'failure'),('TK-260117-077',16,'2026-01-17','08:20:51','Priya Nair','Sara Lindqvist','Nutrunner torque out of window','high','CLOSED','Sara Lindqvist',NULL,'2026-01-17 06:20:51',NULL,'failure'),('TK-260117-314',8,'2026-01-17','15:05:31','Priya Nair','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2026-01-17 13:05:31',NULL,'failure'),('TK-260118-313',15,'2026-01-18','19:41:29','Priya Nair','Taro Yamamoto','Conveyor belt tracking off to one side','normal','CLOSED','Taro Yamamoto',NULL,'2026-01-18 17:41:29',NULL,'failure'),('TK-260119-386',12,'2026-01-19','06:01:32','Rui Silva','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-01-19 04:01:32',NULL,'failure'),('TK-260120-103',18,'2026-01-20','20:07:01','Marc Dubois','Sara Lindqvist','Coder printing faint, missing characters','low','CLOSED','Sara Lindqvist',NULL,'2026-01-20 18:07:01',NULL,'failure'),('TK-260120-210',12,'2026-01-20','21:54:33','Marc Dubois','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-01-20 19:54:33',NULL,'failure'),('TK-260121-395',6,'2026-01-21','18:43:03','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','high','CLOSED','Jide Okafor',NULL,'2026-01-21 16:43:03',NULL,'failure'),('TK-260124-082',18,'2026-01-24','12:56:45','Rui Silva','Sara Lindqvist','Palletiser stops, pattern incomplete','critical','CLOSED','Sara Lindqvist',NULL,'2026-01-24 10:56:45',NULL,'failure'),('TK-260124-219',6,'2026-01-24','13:09:55','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','high','CLOSED','Jide Okafor',NULL,'2026-01-24 11:09:55',NULL,'failure'),('TK-260125-056',12,'2026-01-25','08:48:42','Rui Silva','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-01-25 06:48:42',NULL,'failure'),('TK-260126-214',18,'2026-01-26','13:48:11','Marc Dubois','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-01-26 11:48:11',NULL,'failure'),('TK-260126-325',21,'2026-01-26','17:56:35','Rui Silva','Taro Yamamoto','Compressor tripping on high discharge temp','low','CLOSED','Taro Yamamoto',NULL,'2026-01-26 15:56:35',NULL,'failure'),('TK-260127-086',22,'2026-01-27','06:14:52','Rui Silva','Taro Yamamoto','Dust extractor low suction at station 3','low','CLOSED','Taro Yamamoto',NULL,'2026-01-27 04:14:52',NULL,'failure'),('TK-260128-034',12,'2026-01-28','09:47:31','Elise Moreau','Katerina Novak','Servo press position error at bottom dead ctr','critical','CLOSED','Katerina Novak',NULL,'2026-01-28 07:47:31',NULL,'failure'),('TK-260128-121',16,'2026-01-28','19:46:23','Elise Moreau','Katerina Novak','Nutrunner torque out of window','critical','CLOSED','Katerina Novak',NULL,'2026-01-28 17:46:23',NULL,'failure'),('TK-260128-276',12,'2026-01-28','17:19:31','Marc Dubois','Katerina Novak','Servo press position error at bottom dead ctr','critical','CLOSED','Katerina Novak',NULL,'2026-01-28 15:19:31',NULL,'failure'),('TK-260128-352',5,'2026-01-28','15:09:18','Priya Nair','Jide Okafor','Guard door interlock will not reset','high','CLOSED','Jide Okafor',NULL,'2026-01-28 13:09:18',NULL,'failure'),('TK-260131-091',2,'2026-01-31','09:59:26','Elise Moreau','Taro Yamamoto','Axis servo fault F-0031 on rapid move','critical','CLOSED','Taro Yamamoto',NULL,'2026-01-31 07:59:26',NULL,'failure'),('TK-260131-418',5,'2026-01-31','07:14:22','Rui Silva','Jide Okafor','Guard door interlock will not reset','critical','CLOSED','Jide Okafor',NULL,'2026-01-31 05:14:22',NULL,'failure'),('TK-260201-102',20,'2026-02-01','07:40:16','Rui Silva','Sara Lindqvist','Thermoformer seal temperature unstable','low','CLOSED','Sara Lindqvist',NULL,'2026-02-01 05:40:16',NULL,'failure'),('TK-260201-176',5,'2026-02-01','07:42:45','Marc Dubois','Jide Okafor','Guard door interlock will not reset','normal','CLOSED','Jide Okafor',NULL,'2026-02-01 05:42:45',NULL,'failure'),('TK-260202-374',5,'2026-02-02','20:51:25','Elise Moreau','Jide Okafor','Guard door interlock will not reset','low','CLOSED','Jide Okafor',NULL,'2026-02-02 18:51:25',NULL,'failure'),('TK-260203-232',12,'2026-02-03','20:03:39','Rui Silva','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-02-03 18:03:39',NULL,'failure'),('TK-260203-298',12,'2026-02-03','21:20:08','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','high','CLOSED','Katerina Novak',NULL,'2026-02-03 19:20:08',NULL,'failure'),('TK-260203-391',21,'2026-02-03','12:29:00','Elise Moreau','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-03 10:29:00',NULL,'failure'),('TK-260207-282',23,'2026-02-07','07:35:49','Marc Dubois','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-07 05:35:49',NULL,'failure'),('TK-260207-300',20,'2026-02-07','19:30:09','Elise Moreau','Sara Lindqvist','Thermoformer seal temperature unstable','critical','CLOSED','Sara Lindqvist',NULL,'2026-02-07 17:30:09',NULL,'failure'),('TK-260207-307',6,'2026-02-07','08:47:03','Priya Nair','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-02-07 06:47:03',NULL,'failure'),('TK-260208-255',17,'2026-02-08','07:08:15','Rui Silva','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-02-08 05:08:15',NULL,'failure'),('TK-260208-331',2,'2026-02-08','21:44:07','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-08 19:44:07',NULL,'failure'),('TK-260209-245',4,'2026-02-09','21:05:10','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','high','CLOSED','Taro Yamamoto',NULL,'2026-02-09 19:05:10',NULL,'failure'),('TK-260209-416',22,'2026-02-09','14:30:08','Priya Nair','Taro Yamamoto','Dust extractor low suction at station 3','high','CLOSED','Taro Yamamoto',NULL,'2026-02-09 12:30:08',NULL,'failure'),('TK-260210-084',23,'2026-02-10','20:52:59','Marc Dubois','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-10 18:52:59',NULL,'failure'),('TK-260212-073',7,'2026-02-12','09:14:49','Elise Moreau','Jide Okafor','Weld quality NOK, porosity in seam','critical','CLOSED','Jide Okafor',NULL,'2026-02-12 07:14:49',NULL,'failure'),('TK-260212-106',21,'2026-02-12','18:36:46','Elise Moreau','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-12 16:36:46',NULL,'failure'),('TK-260212-165',16,'2026-02-12','11:39:24','Rui Silva','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-02-12 09:39:24',NULL,'failure'),('TK-260212-412',18,'2026-02-12','16:50:47','Elise Moreau','Taro Yamamoto','Palletiser stops, pattern incomplete','critical','CLOSED','Taro Yamamoto',NULL,'2026-02-12 14:50:47',NULL,'failure'),('TK-260214-163',7,'2026-02-14','07:16:34','Marc Dubois','Jide Okafor','Press brake not holding pressure','low','CLOSED','Jide Okafor',NULL,'2026-02-14 05:16:34',NULL,'failure'),('TK-260215-046',3,'2026-02-15','08:07:45','Elise Moreau','Katerina Novak','Coolant pressure low, tool wear increasing','critical','CLOSED','Katerina Novak',NULL,'2026-02-15 06:07:45',NULL,'failure'),('TK-260215-135',2,'2026-02-15','09:45:02','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-15 07:45:02',NULL,'failure'),('TK-260215-336',8,'2026-02-15','07:35:08','Marc Dubois','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2026-02-15 05:35:08',NULL,'failure'),('TK-260217-166',12,'2026-02-17','14:19:54','Marc Dubois','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-02-17 12:19:54',NULL,'failure'),('TK-260218-070',3,'2026-02-18','08:06:18','Marc Dubois','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-18 06:06:18',NULL,'failure'),('TK-260218-316',7,'2026-02-18','12:46:03','Marc Dubois','Jide Okafor','Laser cutter head crash on nest start','low','CLOSED','Jide Okafor',NULL,'2026-02-18 10:46:03',NULL,'failure'),('TK-260218-378',3,'2026-02-18','19:36:28','Marc Dubois','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-18 17:36:28',NULL,'failure'),('TK-260220-164',13,'2026-02-20','13:49:34','Marc Dubois','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-02-20 11:49:34',NULL,'failure'),('TK-260220-296',13,'2026-02-20','09:33:57','Marc Dubois','Jide Okafor','Leak test bench failing good parts','high','CLOSED','Jide Okafor',NULL,'2026-02-20 07:33:57',NULL,'failure'),('TK-260221-128',22,'2026-02-21','18:20:47','Priya Nair','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-21 16:20:47',NULL,'failure'),('TK-260223-173',24,'2026-02-23','14:45:12','Priya Nair','Katerina Novak','Crane hoist limit switch intermittent','critical','CLOSED','Katerina Novak',NULL,'2026-02-23 12:45:12',NULL,'failure'),('TK-260223-305',24,'2026-02-23','16:45:27','Elise Moreau','Sara Lindqvist','Crane hoist limit switch intermittent','normal','CLOSED','Sara Lindqvist',NULL,'2026-02-23 14:45:27',NULL,'failure'),('TK-260225-109',6,'2026-02-25','12:42:36','Priya Nair','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-02-25 10:42:36',NULL,'failure'),('TK-260226-335',15,'2026-02-26','19:35:07','Rui Silva','Sara Lindqvist','Conveyor belt tracking off to one side','low','CLOSED','Sara Lindqvist',NULL,'2026-02-26 17:35:07',NULL,'failure'),('TK-260226-420',1,'2026-02-26','14:13:30','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-26 12:13:30',NULL,'failure'),('TK-260227-136',1,'2026-02-27','12:30:17','Priya Nair','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-02-27 10:30:17',NULL,'failure'),('TK-260228-134',3,'2026-02-28','06:11:44','Elise Moreau','Taro Yamamoto','Coolant pressure low, tool wear increasing','low','CLOSED','Taro Yamamoto',NULL,'2026-02-28 04:11:44',NULL,'failure'),('TK-260301-143',16,'2026-03-01','15:23:02','Marc Dubois','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-03-01 13:23:02',NULL,'failure'),('TK-260301-310',3,'2026-03-01','13:51:28','Marc Dubois','Taro Yamamoto','Coolant pressure low, tool wear increasing','high','CLOSED','Taro Yamamoto',NULL,'2026-03-01 11:51:28',NULL,'failure'),('TK-260303-080',19,'2026-03-03','07:51:30','Marc Dubois','Sara Lindqvist','Thermoformer seal temperature unstable','low','CLOSED','Sara Lindqvist',NULL,'2026-03-03 05:51:30',NULL,'failure'),('TK-260304-234',20,'2026-03-04','18:58:56','Rui Silva','Sara Lindqvist','Thermoformer seal temperature unstable','critical','CLOSED','Sara Lindqvist',NULL,'2026-03-04 16:58:56',NULL,'failure'),('TK-260305-116',8,'2026-03-05','19:14:28','Priya Nair','Jide Okafor','Robot in fault, brake release error','high','CLOSED','Jide Okafor',NULL,'2026-03-05 17:14:28',NULL,'failure'),('TK-260305-138',8,'2026-03-05','07:09:37','Priya Nair','Jide Okafor','Robot in fault, brake release error','high','CLOSED','Jide Okafor',NULL,'2026-03-05 05:09:37',NULL,'failure'),('TK-260309-172',21,'2026-03-09','15:02:26','Marc Dubois','Taro Yamamoto','Chiller low delta-T, machines running warm','high','CLOSED','Taro Yamamoto',NULL,'2026-03-09 13:02:26',NULL,'failure'),('TK-260309-363',16,'2026-03-09','19:34:53','Rui Silva','Katerina Novak','Nutrunner torque out of window','low','CLOSED','Katerina Novak',NULL,'2026-03-09 17:34:53',NULL,'failure'),('TK-260310-004',1,'2026-03-10','17:37:45','Elise Moreau',NULL,'Tool changer stalls mid-swap','low','OPEN',NULL,NULL,'2026-03-10 15:37:45',NULL,'failure'),('TK-260310-193',21,'2026-03-10','19:33:19','Priya Nair','Katerina Novak','Compressor tripping on high discharge temp','normal','CLOSED','Katerina Novak',NULL,'2026-03-10 17:33:19',NULL,'failure'),('TK-260310-343',17,'2026-03-10','08:04:34','Priya Nair','Katerina Novak','Vision rig rejecting at 12 percent','critical','CLOSED','Katerina Novak',NULL,'2026-03-10 06:04:34',NULL,'failure'),('TK-260312-129',24,'2026-03-12','07:51:26','Marc Dubois','Sara Lindqvist','Crane hoist limit switch intermittent','normal','CLOSED','Sara Lindqvist',NULL,'2026-03-12 05:51:26',NULL,'failure'),('TK-260312-198',5,'2026-03-12','18:07:51','Elise Moreau','Jide Okafor','Guard door interlock will not reset','low','CLOSED','Jide Okafor',NULL,'2026-03-12 16:07:51',NULL,'failure'),('TK-260312-212',19,'2026-03-12','13:30:11','Priya Nair','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2026-03-12 11:30:11',NULL,'failure'),('TK-260315-078',12,'2026-03-15','11:41:26','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-03-15 09:41:26',NULL,'failure'),('TK-260315-156',1,'2026-03-15','15:13:06','Priya Nair','Taro Yamamoto','Coolant pressure low, tool wear increasing','normal','CLOSED','Taro Yamamoto',NULL,'2026-03-15 13:13:06',NULL,'failure'),('TK-260316-174',23,'2026-03-16','20:26:07','Elise Moreau','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-03-16 18:26:07',NULL,'failure'),('TK-260317-011',16,'2026-03-17','18:45:33','Marc Dubois','Sara Lindqvist','Nutrunner torque out of window','normal','CLOSED','Sara Lindqvist',NULL,'2026-03-17 16:45:33',NULL,'failure'),('TK-260317-152',22,'2026-03-17','12:49:19','Priya Nair','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-03-17 10:49:19',NULL,'failure'),('TK-260318-402',8,'2026-03-18','09:35:57','Marc Dubois','Jide Okafor','Robot in fault, brake release error','high','CLOSED','Jide Okafor',NULL,'2026-03-18 07:35:57',NULL,'failure'),('TK-260320-064',21,'2026-03-20','09:19:14','Elise Moreau','Taro Yamamoto','Dust extractor low suction at station 3','high','CLOSED','Taro Yamamoto',NULL,'2026-03-20 07:19:14',NULL,'failure'),('TK-260320-096',10,'2026-03-20','18:10:43','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','critical','CLOSED','Jide Okafor',NULL,'2026-03-20 16:10:43',NULL,'failure'),('TK-260322-243',2,'2026-03-22','09:35:06','Marc Dubois','Jide Okafor','Spindle overheat alarm on cycle start','high','CLOSED','Jide Okafor',NULL,'2026-03-22 07:35:06',NULL,'failure'),('TK-260322-360',10,'2026-03-22','12:03:46','Marc Dubois','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2026-03-22 10:03:46',NULL,'failure'),('TK-260323-181',15,'2026-03-23','07:38:50','Marc Dubois','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-03-23 05:38:50',NULL,'failure'),('TK-260324-110',5,'2026-03-24','14:44:23','Marc Dubois','Jide Okafor','Guard door interlock will not reset','normal','CLOSED','Jide Okafor',NULL,'2026-03-24 12:44:23',NULL,'failure'),('TK-260324-209',16,'2026-03-24','06:41:59','Elise Moreau','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-03-24 04:41:59',NULL,'failure'),('TK-260324-254',12,'2026-03-24','19:55:50','Marc Dubois','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-03-24 17:55:50',NULL,'failure'),('TK-260325-131',6,'2026-03-25','12:11:45','Elise Moreau','Sara Lindqvist','Hydraulic power pack noisy, foaming oil','critical','CLOSED','Sara Lindqvist',NULL,'2026-03-25 10:11:45',NULL,'failure'),('TK-260326-203',15,'2026-03-26','11:05:21','Marc Dubois','Katerina Novak','Conveyor belt tracking off to one side','low','CLOSED','Katerina Novak',NULL,'2026-03-26 09:05:21',NULL,'failure'),('TK-260326-380',8,'2026-03-26','16:39:02','Marc Dubois','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2026-03-26 14:39:02',NULL,'failure'),('TK-260327-105',23,'2026-03-27','06:16:02','Rui Silva','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-03-27 04:16:02',NULL,'failure'),('TK-260327-151',24,'2026-03-27','21:44:28','Elise Moreau','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2026-03-27 19:44:28',NULL,'failure'),('TK-260328-221',4,'2026-03-28','16:53:46','Rui Silva','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-03-28 14:53:46',NULL,'failure'),('TK-260328-304',21,'2026-03-28','18:35:23','Rui Silva','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-03-28 16:35:23',NULL,'failure'),('TK-260329-238',21,'2026-03-29','18:56:02','Elise Moreau','Katerina Novak','Chiller low delta-T, machines running warm','normal','CLOSED','Katerina Novak',NULL,'2026-03-29 15:56:02',NULL,'failure'),('TK-260329-349',24,'2026-03-29','20:28:53','Rui Silva','Katerina Novak','Crane hoist limit switch intermittent','high','CLOSED','Katerina Novak',NULL,'2026-03-29 17:28:53',NULL,'failure'),('TK-260330-033',16,'2026-03-30','14:45:57','Elise Moreau','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-03-30 11:45:57',NULL,'failure'),('TK-260330-153',6,'2026-03-30','18:36:05','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','critical','CLOSED','Jide Okafor',NULL,'2026-03-30 15:36:05',NULL,'failure'),('TK-260331-387',17,'2026-03-31','15:20:20','Rui Silva','Katerina Novak','Vision rig rejecting at 12 percent','critical','CLOSED','Katerina Novak',NULL,'2026-03-31 12:20:20',NULL,'failure'),('TK-260403-141',10,'2026-04-03','18:51:17','Marc Dubois','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-04-03 15:51:17',NULL,'failure'),('TK-260404-183',10,'2026-04-04','09:28:41','Rui Silva','Jide Okafor','Weld quality NOK, porosity in seam','critical','CLOSED','Jide Okafor',NULL,'2026-04-04 06:28:41',NULL,'failure'),('TK-260404-346',18,'2026-04-04','21:21:32','Priya Nair','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-04 18:21:32',NULL,'failure'),('TK-260406-179',2,'2026-04-06','10:58:13','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','low','CLOSED','Taro Yamamoto',NULL,'2026-04-06 07:58:13',NULL,'failure'),('TK-260406-415',24,'2026-04-06','14:04:53','Elise Moreau','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2026-04-06 11:04:53',NULL,'failure'),('TK-260407-039',23,'2026-04-07','07:51:07','Priya Nair','Taro Yamamoto','Compressor tripping on high discharge temp','high','CLOSED','Taro Yamamoto',NULL,'2026-04-07 04:51:07',NULL,'failure'),('TK-260409-236',19,'2026-04-09','18:14:37','Rui Silva','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-09 15:14:37',NULL,'failure'),('TK-260409-359',9,'2026-04-09','07:10:52','Elise Moreau','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-04-09 04:10:52',NULL,'failure'),('TK-260412-127',21,'2026-04-12','14:25:04','Rui Silva','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-04-12 11:25:04',NULL,'failure'),('TK-260414-267',2,'2026-04-14','15:31:57','Rui Silva','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2026-04-14 12:31:57',NULL,'failure'),('TK-260415-060',20,'2026-04-15','10:26:43','Elise Moreau','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-15 07:26:43',NULL,'failure'),('TK-260415-279',20,'2026-04-15','06:14:40','Rui Silva','Katerina Novak','Coder printing faint, missing characters','normal','CLOSED','Katerina Novak',NULL,'2026-04-15 03:14:40',NULL,'failure'),('TK-260416-104',19,'2026-04-16','21:04:08','Rui Silva','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-16 18:04:08',NULL,'failure'),('TK-260416-328',21,'2026-04-16','20:29:47','Rui Silva','Taro Yamamoto','Dust extractor low suction at station 3','high','CLOSED','Taro Yamamoto',NULL,'2026-04-16 17:29:47',NULL,'failure'),('TK-260417-347',22,'2026-04-17','07:44:50','Priya Nair','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-04-17 04:44:50',NULL,'failure'),('TK-260418-207',10,'2026-04-18','10:11:48','Marc Dubois','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-04-18 07:11:48',NULL,'failure'),('TK-260418-320',12,'2026-04-18','21:42:14','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','high','CLOSED','Katerina Novak',NULL,'2026-04-18 18:42:14',NULL,'failure'),('TK-260419-178',3,'2026-04-19','08:37:51','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','normal','CLOSED','Taro Yamamoto',NULL,'2026-04-19 05:37:51',NULL,'failure'),('TK-260419-403',7,'2026-04-19','11:00:38','Marc Dubois','Jide Okafor','Weld quality NOK, porosity in seam','high','CLOSED','Jide Okafor',NULL,'2026-04-19 08:00:38',NULL,'failure'),('TK-260420-290',3,'2026-04-20','16:32:17','Elise Moreau','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-04-20 13:32:17',NULL,'failure'),('TK-260423-161',9,'2026-04-23','16:15:37','Marc Dubois','Jide Okafor','Weld quality NOK, porosity in seam','low','CLOSED','Jide Okafor',NULL,'2026-04-23 13:15:37',NULL,'failure'),('TK-260424-146',19,'2026-04-24','10:29:25','Rui Silva','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-24 07:29:25',NULL,'failure'),('TK-260425-270',8,'2026-04-25','20:32:40','Rui Silva','Taro Yamamoto','Robot in fault, brake release error','low','CLOSED','Taro Yamamoto',NULL,'2026-04-25 17:32:40',NULL,'failure'),('TK-260425-286',5,'2026-04-25','19:04:42','Marc Dubois','Jide Okafor','Guard door interlock will not reset','low','CLOSED','Jide Okafor',NULL,'2026-04-25 16:04:42',NULL,'failure'),('TK-260425-309',4,'2026-04-25','17:24:15','Rui Silva','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-04-25 14:24:15',NULL,'failure'),('TK-260428-259',21,'2026-04-28','20:22:41','Marc Dubois','Taro Yamamoto','Compressor tripping on high discharge temp','critical','CLOSED','Taro Yamamoto',NULL,'2026-04-28 17:22:41',NULL,'failure'),('TK-260428-389',19,'2026-04-28','20:30:40','Elise Moreau','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-28 17:30:40',NULL,'failure'),('TK-260430-147',20,'2026-04-30','12:08:30','Marc Dubois','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-04-30 09:08:30',NULL,'failure'),('TK-260501-334',3,'2026-05-01','07:04:42','Rui Silva','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-01 04:04:42',NULL,'failure'),('TK-260502-062',22,'2026-05-02','08:55:19','Elise Moreau','Taro Yamamoto','Chiller low delta-T, machines running warm','low','CLOSED','Taro Yamamoto',NULL,'2026-05-02 05:55:19',NULL,'failure'),('TK-260502-369',23,'2026-05-02','08:40:24','Elise Moreau','Taro Yamamoto','Compressor tripping on high discharge temp','high','CLOSED','Taro Yamamoto',NULL,'2026-05-02 05:40:24',NULL,'failure'),('TK-260503-038',19,'2026-05-03','19:36:20','Marc Dubois','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-05-03 16:36:20',NULL,'failure'),('TK-260505-148',18,'2026-05-05','07:26:23','Priya Nair','Sara Lindqvist','Palletiser stops, pattern incomplete','high','CLOSED','Sara Lindqvist',NULL,'2026-05-05 04:26:23',NULL,'failure'),('TK-260505-408',12,'2026-05-05','09:37:15','Rui Silva','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-05-05 06:37:15',NULL,'failure'),('TK-260506-158',3,'2026-05-06','11:19:14','Elise Moreau','Taro Yamamoto','Tool changer stalls mid-swap','critical','CLOSED','Taro Yamamoto',NULL,'2026-05-06 08:19:14',NULL,'failure'),('TK-260506-226',8,'2026-05-06','07:36:18','Elise Moreau','Jide Okafor','Robot in fault, brake release error','high','CLOSED','Jide Okafor',NULL,'2026-05-06 04:36:18',NULL,'failure'),('TK-260507-009',10,'2026-05-07','06:29:52','Rui Silva','Jide Okafor','Press brake not holding pressure','critical','PENDING',NULL,NULL,'2026-05-07 03:29:52',NULL,'failure'),('TK-260507-384',13,'2026-05-07','16:06:44','Rui Silva','Katerina Novak','Leak test bench failing good parts','normal','CLOSED','Katerina Novak',NULL,'2026-05-07 13:06:44',NULL,'failure'),('TK-260509-159',15,'2026-05-09','07:41:02','Rui Silva','Katerina Novak','Conveyor belt tracking off to one side','normal','CLOSED','Katerina Novak',NULL,'2026-05-09 04:41:02',NULL,'failure'),('TK-260509-264',5,'2026-05-09','12:17:13','Rui Silva','Jide Okafor','Guard door interlock will not reset','normal','CLOSED','Jide Okafor',NULL,'2026-05-09 09:17:13',NULL,'failure'),('TK-260510-019',24,'2026-05-10','20:31:54','Priya Nair','Katerina Novak','Crane hoist limit switch intermittent','high','CLOSED','Katerina Novak',NULL,'2026-05-10 17:31:54',NULL,'failure'),('TK-260511-025',4,'2026-05-11','13:51:45','Rui Silva','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-11 10:51:45',NULL,'failure'),('TK-260511-202',3,'2026-05-11','10:17:39','Rui Silva','Taro Yamamoto','Tool changer stalls mid-swap','low','CLOSED','Taro Yamamoto',NULL,'2026-05-11 07:17:39',NULL,'failure'),('TK-260511-272',9,'2026-05-11','16:21:24','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','high','CLOSED','Jide Okafor',NULL,'2026-05-11 13:21:24',NULL,'failure'),('TK-260512-124',18,'2026-05-12','18:55:40','Elise Moreau','Jide Okafor','Thermoformer seal temperature unstable','normal','CLOSED','Jide Okafor',NULL,'2026-05-12 15:55:40',NULL,'failure'),('TK-260513-218',22,'2026-05-13','08:45:00','Marc Dubois','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-13 05:45:00',NULL,'failure'),('TK-260513-353',4,'2026-05-13','15:05:03','Rui Silva','Katerina Novak','Spindle overheat alarm on cycle start','low','CLOSED','Katerina Novak',NULL,'2026-05-13 12:05:03',NULL,'failure'),('TK-260513-367',18,'2026-05-13','20:01:59','Elise Moreau','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-05-13 17:01:59',NULL,'failure'),('TK-260514-029',9,'2026-05-14','08:42:40','Elise Moreau','Jide Okafor','Weld quality NOK, porosity in seam','low','CLOSED','Jide Okafor',NULL,'2026-05-14 05:42:40',NULL,'failure'),('TK-260514-122',12,'2026-05-14','20:18:27','Marc Dubois','Katerina Novak','Servo press position error at bottom dead ctr','low','CLOSED','Katerina Novak',NULL,'2026-05-14 17:18:27',NULL,'failure'),('TK-260514-366',20,'2026-05-14','10:14:26','Marc Dubois','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2026-05-14 07:14:26',NULL,'failure'),('TK-260515-101',17,'2026-05-15','14:59:07','Rui Silva','Taro Yamamoto','Vision rig rejecting at 12 percent','critical','CLOSED','Taro Yamamoto',NULL,'2026-05-15 11:59:07',NULL,'failure'),('TK-260516-048',1,'2026-05-16','10:18:39','Marc Dubois','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-16 07:18:39',NULL,'failure'),('TK-260516-144',12,'2026-05-16','12:28:06','Elise Moreau','Katerina Novak','Servo press position error at bottom dead ctr','low','CLOSED','Katerina Novak',NULL,'2026-05-16 09:28:06',NULL,'failure'),('TK-260516-410',19,'2026-05-16','11:10:55','Rui Silva','Sara Lindqvist','Thermoformer seal temperature unstable','critical','CLOSED','Sara Lindqvist',NULL,'2026-05-16 08:10:55',NULL,'failure'),('TK-260518-024',1,'2026-05-18','16:27:48','Elise Moreau','Jide Okafor','Coolant pressure low, tool wear increasing','high','CLOSED','Jide Okafor',NULL,'2026-05-18 13:27:48',NULL,'failure'),('TK-260518-256',18,'2026-05-18','20:12:42','Elise Moreau','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2026-05-18 17:12:42',NULL,'failure'),('TK-260520-020',22,'2026-05-20','13:05:28','Marc Dubois','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-20 10:05:28',NULL,'failure'),('TK-260521-093',15,'2026-05-21','17:10:24','Elise Moreau','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-05-21 14:10:24',NULL,'failure'),('TK-260521-332',1,'2026-05-21','16:03:24','Marc Dubois','Taro Yamamoto','Coolant pressure low, tool wear increasing','critical','CLOSED','Taro Yamamoto',NULL,'2026-05-21 13:03:24',NULL,'failure'),('TK-260522-058',18,'2026-05-22','20:16:40','Elise Moreau','Sara Lindqvist','Thermoformer seal temperature unstable','low','CLOSED','Sara Lindqvist',NULL,'2026-05-22 17:16:40',NULL,'failure'),('TK-260523-150',23,'2026-05-23','09:49:48','Rui Silva','Sara Lindqvist','Chiller low delta-T, machines running warm','normal','CLOSED','Sara Lindqvist',NULL,'2026-05-23 06:49:48',NULL,'failure'),('TK-260523-199',2,'2026-05-23','13:17:22','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-23 10:17:22',NULL,'failure'),('TK-260523-228',10,'2026-05-23','20:26:10','Elise Moreau','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2026-05-23 17:26:10',NULL,'failure'),('TK-260523-246',3,'2026-05-23','18:59:43','Elise Moreau','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-23 15:59:43',NULL,'failure'),('TK-260524-253',16,'2026-05-24','13:42:39','Elise Moreau','Katerina Novak','Nutrunner torque out of window','low','CLOSED','Katerina Novak',NULL,'2026-05-24 10:42:39',NULL,'failure'),('TK-260525-265',4,'2026-05-25','18:53:40','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','high','CLOSED','Taro Yamamoto',NULL,'2026-05-25 15:53:40',NULL,'failure'),('TK-260527-012',12,'2026-05-27','15:24:02','Rui Silva','Katerina Novak','Servo press position error at bottom dead ctr','critical','CLOSED','Katerina Novak',NULL,'2026-05-27 12:24:02',NULL,'failure'),('TK-260527-087',6,'2026-05-27','17:34:55','Elise Moreau','Jide Okafor','Hydraulic power pack noisy, foaming oil','high','CLOSED','Jide Okafor',NULL,'2026-05-27 14:34:55',NULL,'failure'),('TK-260527-142',13,'2026-05-27','09:25:39','Rui Silva','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-05-27 06:25:39',NULL,'failure'),('TK-260527-184',7,'2026-05-27','15:34:05','Marc Dubois','Jide Okafor','Laser cutter head crash on nest start','high','CLOSED','Jide Okafor',NULL,'2026-05-27 12:34:05',NULL,'failure'),('TK-260527-383',9,'2026-05-27','15:00:00','Priya Nair','Jide Okafor','Press brake not holding pressure','critical','CLOSED','Jide Okafor',NULL,'2026-05-27 12:00:00',NULL,'failure'),('TK-260529-022',5,'2026-05-29','17:26:10','Rui Silva','Jide Okafor','Guard door interlock will not reset','low','CLOSED','Jide Okafor',NULL,'2026-05-29 14:26:10',NULL,'failure'),('TK-260529-327',24,'2026-05-29','18:45:51','Rui Silva','Katerina Novak','Crane hoist limit switch intermittent','critical','CLOSED','Katerina Novak',NULL,'2026-05-29 15:45:51',NULL,'failure'),('TK-260530-285',6,'2026-05-30','19:35:24','Elise Moreau','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-05-30 16:35:24',NULL,'failure'),('TK-260530-354',3,'2026-05-30','19:46:49','Elise Moreau','Taro Yamamoto','Coolant pressure low, tool wear increasing','critical','CLOSED','Taro Yamamoto',NULL,'2026-05-30 16:46:49',NULL,'failure'),('TK-260531-195',24,'2026-05-31','15:52:36','Marc Dubois','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2026-05-31 12:52:36',NULL,'failure'),('TK-260531-249',10,'2026-05-31','13:35:17','Priya Nair','Jide Okafor','Weld quality NOK, porosity in seam','high','CLOSED','Jide Okafor',NULL,'2026-05-31 10:35:17',NULL,'failure'),('TK-260531-268',1,'2026-05-31','19:49:49','Marc Dubois','Jide Okafor','Tool changer stalls mid-swap','normal','CLOSED','Jide Okafor',NULL,'2026-05-31 16:49:49',NULL,'failure'),('TK-260531-355',2,'2026-05-31','09:10:40','Rui Silva','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2026-05-31 06:10:40',NULL,'failure'),('TK-260601-042',23,'2026-06-01','20:26:20','Marc Dubois','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-06-01 17:26:20',NULL,'failure'),('TK-260602-100',12,'2026-06-02','09:29:21','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','high','CLOSED','Katerina Novak',NULL,'2026-06-02 06:29:21',NULL,'failure'),('TK-260603-373',6,'2026-06-03','16:00:26','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-06-03 13:00:26',NULL,'failure'),('TK-260603-381',10,'2026-06-03','12:38:49','Rui Silva','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-06-03 09:38:49',NULL,'failure'),('TK-260603-396',5,'2026-06-03','17:31:41','Marc Dubois','Jide Okafor','Guard door interlock will not reset','normal','CLOSED','Jide Okafor',NULL,'2026-06-03 14:31:41',NULL,'failure'),('TK-260604-052',7,'2026-06-04','14:44:10','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2026-06-04 11:44:10',NULL,'failure'),('TK-260605-003',2,'2026-06-05','19:48:27','Rui Silva',NULL,'Axis servo fault F-0031 on rapid move','high','OPEN',NULL,NULL,'2026-06-05 16:48:27',NULL,'failure'),('TK-260605-094',8,'2026-06-05','13:16:41','Priya Nair','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2026-06-05 10:16:41',NULL,'failure'),('TK-260605-125',19,'2026-06-05','06:32:28','Elise Moreau','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-05 03:32:28',NULL,'failure'),('TK-260606-204',8,'2026-06-06','08:23:55','Priya Nair','Jide Okafor','Robot in fault, brake release error','normal','CLOSED','Jide Okafor',NULL,'2026-06-06 05:23:55',NULL,'failure'),('TK-260606-350',22,'2026-06-06','06:45:43','Marc Dubois','Taro Yamamoto','Dust extractor low suction at station 3','low','CLOSED','Taro Yamamoto',NULL,'2026-06-06 03:45:43',NULL,'failure'),('TK-260606-372',23,'2026-06-06','10:17:34','Priya Nair','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-06-06 07:17:34',NULL,'failure'),('TK-260606-413',22,'2026-06-06','20:46:06','Rui Silva','Taro Yamamoto','Compressor tripping on high discharge temp','low','CLOSED','Taro Yamamoto',NULL,'2026-06-06 17:46:06',NULL,'failure'),('TK-260607-015',20,'2026-06-07','11:10:31','Elise Moreau','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-07 08:10:31',NULL,'failure'),('TK-260607-348',23,'2026-06-07','17:43:19','Rui Silva','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-06-07 14:43:19',NULL,'failure'),('TK-260609-097',7,'2026-06-09','18:25:11','Marc Dubois','Katerina Novak','Press brake not holding pressure','low','CLOSED','Katerina Novak',NULL,'2026-06-09 15:25:11',NULL,'failure'),('TK-260610-018',23,'2026-06-10','18:42:53','Elise Moreau','Taro Yamamoto','Chiller low delta-T, machines running warm','critical','CLOSED','Taro Yamamoto',NULL,'2026-06-10 15:42:53',NULL,'failure'),('TK-260610-162',10,'2026-06-10','08:11:19','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','critical','CLOSED','Jide Okafor',NULL,'2026-06-10 05:11:19',NULL,'failure'),('TK-260611-364',12,'2026-06-11','07:09:06','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-06-11 04:09:06',NULL,'failure'),('TK-260611-411',20,'2026-06-11','15:19:28','Rui Silva','Sara Lindqvist','Coder printing faint, missing characters','high','CLOSED','Sara Lindqvist',NULL,'2026-06-11 12:19:28',NULL,'failure'),('TK-260612-145',17,'2026-06-12','07:50:55','Marc Dubois','Katerina Novak','Vision rig rejecting at 12 percent','high','CLOSED','Katerina Novak',NULL,'2026-06-12 04:50:55',NULL,'failure'),('TK-260614-191',19,'2026-06-14','16:54:16','Marc Dubois','Sara Lindqvist','Coder printing faint, missing characters','low','CLOSED','Sara Lindqvist',NULL,'2026-06-14 13:54:16',NULL,'failure'),('TK-260614-257',19,'2026-06-14','18:16:13','Rui Silva','Sara Lindqvist','Coder printing faint, missing characters','critical','CLOSED','Sara Lindqvist',NULL,'2026-06-14 15:16:13',NULL,'failure'),('TK-260615-036',20,'2026-06-15','16:14:00','Elise Moreau','Sara Lindqvist','Thermoformer seal temperature unstable','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-15 13:14:00',NULL,'failure'),('TK-260616-261',24,'2026-06-16','19:25:29','Marc Dubois','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2026-06-16 16:25:29',NULL,'failure'),('TK-260616-376',1,'2026-06-16','11:10:44','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','critical','CLOSED','Taro Yamamoto',NULL,'2026-06-16 08:10:44',NULL,'failure'),('TK-260617-213',20,'2026-06-17','21:44:43','Marc Dubois','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-17 18:44:43',NULL,'failure'),('TK-260618-111',2,'2026-06-18','21:49:59','Priya Nair','Taro Yamamoto','Spindle overheat alarm on cycle start','critical','CLOSED','Taro Yamamoto',NULL,'2026-06-18 18:49:59',NULL,'failure'),('TK-260619-323',19,'2026-06-19','19:10:57','Marc Dubois','Sara Lindqvist','Coder printing faint, missing characters','low','CLOSED','Sara Lindqvist',NULL,'2026-06-19 16:10:57',NULL,'failure'),('TK-260620-010',13,'2026-06-20','21:57:04','Marc Dubois','Katerina Novak','Leak test bench failing good parts','high','CLOSED','Katerina Novak',NULL,'2026-06-20 18:57:04',NULL,'failure'),('TK-260620-167',17,'2026-06-20','21:33:16','Priya Nair','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-06-20 18:33:16',NULL,'failure'),('TK-260621-197',6,'2026-06-21','20:13:04','Priya Nair','Jide Okafor','Hydraulic power pack noisy, foaming oil','high','CLOSED','Jide Okafor',NULL,'2026-06-21 17:13:04',NULL,'failure'),('TK-260621-247',15,'2026-06-21','13:33:43','Elise Moreau','Sara Lindqvist','Conveyor belt tracking off to one side','critical','CLOSED','Sara Lindqvist',NULL,'2026-06-21 10:33:43',NULL,'failure'),('TK-260621-370',21,'2026-06-21','19:04:56','Marc Dubois','Taro Yamamoto','Chiller low delta-T, machines running warm','low','CLOSED','Taro Yamamoto',NULL,'2026-06-21 16:04:56',NULL,'failure'),('TK-260622-345',20,'2026-06-22','21:09:07','Marc Dubois','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-22 18:09:07',NULL,'failure'),('TK-260623-215',22,'2026-06-23','15:44:49','Rui Silva','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-06-23 12:44:49',NULL,'failure'),('TK-260623-223',2,'2026-06-23','09:22:49','Priya Nair','Taro Yamamoto','Axis servo fault F-0031 on rapid move','low','CLOSED','Taro Yamamoto',NULL,'2026-06-23 06:22:49',NULL,'failure'),('TK-260623-319',16,'2026-06-23','12:15:47','Marc Dubois','Katerina Novak','Nutrunner torque out of window','low','CLOSED','Katerina Novak',NULL,'2026-06-23 09:15:47',NULL,'failure'),('TK-260625-061',21,'2026-06-25','14:33:26','Marc Dubois','Taro Yamamoto','Compressor tripping on high discharge temp','low','CLOSED','Taro Yamamoto',NULL,'2026-06-25 11:33:26',NULL,'failure'),('TK-260626-044',5,'2026-06-26','18:11:58','Elise Moreau','Jide Okafor','Guard door interlock will not reset','critical','CLOSED','Jide Okafor',NULL,'2026-06-26 15:11:58',NULL,'failure'),('TK-260626-049',15,'2026-06-26','06:59:10','Rui Silva','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-26 03:59:10',NULL,'failure'),('TK-260626-194',22,'2026-06-26','18:07:03','Priya Nair','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-06-26 15:07:03',NULL,'failure'),('TK-260627-037',18,'2026-06-27','20:50:00','Rui Silva','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-27 17:50:00',NULL,'failure'),('TK-260627-118',7,'2026-06-27','13:38:18','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2026-06-27 10:38:18',NULL,'failure'),('TK-260627-220',5,'2026-06-27','17:36:54','Elise Moreau','Jide Okafor','Guard door interlock will not reset','high','CLOSED','Jide Okafor',NULL,'2026-06-27 14:36:54',NULL,'failure'),('TK-260627-258',20,'2026-06-27','18:57:21','Priya Nair','Sara Lindqvist','Palletiser stops, pattern incomplete','low','CLOSED','Sara Lindqvist',NULL,'2026-06-27 15:57:21',NULL,'failure'),('TK-260627-312',1,'2026-06-27','18:48:00','Rui Silva','Taro Yamamoto','Tool changer stalls mid-swap','high','CLOSED','Taro Yamamoto',NULL,'2026-06-27 15:48:00',NULL,'failure'),('TK-260628-057',17,'2026-06-28','13:48:14','Rui Silva','Katerina Novak','Vision rig rejecting at 12 percent','low','CLOSED','Katerina Novak',NULL,'2026-06-28 10:48:14',NULL,'failure'),('TK-260629-291',15,'2026-06-29','07:25:01','Marc Dubois','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-29 04:25:01',NULL,'failure'),('TK-260630-059',19,'2026-06-30','12:23:54','Elise Moreau','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-06-30 09:23:54',NULL,'failure'),('TK-260630-262',21,'2026-06-30','21:07:50','Rui Silva','Taro Yamamoto','Dust extractor low suction at station 3','high','CLOSED','Taro Yamamoto',NULL,'2026-06-30 18:07:50',NULL,'failure'),('TK-260630-308',5,'2026-06-30','12:39:52','Rui Silva','Jide Okafor','Guard door interlock will not reset','normal','CLOSED','Jide Okafor',NULL,'2026-06-30 09:39:52',NULL,'failure'),('TK-260630-340',13,'2026-06-30','13:14:55','Elise Moreau','Katerina Novak','Leak test bench failing good parts','normal','CLOSED','Katerina Novak',NULL,'2026-06-30 10:14:55',NULL,'failure'),('TK-260630-417',6,'2026-06-30','16:41:28','Marc Dubois','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-06-30 13:41:28',NULL,'failure'),('TK-260701-074',9,'2026-07-01','21:34:26','Elise Moreau','Sara Lindqvist','Laser cutter head crash on nest start','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-01 18:34:26',NULL,'failure'),('TK-260701-201',4,'2026-07-01','18:21:17','Elise Moreau','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-01 15:21:17',NULL,'failure'),('TK-260701-271',7,'2026-07-01','14:06:49','Elise Moreau','Jide Okafor','Weld quality NOK, porosity in seam','high','CLOSED','Jide Okafor',NULL,'2026-07-01 11:06:49',NULL,'failure'),('TK-260701-292',8,'2026-07-01','09:38:48','Marc Dubois','Jide Okafor','Robot in fault, brake release error','low','CLOSED','Jide Okafor',NULL,'2026-07-01 06:38:48',NULL,'failure'),('TK-260703-139',7,'2026-07-03','06:21:33','Marc Dubois','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-07-03 03:21:33',NULL,'failure'),('TK-260703-157',4,'2026-07-03','18:39:00','Marc Dubois','Taro Yamamoto','Axis servo fault F-0031 on rapid move','critical','CLOSED','Taro Yamamoto',NULL,'2026-07-03 15:39:00',NULL,'failure'),('TK-260703-250',7,'2026-07-03','21:13:55','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2026-07-03 18:13:55',NULL,'failure'),('TK-260703-339',10,'2026-07-03','11:44:52','Marc Dubois','Jide Okafor','Press brake not holding pressure','critical','CLOSED','Jide Okafor',NULL,'2026-07-03 08:44:52',NULL,'failure'),('TK-260703-393',24,'2026-07-03','20:04:40','Marc Dubois','Katerina Novak','Crane hoist limit switch intermittent','critical','CLOSED','Katerina Novak',NULL,'2026-07-03 17:04:40',NULL,'failure'),('TK-260704-306',23,'2026-07-04','21:49:33','Rui Silva','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-04 18:49:33',NULL,'failure'),('TK-260705-133',4,'2026-07-05','08:35:04','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-05 05:35:04',NULL,'failure'),('TK-260705-240',23,'2026-07-05','09:48:46','Marc Dubois','Taro Yamamoto','Dust extractor low suction at station 3','high','CLOSED','Taro Yamamoto',NULL,'2026-07-05 06:48:46',NULL,'failure'),('TK-260706-303',23,'2026-07-06','08:53:59','Rui Silva','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-06 05:53:59',NULL,'failure'),('TK-260706-329',6,'2026-07-06','07:46:40','Priya Nair','Jide Okafor','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Jide Okafor',NULL,'2026-07-06 04:46:40',NULL,'failure'),('TK-260706-333',4,'2026-07-06','11:31:21','Priya Nair','Taro Yamamoto','Axis servo fault F-0031 on rapid move','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-06 08:31:21',NULL,'failure'),('TK-260708-392',22,'2026-07-08','19:43:15','Priya Nair','Taro Yamamoto','Chiller low delta-T, machines running warm','high','CLOSED','Taro Yamamoto',NULL,'2026-07-08 16:43:15',NULL,'failure'),('TK-260710-171',23,'2026-07-10','21:06:24','Marc Dubois','Taro Yamamoto','Compressor tripping on high discharge temp','high','CLOSED','Taro Yamamoto',NULL,'2026-07-10 18:06:24',NULL,'failure'),('TK-260710-342',12,'2026-07-10','19:15:44','Priya Nair','Katerina Novak','Servo press position error at bottom dead ctr','normal','CLOSED','Katerina Novak',NULL,'2026-07-10 16:15:44',NULL,'failure'),('TK-260710-404',9,'2026-07-10','20:05:47','Rui Silva','Jide Okafor','Laser cutter head crash on nest start','low','CLOSED','Jide Okafor',NULL,'2026-07-10 17:05:47',NULL,'failure'),('TK-260710-407',16,'2026-07-10','09:09:46','Rui Silva','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-07-10 06:09:46',NULL,'failure'),('TK-260711-076',13,'2026-07-11','07:14:01','Priya Nair','Katerina Novak','Leak test bench failing good parts','low','CLOSED','Katerina Novak',NULL,'2026-07-11 04:14:01',NULL,'failure'),('TK-260712-399',2,'2026-07-12','12:56:35','Elise Moreau','Taro Yamamoto','Axis servo fault F-0031 on rapid move','critical','CLOSED','Taro Yamamoto',NULL,'2026-07-12 09:56:35',NULL,'failure'),('TK-260713-182',8,'2026-07-13','21:40:57','Rui Silva','Jide Okafor','Robot in fault, brake release error','critical','CLOSED','Jide Okafor',NULL,'2026-07-13 18:40:57',NULL,'failure'),('TK-260715-051',10,'2026-07-15','15:35:49','Rui Silva','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-07-15 12:35:49',NULL,'failure'),('TK-260715-088',5,'2026-07-15','16:36:10','Priya Nair','Taro Yamamoto','Guard door interlock will not reset','low','CLOSED','Taro Yamamoto',NULL,'2026-07-15 13:36:10',NULL,'failure'),('TK-260715-185',9,'2026-07-15','16:40:20','Priya Nair','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-07-15 13:40:20',NULL,'failure'),('TK-260716-005',15,'2026-07-16','21:57:10','Priya Nair','Sara Lindqvist','Conveyor belt tracking off to one side','normal','PENDING',NULL,NULL,'2026-07-16 18:57:10',NULL,'failure'),('TK-260716-287',2,'2026-07-16','11:23:22','Marc Dubois','Taro Yamamoto','Spindle overheat alarm on cycle start','high','CLOSED','Taro Yamamoto',NULL,'2026-07-16 08:23:22',NULL,'failure'),('TK-260717-079',17,'2026-07-17','21:07:56','Priya Nair','Taro Yamamoto','Vision rig rejecting at 12 percent','high','CLOSED','Taro Yamamoto',NULL,'2026-07-17 18:07:56',NULL,'failure'),('TK-260717-277',17,'2026-07-17','14:35:23','Marc Dubois','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-07-17 11:35:23',NULL,'failure'),('TK-260717-293',9,'2026-07-17','11:21:25','Elise Moreau','Jide Okafor','Weld quality NOK, porosity in seam','critical','CLOSED','Jide Okafor',NULL,'2026-07-17 08:21:25',NULL,'failure'),('TK-260718-224',1,'2026-07-18','20:40:30','Rui Silva','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-18 17:40:30',NULL,'failure'),('TK-260718-237',23,'2026-07-18','12:18:49','Elise Moreau','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-18 09:18:49',NULL,'failure'),('TK-260719-227',9,'2026-07-19','16:51:27','Marc Dubois','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-07-19 13:51:27',NULL,'failure'),('TK-260719-251',9,'2026-07-19','17:43:20','Priya Nair','Jide Okafor','Press brake not holding pressure','high','CLOSED','Jide Okafor',NULL,'2026-07-19 14:43:20',NULL,'failure'),('TK-260719-273',10,'2026-07-19','16:35:52','Elise Moreau','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-07-19 13:35:52',NULL,'failure'),('TK-260719-301',18,'2026-07-19','06:43:01','Priya Nair','Sara Lindqvist','Coder printing faint, missing characters','high','CLOSED','Sara Lindqvist',NULL,'2026-07-19 03:43:01',NULL,'failure'),('TK-260720-007',7,'2026-07-20','19:14:04','Rui Silva','Jide Okafor','Weld quality NOK, porosity in seam','high','PENDING',NULL,NULL,'2026-07-20 16:14:04',NULL,'failure'),('TK-260720-108',23,'2026-07-20','12:35:59','Marc Dubois','Taro Yamamoto','Dust extractor low suction at station 3','critical','CLOSED','Taro Yamamoto',NULL,'2026-07-20 09:35:59',NULL,'failure'),('TK-260720-235',18,'2026-07-20','21:56:20','Rui Silva','Sara Lindqvist','Coder printing faint, missing characters','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-20 18:56:20',NULL,'failure'),('TK-260721-112',1,'2026-07-21','16:29:47','Elise Moreau','Taro Yamamoto','Coolant pressure low, tool wear increasing','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-21 13:29:47',NULL,'failure'),('TK-260721-297',16,'2026-07-21','19:01:34','Marc Dubois','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-07-21 16:01:34',NULL,'failure'),('TK-260721-377',4,'2026-07-21','21:29:32','Elise Moreau','Taro Yamamoto','Axis servo fault F-0031 on rapid move','high','CLOSED','Taro Yamamoto',NULL,'2026-07-21 18:29:32',NULL,'failure'),('TK-260721-397',4,'2026-07-21','10:04:54','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-21 07:04:54',NULL,'failure'),('TK-260722-242',5,'2026-07-22','16:56:47','Elise Moreau','Jide Okafor','Guard door interlock will not reset','low','CLOSED','Jide Okafor',NULL,'2026-07-22 13:56:47',NULL,'failure'),('TK-260722-281',22,'2026-07-22','21:37:19','Elise Moreau','Taro Yamamoto','Compressor tripping on high discharge temp','critical','CLOSED','Taro Yamamoto',NULL,'2026-07-22 18:37:19',NULL,'failure'),('TK-260722-405',10,'2026-07-22','09:43:05','Marc Dubois','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-07-22 06:43:05',NULL,'failure'),('TK-260723-375',2,'2026-07-23','10:48:17','Priya Nair','Taro Yamamoto','Spindle overheat alarm on cycle start','high','CLOSED','Taro Yamamoto',NULL,'2026-07-23 07:48:17',NULL,'failure'),('TK-260724-017',22,'2026-07-24','10:11:38','Priya Nair','Taro Yamamoto','Compressor tripping on high discharge temp','critical','CLOSED','Taro Yamamoto',NULL,'2026-07-24 07:11:38',NULL,'failure'),('TK-260724-032',13,'2026-07-24','12:58:15','Rui Silva','Sara Lindqvist','Leak test bench failing good parts','high','CLOSED','Sara Lindqvist',NULL,'2026-07-24 09:58:15',NULL,'failure'),('TK-260724-126',20,'2026-07-24','13:49:42','Marc Dubois','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-24 10:49:42',NULL,'failure'),('TK-260724-337',7,'2026-07-24','20:24:21','Rui Silva','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-07-24 17:24:21',NULL,'failure'),('TK-260724-357',15,'2026-07-24','14:55:18','Elise Moreau','Sara Lindqvist','Conveyor belt tracking off to one side','critical','CLOSED','Sara Lindqvist',NULL,'2026-07-24 11:55:18',NULL,'failure'),('TK-260724-398',3,'2026-07-24','09:12:01','Priya Nair','Taro Yamamoto','Coolant pressure low, tool wear increasing','high','CLOSED','Taro Yamamoto',NULL,'2026-07-24 06:12:01',NULL,'failure'),('TK-260725-035',17,'2026-07-25','17:59:03','Priya Nair','Katerina Novak','Vision rig rejecting at 12 percent','critical','CLOSED','Katerina Novak',NULL,'2026-07-25 14:59:03',NULL,'failure'),('TK-260725-092',1,'2026-07-25','16:24:32','Rui Silva','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-25 13:24:32',NULL,'failure'),('TK-260725-098',13,'2026-07-25','06:48:47','Priya Nair','Katerina Novak','Leak test bench failing good parts','low','CLOSED','Katerina Novak',NULL,'2026-07-25 03:48:47',NULL,'failure'),('TK-260725-132',5,'2026-07-25','08:53:20','Priya Nair','Jide Okafor','Guard door interlock will not reset','low','CLOSED','Jide Okafor',NULL,'2026-07-25 05:53:20',NULL,'failure'),('TK-260725-400',1,'2026-07-25','16:12:37','Marc Dubois','Taro Yamamoto','Tool changer stalls mid-swap','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-25 13:12:37',NULL,'failure'),('TK-260726-006',8,'2026-07-26','18:17:13','Priya Nair','Jide Okafor','Robot in fault, brake release error','high','PENDING',NULL,NULL,'2026-07-26 15:17:13',NULL,'failure'),('TK-260726-016',18,'2026-07-26','09:04:35','Priya Nair','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-26 06:04:35',NULL,'failure'),('TK-260726-054',13,'2026-07-26','15:02:53','Elise Moreau','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-07-26 12:02:53',NULL,'failure'),('TK-260726-231',16,'2026-07-26','09:00:16','Priya Nair','Katerina Novak','Nutrunner torque out of window','low','CLOSED','Katerina Novak',NULL,'2026-07-26 06:00:16',NULL,'failure'),('TK-260726-294',10,'2026-07-26','11:19:15','Priya Nair','Jide Okafor','Laser cutter head crash on nest start','normal','CLOSED','Jide Okafor',NULL,'2026-07-26 08:19:15',NULL,'failure'),('TK-260727-083',22,'2026-07-27','06:52:46','Elise Moreau','Taro Yamamoto','Compressor tripping on high discharge temp','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-27 03:52:46',NULL,'failure'),('TK-260727-119',9,'2026-07-27','12:05:01','Marc Dubois','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-07-27 09:05:01',NULL,'failure'),('TK-260727-211',17,'2026-07-27','15:33:13','Marc Dubois','Katerina Novak','Vision rig rejecting at 12 percent','normal','CLOSED','Katerina Novak',NULL,'2026-07-27 12:33:13',NULL,'failure'),('TK-260727-302',19,'2026-07-27','07:30:35','Elise Moreau','Sara Lindqvist','Palletiser stops, pattern incomplete','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-27 04:30:35',NULL,'failure'),('TK-260727-344',19,'2026-07-27','19:07:41','Marc Dubois','Sara Lindqvist','Thermoformer seal temperature unstable','high','CLOSED','Sara Lindqvist',NULL,'2026-07-27 16:07:41',NULL,'failure'),('TK-260728-063',24,'2026-07-28','20:26:50','Rui Silva','Katerina Novak','Crane hoist limit switch intermittent','normal','CLOSED','Katerina Novak',NULL,'2026-07-28 17:26:50',NULL,'failure'),('TK-260728-067',2,'2026-07-28','18:29:00','Rui Silva','Taro Yamamoto','Spindle overheat alarm on cycle start','high','CLOSED','Taro Yamamoto',NULL,'2026-07-28 15:29:00',NULL,'failure'),('TK-260728-072',8,'2026-07-28','10:41:03','Marc Dubois','Jide Okafor','Robot in fault, brake release error','critical','CLOSED','Jide Okafor',NULL,'2026-07-28 07:41:03',NULL,'failure'),('TK-260728-117',10,'2026-07-28','21:40:04','Rui Silva','Jide Okafor','Weld quality NOK, porosity in seam','normal','CLOSED','Jide Okafor',NULL,'2026-07-28 18:40:04',NULL,'failure'),('TK-260728-170',19,'2026-07-28','17:30:00','Marc Dubois','Sara Lindqvist','Palletiser stops, pattern incomplete','high','CLOSED','Sara Lindqvist',NULL,'2026-07-28 14:30:00',NULL,'failure'),('TK-260728-252',13,'2026-07-28','17:43:53','Elise Moreau','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-07-28 14:43:53',NULL,'failure'),('TK-260728-284',22,'2026-07-28','17:27:52','Rui Silva','Katerina Novak','Dust extractor low suction at station 3','critical','CLOSED','Katerina Novak',NULL,'2026-07-28 14:27:52',NULL,'failure'),('TK-260728-317',9,'2026-07-28','06:43:56','Rui Silva','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-07-28 03:43:56',NULL,'failure'),('TK-260728-358',8,'2026-07-28','15:41:45','Elise Moreau','Jide Okafor','Robot in fault, brake release error','critical','CLOSED','Jide Okafor',NULL,'2026-07-28 12:41:45',NULL,'failure'),('TK-260728-419',2,'2026-07-28','15:15:10','Priya Nair','Taro Yamamoto','Spindle overheat alarm on cycle start','critical','CLOSED','Taro Yamamoto',NULL,'2026-07-28 12:15:10',NULL,'failure'),('TK-260729-027',15,'2026-07-29','19:34:51','Rui Silva','Sara Lindqvist','Conveyor belt tracking off to one side','critical','CLOSED','Sara Lindqvist',NULL,'2026-07-29 16:34:51',NULL,'failure'),('TK-260729-130',21,'2026-07-29','07:57:25','Rui Silva','Jide Okafor','Dust extractor low suction at station 3','high','CLOSED','Jide Okafor',NULL,'2026-07-29 04:57:25',NULL,'failure'),('TK-260729-217',24,'2026-07-29','08:38:18','Rui Silva','Katerina Novak','Crane hoist limit switch intermittent','high','CLOSED','Katerina Novak',NULL,'2026-07-29 05:38:18',NULL,'failure'),('TK-260729-241',6,'2026-07-29','14:52:31','Priya Nair','Jide Okafor','Hydraulic power pack noisy, foaming oil','critical','CLOSED','Jide Okafor',NULL,'2026-07-29 11:52:31',NULL,'failure'),('TK-260729-260',22,'2026-07-29','15:11:07','Priya Nair','Taro Yamamoto','Chiller low delta-T, machines running warm','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-29 12:11:07',NULL,'failure'),('TK-260729-263',6,'2026-07-29','13:06:52','Marc Dubois','Sara Lindqvist','Hydraulic power pack noisy, foaming oil','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-29 10:06:52',NULL,'failure'),('TK-260729-269',15,'2026-07-29','18:10:46','Elise Moreau','Sara Lindqvist','Conveyor belt tracking off to one side','normal','CLOSED','Sara Lindqvist',NULL,'2026-07-29 15:10:46',NULL,'failure'),('TK-260729-275',16,'2026-07-29','21:16:27','Priya Nair','Katerina Novak','Nutrunner torque out of window','normal','CLOSED','Katerina Novak',NULL,'2026-07-29 18:16:27',NULL,'failure'),('TK-260729-318',13,'2026-07-29','08:30:41','Marc Dubois','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-07-29 05:30:41',NULL,'failure'),('TK-260729-394',21,'2026-07-29','06:50:57','Marc Dubois','Katerina Novak','Dust extractor low suction at station 3','critical','CLOSED','Katerina Novak',NULL,'2026-07-29 03:50:57',NULL,'failure'),('TK-260730-155',2,'2026-07-30','07:17:08','Marc Dubois','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-30 04:17:08',NULL,'failure'),('TK-260730-186',13,'2026-07-30','12:31:42','Elise Moreau','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-07-30 09:31:42',NULL,'failure'),('TK-260730-196',21,'2026-07-30','11:02:53','Rui Silva','Taro Yamamoto','Dust extractor low suction at station 3','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-30 08:02:53',NULL,'failure'),('TK-260730-222',3,'2026-07-30','10:16:15','Rui Silva','Taro Yamamoto','Coolant pressure low, tool wear increasing','high','CLOSED','Taro Yamamoto',NULL,'2026-07-30 07:16:15',NULL,'failure'),('TK-260730-266',3,'2026-07-30','10:41:06','Elise Moreau','Taro Yamamoto','Coolant pressure low, tool wear increasing','high','CLOSED','Taro Yamamoto',NULL,'2026-07-30 07:41:06',NULL,'failure'),('TK-260730-274',13,'2026-07-30','21:01:59','Priya Nair','Katerina Novak','Leak test bench failing good parts','critical','CLOSED','Katerina Novak',NULL,'2026-07-30 18:01:59',NULL,'failure'),('TK-260730-280',18,'2026-07-30','09:49:32','Elise Moreau','Sara Lindqvist','Palletiser stops, pattern incomplete','critical','CLOSED','Sara Lindqvist',NULL,'2026-07-30 06:49:32',NULL,'failure'),('TK-260730-315',10,'2026-07-30','07:25:25','Elise Moreau','Jide Okafor','Weld quality NOK, porosity in seam','critical','CLOSED','Jide Okafor',NULL,'2026-07-30 04:25:25',NULL,'request'),('TK-260730-361',7,'2026-07-30','06:40:01','Rui Silva','Jide Okafor','Press brake not holding pressure','normal','CLOSED','Jide Okafor',NULL,'2026-07-30 03:40:01',NULL,'request'),('TK-260731-045',4,'2026-07-31','15:10:08','Elise Moreau','Taro Yamamoto','Spindle overheat alarm on cycle start','normal','CLOSED','Taro Yamamoto',NULL,'2026-07-31 12:10:08',NULL,'no_fault'),('TK-260731-123',17,'2026-07-31','18:27:34','Elise Moreau','Katerina Novak','Vision rig rejecting at 12 percent','high','CLOSED','Katerina Novak',NULL,'2026-07-31 15:27:34',NULL,'no_fault'),('TK-260731-149',22,'2026-07-31','15:59:48','Priya Nair','Taro Yamamoto','Compressor tripping on high discharge temp','high','CLOSED','Taro Yamamoto',NULL,'2026-07-31 12:59:48',NULL,'inspection'),('TK-260731-382',7,'2026-07-31','06:18:57','Marc Dubois','Jide Okafor','Laser cutter head crash on nest start','critical','CLOSED','Jide Okafor',NULL,'2026-07-31 03:18:57',NULL,'inspection'),('TK-GHOST-001',1,'2026-07-15','08:00:00','Production','Jide Okafor','Hydraulic pressure loss on clamp unit — awaiting seal kit','high','CLOSED','Jide Okafor',NULL,'2026-07-15 05:00:00',NULL,'failure'),('TK-GHOST-002',2,'2026-07-20','09:00:00','Production','Priya Nair','Servo drive fault, axis 3 — replacement drive on next-day delivery','high','CLOSED','Priya Nair',NULL,'2026-07-20 06:00:00',NULL,'failure'),('TK-GHOST-003',3,'2026-07-22','13:00:00','Production','Rui Silva','Conveyor gearbox noise — bearing on order overnight','high','CLOSED','Rui Silva',NULL,'2026-07-22 10:00:00',NULL,'failure');
+/*!40000 ALTER TABLE `active_tickets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `analytics_logs`
+--
+
+DROP TABLE IF EXISTS `analytics_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `analytics_logs` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `metric_name` varchar(50) NOT NULL,
+  `metric_value` decimal(10,2) NOT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `metric_name` (`metric_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `analytics_logs`
+--
+
+LOCK TABLES `analytics_logs` WRITE;
+/*!40000 ALTER TABLE `analytics_logs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `analytics_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `app_settings`
+--
+
+DROP TABLE IF EXISTS `app_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `app_settings` (
+  `setting_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(50) NOT NULL,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  PRIMARY KEY (`setting_id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `app_settings`
+--
+
+LOCK TABLES `app_settings` WRITE;
+/*!40000 ALTER TABLE `app_settings` DISABLE KEYS */;
+INSERT INTO `app_settings` VALUES (1,'EquipmentLabels','equip_label_symbology','qrcode'),(2,'EquipmentLabels','tooling_label_symbology','code128'),(3,'EquipmentLabels','equip_label_fields','{\"uuid\":true,\"serial\":true,\"brand_model\":false,\"location\":true,\"category_crit\":false}'),(4,'EquipmentLabels','equip_label_method','browser_sheet'),(5,'EquipmentLabels','equip_label_width_mm','50.8'),(6,'EquipmentLabels','equip_label_height_mm','25.4'),(7,'EquipmentLabels','equip_label_page_preset','a4'),(8,'EquipmentLabels','equip_label_page_width_mm','210'),(9,'EquipmentLabels','equip_label_page_height_mm','297'),(10,'EquipmentLabels','equip_label_margin_mm','10'),(11,'EquipmentLabels','equip_label_gap_x_mm','3'),(12,'EquipmentLabels','equip_label_gap_y_mm','3'),(13,'EquipmentLabels','equip_label_printer_ip',''),(14,'EquipmentLabels','equip_label_printer_port','9100'),(15,'EquipmentLabels','equip_label_dpi','203'),(16,'EquipmentLabels','equip_label_darkness','10'),(17,'EquipmentLabels','equip_label_speed','4'),(18,'Procurement','procurement_workflow_enabled','1'),(19,'Procurement','po_auto_approve_limit','0'),(20,'Inventory','stock_warn_pct','25'),(21,'KPI','target_calc_mode','static'),(22,'KPI','target_mttd','60'),(23,'KPI','target_mttr','120'),(24,'KPI','target_mtbf','48'),(25,'KPI','kpi_failure_classes','[\"failure\",\"induced\"]'),(26,'Security','session_lockout_time','360'),(27,'KPI','plant_holidays','[]');
+/*!40000 ALTER TABLE `app_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `audit_log`
+--
+
+DROP TABLE IF EXISTS `audit_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `audit_log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `actor_user_id` int(11) DEFAULT NULL,
+  `action` varchar(100) NOT NULL,
+  `entity_type` varchar(50) NOT NULL,
+  `entity_id` varchar(100) NOT NULL,
+  `before_json` longtext DEFAULT NULL CHECK (json_valid(`before_json`) or `before_json` is null),
+  `after_json` longtext DEFAULT NULL CHECK (json_valid(`after_json`) or `after_json` is null),
+  `notes` text DEFAULT NULL,
+  PRIMARY KEY (`log_id`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_action` (`action`),
+  KEY `idx_entity` (`entity_type`,`entity_id`),
+  KEY `idx_actor` (`actor_user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `audit_log`
+--
+
+LOCK TABLES `audit_log` WRITE;
+/*!40000 ALTER TABLE `audit_log` DISABLE KEYS */;
+INSERT INTO `audit_log` VALUES (1,'2026-05-18 13:40:44',2,'equipment.create','equipment','1',NULL,NULL,'Added asset to the register'),(2,'2026-02-06 11:10:53',2,'equipment.update','equipment','27',NULL,NULL,'Updated PM interval'),(3,'2026-07-16 12:56:38',1,'user.create','users','11',NULL,NULL,'Created technician account'),(4,'2026-04-07 09:56:11',1,'po.approve','purchase_orders','1',NULL,NULL,'Approved purchase request'),(5,'2026-03-01 09:01:49',10,'po.receive','purchase_orders','18',NULL,NULL,'Goods receipt recorded'),(6,'2026-06-27 05:17:05',10,'settings.update','app_settings','25',NULL,NULL,'Changed SLA target'),(7,'2026-06-09 10:09:48',2,'inventory.adjust','inventory_parts','14',NULL,NULL,'Stock count correction'),(8,'2026-04-29 06:35:23',2,'equipment.create','equipment','23',NULL,NULL,'Added asset to the register'),(9,'2026-03-25 16:53:34',1,'equipment.update','equipment','16',NULL,NULL,'Updated PM interval'),(10,'2026-04-04 08:25:35',1,'user.create','users','1',NULL,NULL,'Created technician account'),(11,'2026-03-13 11:58:43',2,'po.approve','purchase_orders','5',NULL,NULL,'Approved purchase request'),(12,'2026-03-18 10:35:16',10,'po.receive','purchase_orders','13',NULL,NULL,'Goods receipt recorded'),(13,'2026-03-02 16:57:43',10,'settings.update','app_settings','7',NULL,NULL,'Changed SLA target'),(14,'2026-07-22 03:54:01',10,'inventory.adjust','inventory_parts','25',NULL,NULL,'Stock count correction'),(15,'2026-02-24 14:52:58',1,'equipment.create','equipment','29',NULL,NULL,'Added asset to the register'),(16,'2026-02-09 12:36:08',2,'equipment.update','equipment','30',NULL,NULL,'Updated PM interval'),(17,'2026-05-30 11:04:03',10,'user.create','users','18',NULL,NULL,'Created technician account'),(18,'2026-07-27 06:14:22',2,'po.approve','purchase_orders','15',NULL,NULL,'Approved purchase request'),(19,'2026-04-02 16:08:54',10,'po.receive','purchase_orders','29',NULL,NULL,'Goods receipt recorded'),(20,'2026-04-10 05:58:15',10,'settings.update','app_settings','8',NULL,NULL,'Changed SLA target'),(21,'2026-03-13 15:52:24',1,'inventory.adjust','inventory_parts','8',NULL,NULL,'Stock count correction'),(22,'2026-07-25 14:25:08',1,'equipment.create','equipment','28',NULL,NULL,'Added asset to the register'),(23,'2026-05-31 16:12:57',2,'equipment.update','equipment','3',NULL,NULL,'Updated PM interval'),(24,'2026-04-17 15:43:54',1,'user.create','users','27',NULL,NULL,'Created technician account'),(25,'2026-06-11 16:32:23',10,'po.approve','purchase_orders','21',NULL,NULL,'Approved purchase request'),(26,'2026-07-15 12:15:28',1,'po.receive','purchase_orders','10',NULL,NULL,'Goods receipt recorded'),(27,'2026-02-23 13:50:23',1,'settings.update','app_settings','5',NULL,NULL,'Changed SLA target'),(28,'2026-03-29 16:55:49',2,'inventory.adjust','inventory_parts','26',NULL,NULL,'Stock count correction'),(29,'2026-03-29 03:16:46',10,'equipment.create','equipment','5',NULL,NULL,'Added asset to the register'),(30,'2026-04-22 09:55:19',1,'equipment.update','equipment','20',NULL,NULL,'Updated PM interval'),(31,'2026-02-03 15:37:47',1,'user.create','users','2',NULL,NULL,'Created technician account'),(32,'2026-07-03 05:36:53',2,'po.approve','purchase_orders','11',NULL,NULL,'Approved purchase request'),(33,'2026-03-30 10:00:13',1,'po.receive','purchase_orders','8',NULL,NULL,'Goods receipt recorded'),(34,'2026-03-03 19:05:54',1,'settings.update','app_settings','11',NULL,NULL,'Changed SLA target'),(35,'2026-06-16 15:41:22',1,'inventory.adjust','inventory_parts','1',NULL,NULL,'Stock count correction'),(36,'2026-03-10 18:34:12',1,'equipment.create','equipment','25',NULL,NULL,'Added asset to the register'),(37,'2026-05-06 08:02:13',2,'equipment.update','equipment','21',NULL,NULL,'Updated PM interval'),(38,'2026-05-12 08:50:25',1,'user.create','users','15',NULL,NULL,'Created technician account'),(39,'2026-06-21 07:40:41',2,'po.approve','purchase_orders','5',NULL,NULL,'Approved purchase request'),(40,'2026-02-07 04:28:28',2,'po.receive','purchase_orders','6',NULL,NULL,'Goods receipt recorded');
+/*!40000 ALTER TABLE `audit_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `department_budget_logs`
+--
+
+DROP TABLE IF EXISTS `department_budget_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `department_budget_logs` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `dept_id` int(11) NOT NULL,
+  `action_type` varchar(50) NOT NULL,
+  `amount` decimal(12,2) NOT NULL,
+  `notes` text DEFAULT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`log_id`),
+  KEY `dept_id` (`dept_id`),
+  KEY `changed_by` (`changed_by`),
+  CONSTRAINT `department_budget_logs_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `departments` (`dept_id`) ON DELETE CASCADE,
+  CONSTRAINT `department_budget_logs_ibfk_2` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `department_budget_logs`
+--
+
+LOCK TABLES `department_budget_logs` WRITE;
+/*!40000 ALTER TABLE `department_budget_logs` DISABLE KEYS */;
+INSERT INTO `department_budget_logs` VALUES (1,1,'allocation',250000.00,'Annual budget allocated for the current financial year.',1,'2025-10-06 06:21:12'),(2,2,'allocation',180000.00,'Annual budget allocated for the current financial year.',1,'2025-10-12 17:39:46'),(3,3,'allocation',95000.00,'Annual budget allocated for the current financial year.',1,'2025-10-12 13:09:07'),(4,4,'allocation',60000.00,'Annual budget allocated for the current financial year.',1,'2025-10-10 06:01:23'),(5,5,'allocation',40000.00,'Annual budget allocated for the current financial year.',1,'2025-10-16 13:26:26'),(6,1,'consumption',30938.15,'Cumulative spend against received purchase orders.',10,'2026-07-23 04:37:04'),(7,2,'consumption',2894.70,'Cumulative spend against received purchase orders.',10,'2026-07-08 04:09:37'),(8,3,'consumption',3920.25,'Cumulative spend against received purchase orders.',10,'2026-07-12 04:35:22'),(9,4,'consumption',1455.90,'Cumulative spend against received purchase orders.',10,'2026-07-01 04:17:20'),(10,5,'consumption',17463.25,'Cumulative spend against received purchase orders.',10,'2026-07-23 11:09:02');
+/*!40000 ALTER TABLE `department_budget_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `departments`
+--
+
+DROP TABLE IF EXISTS `departments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `departments` (
+  `dept_id` int(11) NOT NULL AUTO_INCREMENT,
+  `dept_name` varchar(100) NOT NULL,
+  `budget_allocated` decimal(12,2) DEFAULT 0.00,
+  `budget_consumed` decimal(12,2) DEFAULT 0.00,
+  PRIMARY KEY (`dept_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `departments`
+--
+
+LOCK TABLES `departments` WRITE;
+/*!40000 ALTER TABLE `departments` DISABLE KEYS */;
+INSERT INTO `departments` VALUES (1,'Maintenance Operations',250000.00,30938.15),(2,'Production Support',180000.00,2894.70),(3,'Facilities & Utilities',95000.00,3920.25),(4,'Tooling & Fixtures',60000.00,1455.90),(5,'Health, Safety & Env.',40000.00,17463.25);
+/*!40000 ALTER TABLE `departments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `donation_prompt_prefs`
+--
+
+DROP TABLE IF EXISTS `donation_prompt_prefs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `donation_prompt_prefs` (
+  `user_id` int(11) NOT NULL,
+  `status` enum('shown','snoozed','dismissed') NOT NULL DEFAULT 'shown',
+  `snooze_until` datetime DEFAULT NULL,
+  `last_action` varchar(40) DEFAULT NULL COMMENT 'coffee | coffee_snooze | no_coffee',
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `fk_donation_prompt_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `donation_prompt_prefs`
+--
+
+LOCK TABLES `donation_prompt_prefs` WRITE;
+/*!40000 ALTER TABLE `donation_prompt_prefs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `donation_prompt_prefs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eam_directory`
+--
+
+DROP TABLE IF EXISTS `eam_directory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eam_directory` (
+  `member_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ull_name` varchar(100) NOT NULL,
+  `ole_type` varchar(50) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eam_directory`
+--
+
+LOCK TABLES `eam_directory` WRITE;
+/*!40000 ALTER TABLE `eam_directory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eam_directory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `equipment`
+--
+
+DROP TABLE IF EXISTS `equipment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `equipment` (
+  `equip_id` int(11) NOT NULL AUTO_INCREMENT,
+  `asset_uuid` varchar(36) DEFAULT NULL,
+  `oem_brand` varchar(100) DEFAULT NULL,
+  `oem_model` varchar(100) DEFAULT NULL,
+  `oem_serial` varchar(100) DEFAULT NULL,
+  `equip_name` varchar(100) NOT NULL,
+  `parent_asset_id` int(11) DEFAULT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `criticality` enum('A','B','C') DEFAULT 'B',
+  `equipment_type` varchar(100) DEFAULT NULL,
+  `plant_name` varchar(100) DEFAULT NULL,
+  `line_name` varchar(100) DEFAULT NULL,
+  `station_name` varchar(100) DEFAULT NULL,
+  `geo_coords` varchar(100) DEFAULT NULL,
+  `date_of_purchase` date DEFAULT NULL,
+  `vendor_id` int(11) DEFAULT NULL,
+  `po_value` decimal(12,2) DEFAULT 0.00,
+  `fat_date` date DEFAULT NULL,
+  `sat_date` date DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 0,
+  `lifecycle_years` int(11) DEFAULT 10,
+  `depreciation_rule` varchar(100) DEFAULT NULL,
+  `warranty_expiry` date DEFAULT NULL,
+  `eol_date` date DEFAULT NULL,
+  `base_speed` varchar(50) DEFAULT NULL,
+  `base_pressure` varchar(50) DEFAULT NULL,
+  `base_temp` varchar(50) DEFAULT NULL,
+  `base_voltage` varchar(50) DEFAULT NULL,
+  `pm_hours_interval` int(11) DEFAULT NULL,
+  `pm_days_interval` int(11) DEFAULT NULL,
+  `last_pm_date` date DEFAULT NULL,
+  `loto_protocol` text DEFAULT NULL,
+  `sop_link` varchar(255) DEFAULT NULL,
+  `technical_details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`technical_details`)),
+  `workshop_id` int(11) DEFAULT NULL,
+  `line_id` int(11) DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `asset_purchase_id` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`equip_id`),
+  UNIQUE KEY `asset_uuid` (`asset_uuid`),
+  KEY `parent_asset_id` (`parent_asset_id`),
+  KEY `idx_deleted_at` (`deleted_at`),
+  CONSTRAINT `equipment_ibfk_1` FOREIGN KEY (`parent_asset_id`) REFERENCES `equipment` (`equip_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `equipment`
+--
+
+LOCK TABLES `equipment` WRITE;
+/*!40000 ALTER TABLE `equipment` DISABLE KEYS */;
+INSERT INTO `equipment` VALUES (1,'WCC-8D450E-0001','DMG Mori','NHX 5000','DMG-743203','DMG Mori NHX 5000 Machining Ctr',NULL,'Machining','A','CNC Machining Center','Plant A','CNC Cell 1','ST-01',NULL,'2024-05-04',8,309000.00,NULL,NULL,1,15,NULL,'2027-08-04','2038-05-04',NULL,NULL,NULL,'690V 3ph',NULL,30,'2026-05-04','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',1,1,NULL,NULL),(2,'WCC-31F9EC-0002','Yamazaki Mazak','VTC-800/30SR','YAM-300940','Mazak VTC-800 Vertical Center',NULL,'Machining','A','CNC Machining Center','Plant A','CNC Cell 1','ST-02',NULL,'2018-11-05',5,113000.00,NULL,NULL,1,12,NULL,'2022-12-05','2038-11-05',NULL,NULL,NULL,'400V 3ph',NULL,180,'2026-06-06','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',1,1,NULL,NULL),(3,'WCC-534B6F-0003','Okuma','LB3000 EX II','OKU-772775','Okuma LB3000 EX II Lathe',NULL,'Machining','A','CNC Turning Center','Plant A','CNC Cell 2','ST-03',NULL,'2015-10-31',1,25000.00,NULL,NULL,1,15,NULL,'2020-01-31','2034-10-31',NULL,NULL,NULL,'400V 3ph',NULL,30,'2026-06-02','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Fanuc 31i\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',1,2,NULL,NULL),(4,'WCC-A8CC0E-0004','Haas','VF-4SS','HAA-119831','Haas VF-4SS Mill',NULL,'Machining','B','CNC Machining Center','Plant A','CNC Cell 2','ST-04',NULL,'2018-03-14',2,252000.00,NULL,NULL,1,17,NULL,'2021-06-14','2033-03-14',NULL,NULL,NULL,'400V 3ph',NULL,90,'2026-05-15','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Beckhoff CX2040\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',1,2,NULL,NULL),(5,'WCC-FBCE45-0005','Knoll','KTS-40','KNO-535390','Chip Conveyor & Coolant Unit 1',NULL,'Auxiliary','C','Coolant System','Plant A','CNC Cell 1','ST-05',NULL,'2022-02-22',3,458000.00,NULL,NULL,1,18,NULL,'2026-06-22','2037-02-22',NULL,NULL,NULL,'400V 3ph',NULL,180,'2026-07-17','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Fanuc 31i\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',1,1,NULL,NULL),(6,'WCC-F0F3A2-0006','Knoll','KTS-40','KNO-381094','Chip Conveyor & Coolant Unit 2',NULL,'Auxiliary','C','Coolant System','Plant A','CNC Cell 2','ST-06',NULL,'2024-01-31',2,390000.00,NULL,NULL,1,17,NULL,'2028-07-31','2038-01-31',NULL,NULL,NULL,'690V 3ph',NULL,30,'2026-04-09','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',1,2,NULL,NULL),(7,'WCC-8E8498-0007','Fronius','TPS 400i','FRO-687748','Fronius TPS 400i Weld Station',NULL,'Fabrication','B','Welding Station','Plant A','Fabrication Line','ST-07',NULL,'2016-11-03',1,337000.00,NULL,NULL,1,19,NULL,'2021-07-03','2033-11-03',NULL,NULL,NULL,'690V 3ph',NULL,30,'2026-07-14','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',1,3,NULL,NULL),(8,'WCC-502B65-0008','KUKA','KR 60-3','KUK-410280','KUKA KR 60 Weld Robot',NULL,'Robotics','A','Articulated Robot','Plant A','Fabrication Line','ST-08',NULL,'2017-05-04',4,59000.00,NULL,NULL,1,17,NULL,'2020-10-04','2030-05-04',NULL,NULL,NULL,'400V 3ph',NULL,180,'2026-04-16','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',1,3,NULL,NULL),(9,'WCC-9B4557-0009','Amada','HFE 1303','AMA-775019','Amada HFE 1303 Press Brake',NULL,'Fabrication','B','Press Brake','Plant A','Fabrication Line','ST-09',NULL,'2016-07-19',8,386000.00,NULL,NULL,1,15,NULL,'2021-06-19','2035-07-19',NULL,NULL,NULL,'400V 3ph',NULL,180,'2026-06-30','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Beckhoff CX2040\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',1,3,NULL,NULL),(10,'WCC-755332-0010','TRUMPF','TruLaser 3030','TRU-789102','Trumpf TruLaser 3030 Cutter',NULL,'Fabrication','A','Laser Cutter','Plant A','Fabrication Line','ST-10',NULL,'2023-02-20',5,279000.00,NULL,NULL,1,13,NULL,'2027-07-20','2035-02-20',NULL,NULL,NULL,'690V 3ph',NULL,180,'2026-06-24','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Fanuc 31i\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',1,3,NULL,NULL),(11,'WCC-3A3BF2-0011','Interroll','MCP-2000','INT-678593','Assembly Conveyor A1 (Main)',NULL,'Conveyance','B','Belt Conveyor','Plant B','Assembly Line 1','ST-11',NULL,'2021-10-22',3,55000.00,NULL,NULL,1,13,NULL,'2024-12-22','2035-10-22',NULL,NULL,NULL,'690V 3ph',NULL,180,'2026-05-25','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',2,4,NULL,NULL),(12,'WCC-601C77-0012','Atlas Copco','Tensor STR61','ATL-600073','Atlas Copco Nutrunner Cell A1',NULL,'Assembly','B','Torque System','Plant B','Assembly Line 1','ST-12',NULL,'2020-12-08',4,199000.00,NULL,NULL,1,15,NULL,'2025-01-08','2033-12-08',NULL,NULL,NULL,'690V 3ph',NULL,30,'2026-04-27','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',2,4,NULL,NULL),(13,'WCC-5A9A2D-0013','ATEQ','F620','ATE-629219','Leak Test Bench A1',NULL,'Quality','A','Leak Tester','Plant B','Assembly Line 1','ST-13',NULL,'2023-12-12',8,162000.00,NULL,NULL,1,17,NULL,'2026-08-12','2038-12-12',NULL,NULL,NULL,'400V 3ph',NULL,30,'2026-06-17','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',2,4,NULL,NULL),(14,'WCC-D719B0-0014','FANUC','M-20iD/25','FAN-533471','FANUC M-20iD Pick and Place',NULL,'Robotics','B','Articulated Robot','Plant B','Assembly Line 2','ST-14',NULL,'2015-04-02',4,381000.00,NULL,NULL,1,12,NULL,'2018-12-02','2031-04-02',NULL,NULL,NULL,'400V 3ph',NULL,60,'2026-04-30','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Fanuc 31i\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',2,5,NULL,NULL),(15,'WCC-7E387A-0015','Interroll','MCP-1600','INT-117733','Assembly Conveyor A2',NULL,'Conveyance','C','Belt Conveyor','Plant B','Assembly Line 2','ST-15',NULL,'2021-03-22',5,330000.00,NULL,NULL,1,18,NULL,'2024-12-22','2040-03-22',NULL,NULL,NULL,'230V 1ph',NULL,90,'2026-07-08','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',2,5,NULL,NULL),(16,'WCC-F7DCAA-0016','Promess','EMAP-100','PRO-370898','Servo Press Station A2',NULL,'Assembly','A','Servo Press','Plant B','Assembly Line 2','ST-16',NULL,'2017-07-05',2,362000.00,NULL,NULL,1,19,NULL,'2021-10-05','2037-07-05',NULL,NULL,NULL,'400V 3ph',NULL,30,'2026-06-13','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',2,5,NULL,NULL),(17,'WCC-A0CCC5-0017','Cognex','In-Sight 9912','COG-301647','Vision Inspection Rig A2',NULL,'Quality','B','Vision System','Plant B','Assembly Line 2','ST-17',NULL,'2019-11-02',3,195000.00,NULL,NULL,1,14,NULL,'2022-02-02','2034-11-02',NULL,NULL,NULL,'400V 3ph',NULL,30,'2026-04-11','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',2,5,NULL,NULL),(18,'WCC-6A7621-0018','MULTIVAC','R 145','MUL-635742','Multivac R145 Thermoformer',NULL,'Packaging','B','Thermoformer','Plant B','Packaging Line','ST-18',NULL,'2020-10-29',6,41000.00,NULL,NULL,1,12,NULL,'2023-05-29','2033-10-29',NULL,NULL,NULL,'400V 3ph',NULL,90,'2026-07-02','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',2,6,NULL,NULL),(19,'WCC-A7AB84-0019','Markem-Imaje','9450','MAR-297993','Markem-Imaje 9450 Coder',NULL,'Packaging','C','Inkjet Coder','Plant B','Packaging Line','ST-19',NULL,'2021-07-29',2,466000.00,NULL,NULL,1,16,NULL,'2023-12-29','2041-07-29',NULL,NULL,NULL,'400V 3ph',NULL,30,'2026-07-18','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Beijer X2\"}',2,6,NULL,NULL),(20,'WCC-5481EA-0020','Robopac','Genesis HS','ROB-686839','Robopac Palletiser P1',NULL,'Packaging','B','Palletiser','Plant B','Packaging Line','ST-20',NULL,'2016-02-11',6,326000.00,NULL,NULL,1,15,NULL,'2018-05-11','2030-02-11',NULL,NULL,NULL,'400V 3ph',NULL,90,'2026-05-29','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Fanuc 31i\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',2,6,NULL,NULL),(21,'WCC-F2F49F-0021','Atlas Copco','GA 55 VSD+','ATL-498061','Atlas Copco GA 55 Compressor',NULL,'Utilities','A','Air Compressor','Plant A',NULL,'Utilities',NULL,'2020-10-11',2,45000.00,NULL,NULL,1,19,NULL,'2025-10-11','2036-10-11',NULL,NULL,NULL,'400V 3ph',NULL,60,'2026-05-23','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',1,NULL,NULL,NULL),(22,'WCC-BF4148-0022','Trane','CGAM 070','TRA-500667','Chiller Unit CH-1',NULL,'Utilities','A','Process Chiller','Plant A',NULL,'Utilities',NULL,'2021-01-24',1,85000.00,NULL,NULL,1,15,NULL,'2023-06-24','2040-01-24',NULL,NULL,NULL,'690V 3ph',NULL,30,'2026-04-16','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Allen-Bradley CompactLogix\",\"network\":\"PROFINET\",\"hmi\":\"Siemens Comfort 12in\"}',1,NULL,NULL,NULL),(23,'WCC-6F3C79-0023','Nederman','NFPD 4000','NED-598316','Dust Extraction Unit DE-2',NULL,'Utilities','C','Dust Extractor','Plant A',NULL,'Utilities',NULL,'2019-11-23',3,456000.00,NULL,NULL,1,18,NULL,'2024-06-23','2033-11-23',NULL,NULL,NULL,'400V 3ph',NULL,60,'2026-06-08','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Siemens S7-1500\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',1,NULL,NULL,NULL),(24,'WCC-FFE91B-0024','Konecranes','CXT 5000','KON-674115','Overhead Crane 5T Bay 1',NULL,'Handling','B','Overhead Crane','Plant A',NULL,'Utilities',NULL,'2022-01-09',3,51000.00,NULL,NULL,1,19,NULL,'2024-05-09','2036-01-09',NULL,NULL,NULL,'400V 3ph',NULL,60,'2026-06-16','1. Notify line supervisor.\n2. Cycle stop, wait for safe state.\n3. Isolate main disconnect, apply personal lock + tag.\n4. Bleed residual pneumatic/hydraulic pressure.\n5. Verify zero energy before opening guards.',NULL,'{\"control\":\"Beckhoff CX2040\",\"network\":\"PROFINET\",\"hmi\":\"Fanuc iHMI\"}',1,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `equipment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `equipment_bom`
+--
+
+DROP TABLE IF EXISTS `equipment_bom`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `equipment_bom` (
+  `bom_id` int(11) NOT NULL AUTO_INCREMENT,
+  `equip_id` int(11) NOT NULL,
+  `part_id` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT 1,
+  PRIMARY KEY (`bom_id`),
+  UNIQUE KEY `unique_bom_part` (`equip_id`,`part_id`),
+  CONSTRAINT `equipment_bom_ibfk_1` FOREIGN KEY (`equip_id`) REFERENCES `equipment` (`equip_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `equipment_bom`
+--
+
+LOCK TABLES `equipment_bom` WRITE;
+/*!40000 ALTER TABLE `equipment_bom` DISABLE KEYS */;
+INSERT INTO `equipment_bom` VALUES (1,1,1,2),(2,1,2,2),(3,1,24,2),(4,1,23,4),(5,1,33,1),(6,1,32,1),(7,1,7,4),(8,1,25,6),(9,1,26,10),(10,1,13,1),(11,2,1,2),(12,2,24,2),(13,2,23,4),(14,2,33,1),(15,2,7,4),(16,2,25,6),(17,2,27,2),(18,2,13,1),(19,3,2,2),(20,3,3,1),(21,3,33,1),(22,3,32,1),(23,3,26,10),(24,3,13,1),(25,3,14,2),(26,8,12,1),(27,8,13,1),(28,8,14,2),(29,8,15,1),(30,8,29,20),(31,8,28,4),(32,10,23,4),(33,10,24,2),(34,10,16,2),(35,10,15,1),(36,13,5,1),(37,13,10,2),(38,13,11,1),(39,13,9,1),(40,16,12,1),(41,16,13,1),(42,16,15,1),(43,16,23,2),(44,21,8,2),(45,21,14,1),(46,21,20,2),(47,22,14,1),(48,22,10,1),(49,22,15,1);
+/*!40000 ALTER TABLE `equipment_bom` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `equipment_documents`
+--
+
+DROP TABLE IF EXISTS `equipment_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `equipment_documents` (
+  `doc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `equip_id` int(11) NOT NULL,
+  `doc_title` varchar(255) NOT NULL,
+  `doc_type` varchar(50) DEFAULT 'SOP' COMMENT 'SOP, Manual, Diagram, etc.',
+  `file_path` varchar(500) NOT NULL COMMENT 'Relative path inside _doc/',
+  `uploaded_by` varchar(100) NOT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`doc_id`),
+  KEY `fk_equip_docs_equip_id` (`equip_id`),
+  CONSTRAINT `fk_equip_docs_equip_id` FOREIGN KEY (`equip_id`) REFERENCES `equipment` (`equip_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `equipment_documents`
+--
+
+LOCK TABLES `equipment_documents` WRITE;
+/*!40000 ALTER TABLE `equipment_documents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `equipment_documents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inventory_ledger`
+--
+
+DROP TABLE IF EXISTS `inventory_ledger`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inventory_ledger` (
+  `ledger_id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `part_id` int(11) NOT NULL,
+  `change_qty` int(11) NOT NULL COMMENT 'positive for receipts, negative for consumption',
+  `reason` varchar(100) NOT NULL COMMENT 'e.g. wo_consume, ticket_action, po_receipt, adjustment',
+  `reference_type` varchar(50) DEFAULT NULL COMMENT 'work_orders, active_tickets, purchase_orders',
+  `reference_id` varchar(100) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `actor_user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ledger_id`),
+  KEY `idx_part` (`part_id`),
+  KEY `idx_created` (`created_at`),
+  KEY `idx_reason` (`reason`),
+  CONSTRAINT `fk_ledger_part` FOREIGN KEY (`part_id`) REFERENCES `inventory_parts` (`part_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=343 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inventory_ledger`
+--
+
+LOCK TABLES `inventory_ledger` WRITE;
+/*!40000 ALTER TABLE `inventory_ledger` DISABLE KEYS */;
+INSERT INTO `inventory_ledger` VALUES (1,'2026-06-20 22:50:04',13,-3,'ticket_consume','active_tickets','TK-260620-010','Consumed during repair of TK-260620-010',7),(2,'2026-03-17 18:59:33',18,-2,'ticket_consume','active_tickets','TK-260317-011','Consumed during repair of TK-260317-011',5),(3,'2026-05-27 15:15:02',23,-3,'ticket_consume','active_tickets','TK-260527-012','Consumed during repair of TK-260527-012',7),(4,'2025-11-21 10:48:11',33,-2,'ticket_consume','active_tickets','TK-251121-014','Consumed during repair of TK-251121-014',5),(5,'2026-06-07 09:11:31',3,-2,'ticket_consume','active_tickets','TK-260607-015','Consumed during repair of TK-260607-015',5),(6,'2026-07-26 07:57:35',8,-2,'ticket_consume','active_tickets','TK-260726-016','Consumed during repair of TK-260726-016',5),(7,'2026-07-24 10:50:38',13,-3,'ticket_consume','active_tickets','TK-260724-017','Consumed during repair of TK-260724-017',6),(8,'2026-06-10 18:39:53',18,-2,'ticket_consume','active_tickets','TK-260610-018','Consumed during repair of TK-260610-018',6),(9,'2026-05-20 11:31:28',28,-2,'ticket_consume','active_tickets','TK-260520-020','Consumed during repair of TK-260520-020',6),(10,'2025-12-01 16:55:56',33,-3,'ticket_consume','active_tickets','TK-251201-021','Consumed during repair of TK-251201-021',4),(11,'2026-05-29 17:13:10',3,-3,'ticket_consume','active_tickets','TK-260529-022','Consumed during repair of TK-260529-022',4),(12,'2025-12-29 21:36:47',8,-2,'ticket_consume','active_tickets','TK-251229-023','Consumed during repair of TK-251229-023',6),(13,'2026-05-18 15:35:48',13,-3,'ticket_consume','active_tickets','TK-260518-024','Consumed during repair of TK-260518-024',4),(14,'2026-07-29 19:03:51',28,-2,'ticket_consume','active_tickets','TK-260729-027','Consumed during repair of TK-260729-027',5),(15,'2025-12-26 14:52:10',33,-2,'ticket_consume','active_tickets','TK-251226-028','Consumed during repair of TK-251226-028',4),(16,'2026-05-14 07:33:40',3,-3,'ticket_consume','active_tickets','TK-260514-029','Consumed during repair of TK-260514-029',4),(17,'2026-01-03 14:00:39',8,-1,'ticket_consume','active_tickets','TK-260103-030','Consumed during repair of TK-260103-030',4),(18,'2026-03-30 14:42:57',23,-1,'ticket_consume','active_tickets','TK-260330-033','Consumed during repair of TK-260330-033',7),(19,'2026-01-28 09:51:31',28,-3,'ticket_consume','active_tickets','TK-260128-034','Consumed during repair of TK-260128-034',7),(20,'2026-06-15 16:55:00',3,-2,'ticket_consume','active_tickets','TK-260615-036','Consumed during repair of TK-260615-036',5),(21,'2026-06-27 19:30:00',8,-2,'ticket_consume','active_tickets','TK-260627-037','Consumed during repair of TK-260627-037',5),(22,'2026-05-03 18:02:20',13,-2,'ticket_consume','active_tickets','TK-260503-038','Consumed during repair of TK-260503-038',5),(23,'2026-04-07 09:06:07',18,-2,'ticket_consume','active_tickets','TK-260407-039','Consumed during repair of TK-260407-039',6),(24,'2025-12-31 14:40:39',23,-1,'ticket_consume','active_tickets','TK-251231-040','Consumed during repair of TK-251231-040',6),(25,'2025-12-25 11:17:37',28,-1,'ticket_consume','active_tickets','TK-251225-041','Consumed during repair of TK-251225-041',7),(26,'2026-06-01 20:21:20',33,-1,'ticket_consume','active_tickets','TK-260601-042','Consumed during repair of TK-260601-042',6),(27,'2025-12-13 13:55:06',3,-3,'ticket_consume','active_tickets','TK-251213-043','Consumed during repair of TK-251213-043',4),(28,'2026-07-31 17:00:08',13,-3,'ticket_consume','active_tickets','TK-260731-045','Consumed during repair of TK-260731-045',6),(29,'2026-02-15 07:33:45',18,-2,'ticket_consume','active_tickets','TK-260215-046','Consumed during repair of TK-260215-046',7),(30,'2025-12-29 08:46:30',23,-3,'ticket_consume','active_tickets','TK-251229-047','Consumed during repair of TK-251229-047',6),(31,'2026-05-16 11:34:39',28,-3,'ticket_consume','active_tickets','TK-260516-048','Consumed during repair of TK-260516-048',6),(32,'2026-06-26 05:40:10',33,-1,'ticket_consume','active_tickets','TK-260626-049','Consumed during repair of TK-260626-049',5),(33,'2025-12-28 08:12:06',3,-2,'ticket_consume','active_tickets','TK-251228-050','Consumed during repair of TK-251228-050',4),(34,'2026-07-15 14:02:49',8,-1,'ticket_consume','active_tickets','TK-260715-051','Consumed during repair of TK-260715-051',4),(35,'2025-12-05 21:44:52',18,-1,'ticket_consume','active_tickets','TK-251205-053','Consumed during repair of TK-251205-053',4),(36,'2026-07-26 15:36:53',23,-2,'ticket_consume','active_tickets','TK-260726-054','Consumed during repair of TK-260726-054',7),(37,'2025-12-20 19:18:16',28,-2,'ticket_consume','active_tickets','TK-251220-055','Consumed during repair of TK-251220-055',7),(38,'2026-05-22 20:27:40',8,-3,'ticket_consume','active_tickets','TK-260522-058','Consumed during repair of TK-260522-058',5),(39,'2026-06-30 11:54:54',13,-3,'ticket_consume','active_tickets','TK-260630-059','Consumed during repair of TK-260630-059',5),(40,'2026-04-15 08:33:43',18,-2,'ticket_consume','active_tickets','TK-260415-060','Consumed during repair of TK-260415-060',5),(41,'2026-06-25 14:06:26',23,-1,'ticket_consume','active_tickets','TK-260625-061','Consumed during repair of TK-260625-061',6),(42,'2026-07-28 19:38:00',18,-3,'ticket_consume','active_tickets','TK-260728-067','Consumed during repair of TK-260728-067',6),(43,'2026-02-18 09:43:18',33,-3,'ticket_consume','active_tickets','TK-260218-070','Consumed during repair of TK-260218-070',6),(44,'2026-01-03 12:24:06',3,-1,'ticket_consume','active_tickets','TK-260103-071','Consumed during repair of TK-260103-071',5),(45,'2026-07-28 10:03:03',8,-3,'ticket_consume','active_tickets','TK-260728-072','Consumed during repair of TK-260728-072',4),(46,'2026-02-12 08:36:49',13,-1,'ticket_consume','active_tickets','TK-260212-073','Consumed during repair of TK-260212-073',4),(47,'2026-07-11 08:16:01',28,-3,'ticket_consume','active_tickets','TK-260711-076','Consumed during repair of TK-260711-076',7),(48,'2026-03-15 13:37:26',3,-2,'ticket_consume','active_tickets','TK-260315-078','Consumed during repair of TK-260315-078',7),(49,'2026-07-17 21:29:56',8,-2,'ticket_consume','active_tickets','TK-260717-079','Consumed during repair of TK-260717-079',6),(50,'2026-01-24 13:20:45',23,-1,'ticket_consume','active_tickets','TK-260124-082','Consumed during repair of TK-260124-082',5),(51,'2026-07-27 07:52:46',28,-2,'ticket_consume','active_tickets','TK-260727-083','Consumed during repair of TK-260727-083',6),(52,'2025-11-07 08:15:15',3,-2,'ticket_consume','active_tickets','TK-251107-085','Consumed during repair of TK-251107-085',5),(53,'2026-01-27 06:44:52',8,-3,'ticket_consume','active_tickets','TK-260127-086','Consumed during repair of TK-260127-086',6),(54,'2026-05-27 16:29:55',13,-1,'ticket_consume','active_tickets','TK-260527-087','Consumed during repair of TK-260527-087',4),(55,'2026-07-15 15:36:10',18,-3,'ticket_consume','active_tickets','TK-260715-088','Consumed during repair of TK-260715-088',6),(56,'2026-01-06 14:26:46',23,-2,'ticket_consume','active_tickets','TK-260106-089','Consumed during repair of TK-260106-089',6),(57,'2026-07-25 17:14:32',3,-2,'ticket_consume','active_tickets','TK-260725-092','Consumed during repair of TK-260725-092',6),(58,'2026-05-21 16:37:24',8,-2,'ticket_consume','active_tickets','TK-260521-093','Consumed during repair of TK-260521-093',5),(59,'2026-06-05 12:10:41',13,-3,'ticket_consume','active_tickets','TK-260605-094','Consumed during repair of TK-260605-094',4),(60,'2026-03-20 19:35:43',23,-2,'ticket_consume','active_tickets','TK-260320-096','Consumed during repair of TK-260320-096',4),(61,'2026-06-09 20:16:11',28,-3,'ticket_consume','active_tickets','TK-260609-097','Consumed during repair of TK-260609-097',7),(62,'2026-06-02 08:41:21',8,-2,'ticket_consume','active_tickets','TK-260602-100','Consumed during repair of TK-260602-100',7),(63,'2026-05-15 14:47:07',13,-3,'ticket_consume','active_tickets','TK-260515-101','Consumed during repair of TK-260515-101',6),(64,'2026-02-01 09:28:16',18,-2,'ticket_consume','active_tickets','TK-260201-102','Consumed during repair of TK-260201-102',5),(65,'2026-01-20 20:39:01',23,-1,'ticket_consume','active_tickets','TK-260120-103','Consumed during repair of TK-260120-103',5),(66,'2026-03-27 07:31:02',33,-1,'ticket_consume','active_tickets','TK-260327-105','Consumed during repair of TK-260327-105',6),(67,'2026-02-12 19:28:46',3,-3,'ticket_consume','active_tickets','TK-260212-106','Consumed during repair of TK-260212-106',6),(68,'2025-11-13 11:02:59',8,-2,'ticket_consume','active_tickets','TK-251113-107','Consumed during repair of TK-251113-107',7),(69,'2026-07-20 12:22:59',13,-1,'ticket_consume','active_tickets','TK-260720-108','Consumed during repair of TK-260720-108',6),(70,'2026-03-24 15:01:23',23,-2,'ticket_consume','active_tickets','TK-260324-110','Consumed during repair of TK-260324-110',4),(71,'2026-06-18 23:55:59',28,-1,'ticket_consume','active_tickets','TK-260618-111','Consumed during repair of TK-260618-111',6),(72,'2026-07-21 15:05:47',33,-1,'ticket_consume','active_tickets','TK-260721-112','Consumed during repair of TK-260721-112',6),(73,'2026-01-07 13:39:46',8,-2,'ticket_consume','active_tickets','TK-260107-114','Consumed during repair of TK-260107-114',6),(74,'2026-01-13 19:45:42',13,-2,'ticket_consume','active_tickets','TK-260113-115','Consumed during repair of TK-260113-115',5),(75,'2026-07-28 20:41:04',23,-2,'ticket_consume','active_tickets','TK-260728-117','Consumed during repair of TK-260728-117',4),(76,'2026-06-27 12:47:18',28,-3,'ticket_consume','active_tickets','TK-260627-118','Consumed during repair of TK-260627-118',4),(77,'2026-01-02 20:38:28',3,-3,'ticket_consume','active_tickets','TK-260102-120','Consumed during repair of TK-260102-120',7),(78,'2026-05-12 18:40:40',23,-1,'ticket_consume','active_tickets','TK-260512-124','Consumed during repair of TK-260512-124',4),(79,'2026-06-05 04:42:28',28,-1,'ticket_consume','active_tickets','TK-260605-125','Consumed during repair of TK-260605-125',5),(80,'2026-07-24 12:29:42',33,-1,'ticket_consume','active_tickets','TK-260724-126','Consumed during repair of TK-260724-126',5),(81,'2026-04-12 15:19:04',3,-3,'ticket_consume','active_tickets','TK-260412-127','Consumed during repair of TK-260412-127',6),(82,'2026-02-21 19:46:47',8,-1,'ticket_consume','active_tickets','TK-260221-128','Consumed during repair of TK-260221-128',6),(83,'2026-03-12 08:54:26',13,-1,'ticket_consume','active_tickets','TK-260312-129','Consumed during repair of TK-260312-129',5),(84,'2026-07-29 07:09:25',18,-1,'ticket_consume','active_tickets','TK-260729-130','Consumed during repair of TK-260729-130',4),(85,'2026-03-25 12:52:45',23,-1,'ticket_consume','active_tickets','TK-260325-131','Consumed during repair of TK-260325-131',5),(86,'2026-07-25 07:27:20',28,-1,'ticket_consume','active_tickets','TK-260725-132','Consumed during repair of TK-260725-132',4),(87,'2026-02-15 11:54:02',8,-3,'ticket_consume','active_tickets','TK-260215-135','Consumed during repair of TK-260215-135',6),(88,'2026-01-08 18:30:03',18,-3,'ticket_consume','active_tickets','TK-260108-137','Consumed during repair of TK-260108-137',4),(89,'2026-07-03 04:52:33',28,-3,'ticket_consume','active_tickets','TK-260703-139','Consumed during repair of TK-260703-139',4),(90,'2025-12-01 10:09:20',33,-3,'ticket_consume','active_tickets','TK-251201-140','Consumed during repair of TK-251201-140',4),(91,'2026-04-03 21:38:17',3,-3,'ticket_consume','active_tickets','TK-260403-141','Consumed during repair of TK-260403-141',4),(92,'2026-05-27 09:42:39',8,-2,'ticket_consume','active_tickets','TK-260527-142','Consumed during repair of TK-260527-142',7),(93,'2026-03-01 15:38:02',13,-3,'ticket_consume','active_tickets','TK-260301-143','Consumed during repair of TK-260301-143',7),(94,'2026-05-16 12:48:06',18,-3,'ticket_consume','active_tickets','TK-260516-144','Consumed during repair of TK-260516-144',7),(95,'2026-06-12 07:12:55',23,-3,'ticket_consume','active_tickets','TK-260612-145','Consumed during repair of TK-260612-145',7),(96,'2026-04-30 10:25:30',33,-3,'ticket_consume','active_tickets','TK-260430-147','Consumed during repair of TK-260430-147',5),(97,'2026-05-05 06:22:23',3,-1,'ticket_consume','active_tickets','TK-260505-148','Consumed during repair of TK-260505-148',5),(98,'2026-05-23 09:54:48',13,-2,'ticket_consume','active_tickets','TK-260523-150','Consumed during repair of TK-260523-150',5),(99,'2026-03-17 12:58:19',23,-2,'ticket_consume','active_tickets','TK-260317-152','Consumed during repair of TK-260317-152',6),(100,'2026-03-30 17:17:05',28,-2,'ticket_consume','active_tickets','TK-260330-153','Consumed during repair of TK-260330-153',4),(101,'2026-07-30 09:28:08',3,-2,'ticket_consume','active_tickets','TK-260730-155','Consumed during repair of TK-260730-155',6),(102,'2026-03-15 14:28:06',8,-2,'ticket_consume','active_tickets','TK-260315-156','Consumed during repair of TK-260315-156',6),(103,'2026-07-03 19:05:00',13,-1,'ticket_consume','active_tickets','TK-260703-157','Consumed during repair of TK-260703-157',6),(104,'2026-05-06 12:30:14',18,-2,'ticket_consume','active_tickets','TK-260506-158','Consumed during repair of TK-260506-158',6),(105,'2026-05-09 06:44:02',23,-1,'ticket_consume','active_tickets','TK-260509-159','Consumed during repair of TK-260509-159',7),(106,'2026-04-23 14:40:37',33,-3,'ticket_consume','active_tickets','TK-260423-161','Consumed during repair of TK-260423-161',4),(107,'2026-06-10 07:46:19',3,-3,'ticket_consume','active_tickets','TK-260610-162','Consumed during repair of TK-260610-162',4),(108,'2026-02-20 15:32:34',13,-2,'ticket_consume','active_tickets','TK-260220-164','Consumed during repair of TK-260220-164',7),(109,'2026-02-17 15:55:54',23,-3,'ticket_consume','active_tickets','TK-260217-166','Consumed during repair of TK-260217-166',7),(110,'2025-12-19 15:12:19',33,-3,'ticket_consume','active_tickets','TK-251219-168','Consumed during repair of TK-251219-168',5),(111,'2026-01-01 07:14:34',3,-3,'ticket_consume','active_tickets','TK-260101-169','Consumed during repair of TK-260101-169',5),(112,'2026-07-10 22:13:24',13,-2,'ticket_consume','active_tickets','TK-260710-171','Consumed during repair of TK-260710-171',6),(113,'2026-02-23 14:55:12',23,-3,'ticket_consume','active_tickets','TK-260223-173','Consumed during repair of TK-260223-173',7),(114,'2026-03-16 21:24:07',28,-1,'ticket_consume','active_tickets','TK-260316-174','Consumed during repair of TK-260316-174',6),(115,'2026-01-09 18:59:14',33,-2,'ticket_consume','active_tickets','TK-260109-175','Consumed during repair of TK-260109-175',4),(116,'2026-02-01 09:08:45',3,-1,'ticket_consume','active_tickets','TK-260201-176','Consumed during repair of TK-260201-176',4),(117,'2025-11-29 13:42:57',8,-3,'ticket_consume','active_tickets','TK-251129-177','Consumed during repair of TK-251129-177',6),(118,'2026-04-19 08:27:51',13,-3,'ticket_consume','active_tickets','TK-260419-178','Consumed during repair of TK-260419-178',6),(119,'2026-04-06 12:42:13',18,-2,'ticket_consume','active_tickets','TK-260406-179','Consumed during repair of TK-260406-179',6),(120,'2025-11-28 14:45:50',23,-1,'ticket_consume','active_tickets','TK-251128-180','Consumed during repair of TK-251128-180',6),(121,'2026-03-23 07:36:50',28,-1,'ticket_consume','active_tickets','TK-260323-181','Consumed during repair of TK-260323-181',5),(122,'2026-04-04 07:42:41',3,-2,'ticket_consume','active_tickets','TK-260404-183','Consumed during repair of TK-260404-183',4),(123,'2025-11-25 12:48:27',23,-1,'ticket_consume','active_tickets','TK-251125-187','Consumed during repair of TK-251125-187',7),(124,'2025-12-05 10:37:06',28,-3,'ticket_consume','active_tickets','TK-251205-188','Consumed during repair of TK-251205-188',7),(125,'2025-12-03 16:48:20',3,-2,'ticket_consume','active_tickets','TK-251203-190','Consumed during repair of TK-251203-190',5),(126,'2026-01-12 19:32:32',13,-3,'ticket_consume','active_tickets','TK-260112-192','Consumed during repair of TK-260112-192',5),(127,'2026-03-10 21:39:19',18,-1,'ticket_consume','active_tickets','TK-260310-193','Consumed during repair of TK-260310-193',7),(128,'2026-06-26 19:13:03',23,-1,'ticket_consume','active_tickets','TK-260626-194','Consumed during repair of TK-260626-194',6),(129,'2026-05-31 15:42:36',28,-2,'ticket_consume','active_tickets','TK-260531-195','Consumed during repair of TK-260531-195',7),(130,'2026-07-30 11:07:53',33,-3,'ticket_consume','active_tickets','TK-260730-196','Consumed during repair of TK-260730-196',6),(131,'2026-06-21 19:09:04',3,-1,'ticket_consume','active_tickets','TK-260621-197','Consumed during repair of TK-260621-197',4),(132,'2026-03-12 19:38:51',8,-3,'ticket_consume','active_tickets','TK-260312-198','Consumed during repair of TK-260312-198',4),(133,'2026-05-23 14:19:22',13,-3,'ticket_consume','active_tickets','TK-260523-199','Consumed during repair of TK-260523-199',6),(134,'2026-05-11 11:17:39',28,-2,'ticket_consume','active_tickets','TK-260511-202','Consumed during repair of TK-260511-202',6),(135,'2026-03-26 10:40:21',33,-3,'ticket_consume','active_tickets','TK-260326-203','Consumed during repair of TK-260326-203',7),(136,'2026-06-06 07:16:55',3,-3,'ticket_consume','active_tickets','TK-260606-204','Consumed during repair of TK-260606-204',4),(137,'2025-11-13 10:53:21',13,-3,'ticket_consume','active_tickets','TK-251113-206','Consumed during repair of TK-251113-206',4),(138,'2026-04-18 14:30:48',18,-3,'ticket_consume','active_tickets','TK-260418-207','Consumed during repair of TK-260418-207',4),(139,'2026-03-24 07:02:59',28,-1,'ticket_consume','active_tickets','TK-260324-209','Consumed during repair of TK-260324-209',7),(140,'2026-01-20 22:33:33',33,-2,'ticket_consume','active_tickets','TK-260120-210','Consumed during repair of TK-260120-210',7),(141,'2026-07-27 14:35:13',3,-2,'ticket_consume','active_tickets','TK-260727-211','Consumed during repair of TK-260727-211',7),(142,'2026-03-12 15:37:11',8,-1,'ticket_consume','active_tickets','TK-260312-212','Consumed during repair of TK-260312-212',5),(143,'2026-06-17 20:40:43',13,-3,'ticket_consume','active_tickets','TK-260617-213','Consumed during repair of TK-260617-213',5),(144,'2026-01-26 14:11:11',18,-2,'ticket_consume','active_tickets','TK-260126-214','Consumed during repair of TK-260126-214',5),(145,'2026-06-23 17:15:49',23,-2,'ticket_consume','active_tickets','TK-260623-215','Consumed during repair of TK-260623-215',6),(146,'2025-12-03 17:56:36',28,-3,'ticket_consume','active_tickets','TK-251203-216','Consumed during repair of TK-251203-216',6),(147,'2026-07-29 08:54:18',33,-1,'ticket_consume','active_tickets','TK-260729-217','Consumed during repair of TK-260729-217',7),(148,'2026-05-13 08:08:00',3,-1,'ticket_consume','active_tickets','TK-260513-218','Consumed during repair of TK-260513-218',6),(149,'2026-06-27 17:22:54',13,-2,'ticket_consume','active_tickets','TK-260627-220','Consumed during repair of TK-260627-220',4),(150,'2026-03-28 19:15:46',18,-3,'ticket_consume','active_tickets','TK-260328-221','Consumed during repair of TK-260328-221',6),(151,'2026-07-30 09:45:15',23,-1,'ticket_consume','active_tickets','TK-260730-222','Consumed during repair of TK-260730-222',6),(152,'2026-06-23 11:03:49',28,-3,'ticket_consume','active_tickets','TK-260623-223','Consumed during repair of TK-260623-223',6),(153,'2026-07-18 22:14:30',33,-3,'ticket_consume','active_tickets','TK-260718-224','Consumed during repair of TK-260718-224',6),(154,'2026-07-26 08:41:16',33,-1,'ticket_consume','active_tickets','TK-260726-231','Consumed during repair of TK-260726-231',7),(155,'2026-02-03 21:07:39',3,-2,'ticket_consume','active_tickets','TK-260203-232','Consumed during repair of TK-260203-232',7),(156,'2026-01-14 14:51:35',8,-1,'ticket_consume','active_tickets','TK-260114-233','Consumed during repair of TK-260114-233',7),(157,'2026-03-04 20:53:56',13,-3,'ticket_consume','active_tickets','TK-260304-234','Consumed during repair of TK-260304-234',5),(158,'2026-07-20 20:57:20',18,-2,'ticket_consume','active_tickets','TK-260720-235','Consumed during repair of TK-260720-235',5),(159,'2026-04-09 17:19:37',23,-3,'ticket_consume','active_tickets','TK-260409-236','Consumed during repair of TK-260409-236',5),(160,'2026-07-29 13:35:31',13,-3,'ticket_consume','active_tickets','TK-260729-241','Consumed during repair of TK-260729-241',4),(161,'2026-07-22 16:01:47',18,-1,'ticket_consume','active_tickets','TK-260722-242','Consumed during repair of TK-260722-242',4),(162,'2026-02-10 00:06:10',33,-1,'ticket_consume','active_tickets','TK-260209-245','Consumed during repair of TK-260209-245',6),(163,'2026-05-23 19:03:43',3,-3,'ticket_consume','active_tickets','TK-260523-246','Consumed during repair of TK-260523-246',6),(164,'2026-06-21 13:15:43',8,-3,'ticket_consume','active_tickets','TK-260621-247','Consumed during repair of TK-260621-247',5),(165,'2025-12-30 08:05:13',13,-1,'ticket_consume','active_tickets','TK-251230-248','Consumed during repair of TK-251230-248',4),(166,'2026-05-31 11:54:17',18,-1,'ticket_consume','active_tickets','TK-260531-249','Consumed during repair of TK-260531-249',4),(167,'2026-03-24 22:03:50',8,-2,'ticket_consume','active_tickets','TK-260324-254','Consumed during repair of TK-260324-254',7),(168,'2026-02-08 07:48:15',13,-1,'ticket_consume','active_tickets','TK-260208-255','Consumed during repair of TK-260208-255',7),(169,'2026-05-18 19:13:42',18,-1,'ticket_consume','active_tickets','TK-260518-256','Consumed during repair of TK-260518-256',5),(170,'2026-06-14 16:51:13',23,-1,'ticket_consume','active_tickets','TK-260614-257','Consumed during repair of TK-260614-257',5),(171,'2026-06-27 17:14:21',28,-3,'ticket_consume','active_tickets','TK-260627-258','Consumed during repair of TK-260627-258',5),(172,'2026-04-28 20:09:41',33,-3,'ticket_consume','active_tickets','TK-260428-259','Consumed during repair of TK-260428-259',6),(173,'2026-06-16 19:31:29',8,-1,'ticket_consume','active_tickets','TK-260616-261','Consumed during repair of TK-260616-261',7),(174,'2026-06-30 20:13:50',13,-2,'ticket_consume','active_tickets','TK-260630-262','Consumed during repair of TK-260630-262',6),(175,'2026-05-09 11:27:13',23,-3,'ticket_consume','active_tickets','TK-260509-264','Consumed during repair of TK-260509-264',4),(176,'2026-05-25 20:29:40',28,-1,'ticket_consume','active_tickets','TK-260525-265','Consumed during repair of TK-260525-265',6),(177,'2026-04-14 15:26:57',3,-1,'ticket_consume','active_tickets','TK-260414-267','Consumed during repair of TK-260414-267',6),(178,'2026-05-31 21:39:49',8,-2,'ticket_consume','active_tickets','TK-260531-268','Consumed during repair of TK-260531-268',4),(179,'2026-07-29 17:27:46',13,-3,'ticket_consume','active_tickets','TK-260729-269','Consumed during repair of TK-260729-269',5),(180,'2026-07-01 13:08:49',23,-3,'ticket_consume','active_tickets','TK-260701-271','Consumed during repair of TK-260701-271',4),(181,'2026-05-11 16:27:24',28,-1,'ticket_consume','active_tickets','TK-260511-272','Consumed during repair of TK-260511-272',4),(182,'2026-07-19 21:37:52',33,-2,'ticket_consume','active_tickets','TK-260719-273','Consumed during repair of TK-260719-273',4),(183,'2026-07-29 21:23:27',8,-1,'ticket_consume','active_tickets','TK-260729-275','Consumed during repair of TK-260729-275',7),(184,'2026-01-28 18:12:31',13,-3,'ticket_consume','active_tickets','TK-260128-276','Consumed during repair of TK-260128-276',7),(185,'2026-07-17 14:37:23',18,-2,'ticket_consume','active_tickets','TK-260717-277','Consumed during repair of TK-260717-277',7),(186,'2025-12-16 19:55:44',23,-1,'ticket_consume','active_tickets','TK-251216-278','Consumed during repair of TK-251216-278',5),(187,'2026-04-15 04:48:40',28,-2,'ticket_consume','active_tickets','TK-260415-279','Consumed during repair of TK-260415-279',7),(188,'2026-07-22 21:58:19',3,-1,'ticket_consume','active_tickets','TK-260722-281','Consumed during repair of TK-260722-281',6),(189,'2025-11-06 13:06:05',13,-3,'ticket_consume','active_tickets','TK-251106-283','Consumed during repair of TK-251106-283',7),(190,'2026-07-28 16:43:52',18,-2,'ticket_consume','active_tickets','TK-260728-284','Consumed during repair of TK-260728-284',7),(191,'2026-04-25 18:56:42',28,-2,'ticket_consume','active_tickets','TK-260425-286','Consumed during repair of TK-260425-286',4),(192,'2026-07-16 12:56:22',33,-3,'ticket_consume','active_tickets','TK-260716-287','Consumed during repair of TK-260716-287',6),(193,'2025-11-07 12:26:06',3,-1,'ticket_consume','active_tickets','TK-251107-288','Consumed during repair of TK-251107-288',6),(194,'2026-04-20 18:41:17',13,-2,'ticket_consume','active_tickets','TK-260420-290','Consumed during repair of TK-260420-290',6),(195,'2026-07-26 11:05:15',33,-2,'ticket_consume','active_tickets','TK-260726-294','Consumed during repair of TK-260726-294',4),(196,'2026-01-08 00:46:24',3,-1,'ticket_consume','active_tickets','TK-260107-295','Consumed during repair of TK-260107-295',4),(197,'2026-02-20 09:35:57',8,-3,'ticket_consume','active_tickets','TK-260220-296','Consumed during repair of TK-260220-296',4),(198,'2026-07-21 17:44:34',13,-1,'ticket_consume','active_tickets','TK-260721-297','Consumed during repair of TK-260721-297',7),(199,'2026-02-03 23:27:08',18,-2,'ticket_consume','active_tickets','TK-260203-298','Consumed during repair of TK-260203-298',7),(200,'2025-12-19 09:37:57',23,-1,'ticket_consume','active_tickets','TK-251219-299','Consumed during repair of TK-251219-299',7),(201,'2026-07-19 05:39:01',33,-2,'ticket_consume','active_tickets','TK-260719-301','Consumed during repair of TK-260719-301',5),(202,'2026-07-06 09:44:59',8,-3,'ticket_consume','active_tickets','TK-260706-303','Consumed during repair of TK-260706-303',6),(203,'2026-02-23 17:53:27',18,-2,'ticket_consume','active_tickets','TK-260223-305','Consumed during repair of TK-260223-305',5),(204,'2026-07-04 21:12:33',23,-1,'ticket_consume','active_tickets','TK-260704-306','Consumed during repair of TK-260704-306',6),(205,'2026-04-25 19:28:15',3,-3,'ticket_consume','active_tickets','TK-260425-309','Consumed during repair of TK-260425-309',6),(206,'2026-03-01 14:02:28',8,-1,'ticket_consume','active_tickets','TK-260301-310','Consumed during repair of TK-260301-310',6),(207,'2026-06-27 19:29:00',18,-3,'ticket_consume','active_tickets','TK-260627-312','Consumed during repair of TK-260627-312',6),(208,'2026-01-18 19:32:29',23,-3,'ticket_consume','active_tickets','TK-260118-313','Consumed during repair of TK-260118-313',6),(209,'2026-01-17 16:37:31',28,-3,'ticket_consume','active_tickets','TK-260117-314','Consumed during repair of TK-260117-314',4),(210,'2026-07-30 06:36:25',33,-1,'ticket_consume','active_tickets','TK-260730-315','Consumed during repair of TK-260730-315',4),(211,'2026-02-18 13:02:03',3,-2,'ticket_consume','active_tickets','TK-260218-316','Consumed during repair of TK-260218-316',4),(212,'2026-07-29 08:29:41',13,-1,'ticket_consume','active_tickets','TK-260729-318','Consumed during repair of TK-260729-318',7),(213,'2026-06-19 17:36:57',3,-3,'ticket_consume','active_tickets','TK-260619-323','Consumed during repair of TK-260619-323',5),(214,'2025-12-29 06:00:50',8,-1,'ticket_consume','active_tickets','TK-251229-324','Consumed during repair of TK-251229-324',5),(215,'2026-01-26 19:59:35',13,-1,'ticket_consume','active_tickets','TK-260126-325','Consumed during repair of TK-260126-325',6),(216,'2025-11-30 14:07:09',18,-1,'ticket_consume','active_tickets','TK-251130-326','Consumed during repair of TK-251130-326',6),(217,'2026-05-29 18:48:51',23,-1,'ticket_consume','active_tickets','TK-260529-327','Consumed during repair of TK-260529-327',7),(218,'2026-04-16 20:07:47',28,-1,'ticket_consume','active_tickets','TK-260416-328','Consumed during repair of TK-260416-328',6),(219,'2025-12-16 16:55:49',3,-2,'ticket_consume','active_tickets','TK-251216-330','Consumed during repair of TK-251216-330',7),(220,'2026-02-08 23:56:07',8,-2,'ticket_consume','active_tickets','TK-260208-331','Consumed during repair of TK-260208-331',6),(221,'2026-05-21 15:10:24',13,-3,'ticket_consume','active_tickets','TK-260521-332','Consumed during repair of TK-260521-332',6),(222,'2026-07-06 13:31:21',18,-3,'ticket_consume','active_tickets','TK-260706-333','Consumed during repair of TK-260706-333',6),(223,'2026-05-01 08:48:42',23,-3,'ticket_consume','active_tickets','TK-260501-334','Consumed during repair of TK-260501-334',6),(224,'2026-02-26 20:25:07',28,-2,'ticket_consume','active_tickets','TK-260226-335','Consumed during repair of TK-260226-335',5),(225,'2026-02-15 08:19:08',33,-1,'ticket_consume','active_tickets','TK-260215-336','Consumed during repair of TK-260215-336',4),(226,'2026-07-24 19:17:21',3,-1,'ticket_consume','active_tickets','TK-260724-337','Consumed during repair of TK-260724-337',4),(227,'2025-12-02 13:56:39',8,-1,'ticket_consume','active_tickets','TK-251202-338','Consumed during repair of TK-251202-338',4),(228,'2026-06-30 12:29:55',18,-3,'ticket_consume','active_tickets','TK-260630-340','Consumed during repair of TK-260630-340',7),(229,'2026-01-16 20:26:38',23,-2,'ticket_consume','active_tickets','TK-260116-341','Consumed during repair of TK-260116-341',7),(230,'2026-07-10 19:33:44',28,-2,'ticket_consume','active_tickets','TK-260710-342','Consumed during repair of TK-260710-342',7),(231,'2026-03-10 08:44:34',33,-2,'ticket_consume','active_tickets','TK-260310-343','Consumed during repair of TK-260310-343',7),(232,'2026-07-27 19:12:41',3,-3,'ticket_consume','active_tickets','TK-260727-344','Consumed during repair of TK-260727-344',5),(233,'2026-06-22 19:11:07',8,-3,'ticket_consume','active_tickets','TK-260622-345','Consumed during repair of TK-260622-345',5),(234,'2026-03-29 20:27:53',28,-2,'ticket_consume','active_tickets','TK-260329-349','Consumed during repair of TK-260329-349',7),(235,'2026-06-06 06:05:43',33,-3,'ticket_consume','active_tickets','TK-260606-350','Consumed during repair of TK-260606-350',6),(236,'2026-01-28 14:38:18',8,-1,'ticket_consume','active_tickets','TK-260128-352','Consumed during repair of TK-260128-352',4),(237,'2026-05-13 18:04:03',13,-1,'ticket_consume','active_tickets','TK-260513-353','Consumed during repair of TK-260513-353',7),(238,'2026-05-31 09:02:40',23,-2,'ticket_consume','active_tickets','TK-260531-355','Consumed during repair of TK-260531-355',6),(239,'2025-12-20 19:32:49',28,-3,'ticket_consume','active_tickets','TK-251220-356','Consumed during repair of TK-251220-356',6),(240,'2026-07-24 14:27:18',33,-1,'ticket_consume','active_tickets','TK-260724-357','Consumed during repair of TK-260724-357',5),(241,'2026-04-09 05:12:52',8,-1,'ticket_consume','active_tickets','TK-260409-359','Consumed during repair of TK-260409-359',4),(242,'2026-03-22 11:50:46',13,-2,'ticket_consume','active_tickets','TK-260322-360','Consumed during repair of TK-260322-360',4),(243,'2026-06-11 08:03:06',33,-3,'ticket_consume','active_tickets','TK-260611-364','Consumed during repair of TK-260611-364',7),(244,'2026-05-14 11:18:26',8,-1,'ticket_consume','active_tickets','TK-260514-366','Consumed during repair of TK-260514-366',5),(245,'2026-05-13 19:02:59',13,-1,'ticket_consume','active_tickets','TK-260513-367','Consumed during repair of TK-260513-367',5),(246,'2025-11-26 16:52:00',18,-3,'ticket_consume','active_tickets','TK-251126-368','Consumed during repair of TK-251126-368',5),(247,'2026-05-02 08:48:24',23,-1,'ticket_consume','active_tickets','TK-260502-369','Consumed during repair of TK-260502-369',6),(248,'2026-06-21 18:05:56',28,-1,'ticket_consume','active_tickets','TK-260621-370','Consumed during repair of TK-260621-370',6),(249,'2025-11-26 14:30:37',33,-2,'ticket_consume','active_tickets','TK-251126-371','Consumed during repair of TK-251126-371',6),(250,'2026-06-06 09:54:34',3,-1,'ticket_consume','active_tickets','TK-260606-372','Consumed during repair of TK-260606-372',6),(251,'2026-06-03 15:13:26',8,-3,'ticket_consume','active_tickets','TK-260603-373','Consumed during repair of TK-260603-373',4),(252,'2026-02-02 20:41:25',13,-2,'ticket_consume','active_tickets','TK-260202-374','Consumed during repair of TK-260202-374',4),(253,'2026-07-23 12:33:17',18,-2,'ticket_consume','active_tickets','TK-260723-375','Consumed during repair of TK-260723-375',6),(254,'2026-06-16 09:54:44',23,-2,'ticket_consume','active_tickets','TK-260616-376','Consumed during repair of TK-260616-376',6),(255,'2026-02-18 22:23:28',33,-2,'ticket_consume','active_tickets','TK-260218-378','Consumed during repair of TK-260218-378',6),(256,'2026-01-01 14:09:57',3,-2,'ticket_consume','active_tickets','TK-260101-379','Consumed during repair of TK-260101-379',5),(257,'2026-03-26 18:08:02',8,-1,'ticket_consume','active_tickets','TK-260326-380','Consumed during repair of TK-260326-380',4),(258,'2026-06-03 11:29:49',13,-3,'ticket_consume','active_tickets','TK-260603-381','Consumed during repair of TK-260603-381',4),(259,'2026-05-27 19:55:00',23,-3,'ticket_consume','active_tickets','TK-260527-383','Consumed during repair of TK-260527-383',4),(260,'2025-12-13 07:53:27',33,-1,'ticket_consume','active_tickets','TK-251213-385','Consumed during repair of TK-251213-385',7),(261,'2026-01-19 07:22:32',3,-1,'ticket_consume','active_tickets','TK-260119-386','Consumed during repair of TK-260119-386',7),(262,'2025-12-14 07:42:16',13,-2,'ticket_consume','active_tickets','TK-251214-388','Consumed during repair of TK-251214-388',5),(263,'2026-04-28 19:53:40',18,-3,'ticket_consume','active_tickets','TK-260428-389','Consumed during repair of TK-260428-389',5),(264,'2026-01-10 08:57:26',23,-1,'ticket_consume','active_tickets','TK-260110-390','Consumed during repair of TK-260110-390',6),(265,'2026-02-03 15:21:00',28,-3,'ticket_consume','active_tickets','TK-260203-391','Consumed during repair of TK-260203-391',6),(266,'2026-07-08 19:30:15',33,-3,'ticket_consume','active_tickets','TK-260708-392','Consumed during repair of TK-260708-392',6),(267,'2026-01-21 19:37:03',13,-3,'ticket_consume','active_tickets','TK-260121-395','Consumed during repair of TK-260121-395',4),(268,'2026-06-03 18:17:41',18,-1,'ticket_consume','active_tickets','TK-260603-396','Consumed during repair of TK-260603-396',4),(269,'2026-07-24 08:40:01',28,-3,'ticket_consume','active_tickets','TK-260724-398','Consumed during repair of TK-260724-398',6),(270,'2026-07-12 12:31:35',33,-1,'ticket_consume','active_tickets','TK-260712-399','Consumed during repair of TK-260712-399',6),(271,'2026-07-25 16:40:37',3,-1,'ticket_consume','active_tickets','TK-260725-400','Consumed during repair of TK-260725-400',6),(272,'2025-12-31 10:28:57',8,-2,'ticket_consume','active_tickets','TK-251231-401','Consumed during repair of TK-251231-401',5),(273,'2026-03-18 10:15:57',13,-1,'ticket_consume','active_tickets','TK-260318-402','Consumed during repair of TK-260318-402',4),(274,'2026-04-19 09:12:38',18,-3,'ticket_consume','active_tickets','TK-260419-403','Consumed during repair of TK-260419-403',4),(275,'2025-11-23 10:16:11',33,-1,'ticket_consume','active_tickets','TK-251123-406','Consumed during repair of TK-251123-406',7),(276,'2026-07-10 08:41:46',3,-3,'ticket_consume','active_tickets','TK-260710-407','Consumed during repair of TK-260710-407',7),(277,'2026-05-05 10:53:15',8,-3,'ticket_consume','active_tickets','TK-260505-408','Consumed during repair of TK-260505-408',7),(278,'2026-01-05 16:02:06',13,-1,'ticket_consume','active_tickets','TK-260105-409','Consumed during repair of TK-260105-409',7),(279,'2026-05-16 11:30:55',18,-2,'ticket_consume','active_tickets','TK-260516-410','Consumed during repair of TK-260516-410',5),(280,'2026-06-11 14:12:28',23,-1,'ticket_consume','active_tickets','TK-260611-411','Consumed during repair of TK-260611-411',5),(281,'2026-02-12 17:35:47',28,-3,'ticket_consume','active_tickets','TK-260212-412','Consumed during repair of TK-260212-412',6),(282,'2025-11-30 07:14:59',3,-3,'ticket_consume','active_tickets','TK-251130-414','Consumed during repair of TK-251130-414',6),(283,'2026-04-06 14:24:53',8,-1,'ticket_consume','active_tickets','TK-260406-415','Consumed during repair of TK-260406-415',7),(284,'2026-02-09 14:33:08',13,-1,'ticket_consume','active_tickets','TK-260209-416','Consumed during repair of TK-260209-416',6),(285,'2026-06-30 15:28:28',18,-1,'ticket_consume','active_tickets','TK-260630-417','Consumed during repair of TK-260630-417',4),(286,'2026-01-31 07:20:22',23,-3,'ticket_consume','active_tickets','TK-260131-418','Consumed during repair of TK-260131-418',4),(287,'2026-07-28 17:28:10',28,-2,'ticket_consume','active_tickets','TK-260728-419','Consumed during repair of TK-260728-419',6),(288,'2026-02-26 13:57:30',33,-2,'ticket_consume','active_tickets','TK-260226-420','Consumed during repair of TK-260226-420',6),(289,'2025-12-28 13:48:00',6,-2,'wo_consume','work_orders','1','Consumed on work order #1',5),(290,'2026-06-22 10:58:00',14,-3,'wo_consume','work_orders','3','Consumed on work order #3',7),(291,'2025-12-31 12:29:00',22,-3,'wo_consume','work_orders','5','Consumed on work order #5',4),(292,'2026-02-04 12:28:00',30,-1,'wo_consume','work_orders','7','Consumed on work order #7',5),(293,'2026-05-25 06:28:00',3,-1,'wo_consume','work_orders','9','Consumed on work order #9',4),(294,'2026-05-01 11:35:00',11,-1,'wo_consume','work_orders','11','Consumed on work order #11',5),(295,'2026-03-14 09:05:00',19,-2,'wo_consume','work_orders','13','Consumed on work order #13',6),(296,'2026-01-27 10:00:00',27,-1,'wo_consume','work_orders','15','Consumed on work order #15',4),(297,'2026-04-09 10:06:00',35,-2,'wo_consume','work_orders','17','Consumed on work order #17',6),(298,'2026-06-14 08:53:00',8,-1,'wo_consume','work_orders','19','Consumed on work order #19',5),(299,'2026-06-01 10:00:00',16,-2,'wo_consume','work_orders','21','Consumed on work order #21',4),(300,'2026-03-25 07:21:00',24,-3,'wo_consume','work_orders','23','Consumed on work order #23',7),(301,'2026-05-01 08:19:00',32,-1,'wo_consume','work_orders','25','Consumed on work order #25',5),(302,'2026-03-04 09:19:00',5,-3,'wo_consume','work_orders','27','Consumed on work order #27',5),(303,'2026-01-11 13:11:00',13,-2,'wo_consume','work_orders','29','Consumed on work order #29',6),(304,'2026-07-04 12:26:00',21,-2,'wo_consume','work_orders','31','Consumed on work order #31',5),(305,'2026-07-01 05:23:00',29,-3,'wo_consume','work_orders','33','Consumed on work order #33',5),(306,'2026-06-21 14:46:10',27,3,'po_receipt','purchase_orders','17','Goods receipt against PO #17',10),(307,'2026-06-20 14:46:10',30,7,'po_receipt','purchase_orders','17','Goods receipt against PO #17',10),(308,'2026-06-19 14:46:10',33,3,'po_receipt','purchase_orders','17','Goods receipt against PO #17',10),(309,'2026-06-25 14:46:10',1,11,'po_receipt','purchase_orders','17','Goods receipt against PO #17',10),(310,'2026-07-09 14:42:01',33,2,'po_receipt','purchase_orders','18','Goods receipt against PO #18',10),(311,'2026-07-12 14:42:01',1,7,'po_receipt','purchase_orders','18','Goods receipt against PO #18',10),(312,'2026-06-15 09:44:22',4,5,'po_receipt','purchase_orders','19','Goods receipt against PO #19',10),(313,'2026-06-14 09:44:22',7,8,'po_receipt','purchase_orders','19','Goods receipt against PO #19',10),(314,'2026-06-10 17:03:29',10,23,'po_receipt','purchase_orders','20','Goods receipt against PO #20',10),(315,'2026-06-10 17:03:29',13,9,'po_receipt','purchase_orders','20','Goods receipt against PO #20',10),(316,'2026-06-09 17:03:29',16,4,'po_receipt','purchase_orders','20','Goods receipt against PO #20',10),(317,'2026-06-05 17:03:29',19,5,'po_receipt','purchase_orders','20','Goods receipt against PO #20',10),(318,'2026-06-17 16:00:03',16,12,'po_receipt','purchase_orders','21','Goods receipt against PO #21',10),(319,'2026-06-18 07:19:15',22,13,'po_receipt','purchase_orders','22','Goods receipt against PO #22',10),(320,'2026-06-13 03:46:42',28,25,'po_receipt','purchase_orders','23','Goods receipt against PO #23',10),(321,'2026-06-08 03:46:42',31,15,'po_receipt','purchase_orders','23','Goods receipt against PO #23',10),(322,'2026-04-11 14:54:25',34,7,'po_receipt','purchase_orders','24','Goods receipt against PO #24',10),(323,'2026-04-09 14:54:25',2,12,'po_receipt','purchase_orders','24','Goods receipt against PO #24',10),(324,'2026-04-19 14:54:41',5,24,'po_receipt','purchase_orders','25','Goods receipt against PO #25',10),(325,'2026-04-13 14:54:41',8,20,'po_receipt','purchase_orders','25','Goods receipt against PO #25',10),(326,'2026-04-25 12:33:10',11,11,'po_receipt','purchase_orders','26','Goods receipt against PO #26',10),(327,'2026-04-25 12:33:10',14,9,'po_receipt','purchase_orders','26','Goods receipt against PO #26',10),(328,'2026-04-29 12:33:10',17,2,'po_receipt','purchase_orders','26','Goods receipt against PO #26',10),(329,'2026-04-30 12:33:10',20,19,'po_receipt','purchase_orders','26','Goods receipt against PO #26',10),(330,'2026-04-24 05:54:36',17,18,'po_receipt','purchase_orders','27','Goods receipt against PO #27',10),(331,'2026-04-19 05:54:36',20,23,'po_receipt','purchase_orders','27','Goods receipt against PO #27',10),(332,'2026-04-08 13:13:49',23,12,'po_receipt','purchase_orders','28','Goods receipt against PO #28',10),(333,'2026-04-14 13:13:49',26,3,'po_receipt','purchase_orders','28','Goods receipt against PO #28',10),(334,'2026-04-17 12:54:05',29,4,'po_receipt','purchase_orders','29','Goods receipt against PO #29',10),(335,'2026-04-21 12:54:05',32,18,'po_receipt','purchase_orders','29','Goods receipt against PO #29',10),(336,'2026-05-01 10:02:31',35,19,'po_receipt','purchase_orders','30','Goods receipt against PO #30',10),(337,'2026-04-27 10:02:31',3,3,'po_receipt','purchase_orders','30','Goods receipt against PO #30',10),(338,'2026-04-30 10:02:31',6,25,'po_receipt','purchase_orders','30','Goods receipt against PO #30',10),(339,'2026-04-20 08:09:37',6,15,'po_receipt','purchase_orders','31','Goods receipt against PO #31',10),(340,'2026-04-14 08:09:37',9,4,'po_receipt','purchase_orders','31','Goods receipt against PO #31',10),(341,'2026-04-22 08:09:37',12,16,'po_receipt','purchase_orders','31','Goods receipt against PO #31',10),(342,'2026-04-21 08:09:37',15,14,'po_receipt','purchase_orders','31','Goods receipt against PO #31',10);
+/*!40000 ALTER TABLE `inventory_ledger` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inventory_parts`
+--
+
+DROP TABLE IF EXISTS `inventory_parts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inventory_parts` (
+  `part_id` int(11) NOT NULL AUTO_INCREMENT,
+  `part_name` varchar(100) NOT NULL,
+  `internal_code` varchar(50) NOT NULL,
+  `manufacturer_id` int(11) DEFAULT NULL,
+  `stock_level` int(11) NOT NULL DEFAULT 0,
+  `minimum_threshold` int(11) NOT NULL DEFAULT 5,
+  `cost_per_unit` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `vendor_sku` varchar(100) DEFAULT NULL,
+  `standardized_desc` varchar(255) DEFAULT NULL,
+  `oem_name` varchar(100) DEFAULT NULL,
+  `oem_part_number` varchar(100) DEFAULT NULL,
+  `supersession_sku` varchar(100) DEFAULT NULL,
+  `maximum_stock` int(11) DEFAULT 0,
+  `standard_lead_time` int(11) DEFAULT 0,
+  `expedited_lead_time` int(11) DEFAULT 0,
+  `moq` int(11) DEFAULT 1,
+  `uom` varchar(50) DEFAULT 'Each',
+  `currency` varchar(10) DEFAULT 'USD',
+  `price_expiration` date DEFAULT NULL,
+  `eol_date` date DEFAULT NULL,
+  `shelf_life_months` int(11) DEFAULT 0,
+  `material_spec` varchar(255) DEFAULT NULL,
+  `compliance_docs` text DEFAULT NULL,
+  `warehouse_id` int(11) DEFAULT NULL,
+  `aisle` varchar(50) DEFAULT NULL,
+  `rack` varchar(50) DEFAULT NULL,
+  `shelf` varchar(50) DEFAULT NULL,
+  `bin_code` varchar(50) DEFAULT NULL,
+  `auto_reorder` tinyint(1) DEFAULT 0,
+  `primary_vendor_id` int(11) DEFAULT NULL,
+  `serial_number` varchar(100) DEFAULT NULL,
+  `batch_lot` varchar(100) DEFAULT NULL,
+  `part_condition` enum('New','Refurbished','Defective','Awaiting QA') DEFAULT 'New',
+  `lifecycle_status` enum('Active','Phasing Out','Obsolete') DEFAULT 'Active',
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`part_id`),
+  UNIQUE KEY `internal_code` (`internal_code`),
+  KEY `fk_inv_vendor` (`manufacturer_id`),
+  KEY `idx_deleted_at` (`deleted_at`),
+  CONSTRAINT `fk_inv_vendor` FOREIGN KEY (`manufacturer_id`) REFERENCES `vendors_suppliers` (`vendor_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inventory_parts`
+--
+
+LOCK TABLES `inventory_parts` WRITE;
+/*!40000 ALTER TABLE `inventory_parts` DISABLE KEYS */;
+INSERT INTO `inventory_parts` VALUES (1,'Deep Groove Ball Bearing 6205-2RS','BRG-6205',NULL,42,12,14.50,NULL,'Deep Groove Ball Bearing 6205-2RS','SKF Authorised Partner BV','BRG2481',NULL,60,21,2,10,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R1','S1','A-01-01',1,2,NULL,NULL,'New','Active',NULL),(2,'Deep Groove Ball Bearing 6308-2RS','BRG-6308',NULL,6,10,38.90,NULL,'Deep Groove Ball Bearing 6308-2RS','SKF Authorised Partner BV','BRG8412',NULL,40,3,5,10,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R2','S2','A-02-02',1,2,NULL,NULL,'New','Active',NULL),(3,'Spherical Roller Bearing 22215','BRG-22215',NULL,3,4,187.00,NULL,'Spherical Roller Bearing 22215','SKF Authorised Partner BV','BRG8919',NULL,12,10,3,2,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R3','S3','A-03-03',1,2,NULL,NULL,'New','Phasing Out',NULL),(4,'Rotary Shaft Seal 45x62x8','SEA-4562',NULL,88,25,6.20,NULL,'Rotary Shaft Seal 45x62x8','Baltic Bearing & Seal','SEA9677',NULL,150,17,5,50,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R4','S4','A-04-04',1,5,NULL,NULL,'New','Active',NULL),(5,'O-Ring Kit NBR 70 (assorted)','SEA-ORK1',NULL,14,5,42.00,NULL,'O-Ring Kit NBR 70 (assorted)','Baltic Bearing & Seal','SEA1645',NULL,30,10,5,5,'kit','EUR',NULL,NULL,0,NULL,NULL,1,'A','R5','S1','A-05-01',0,5,NULL,NULL,'New','Active',NULL),(6,'Hydraulic Filter Element HF-320','FLT-HF320',NULL,9,12,64.75,NULL,'Hydraulic Filter Element HF-320','Hydratech Fluid Power','FLT5019',NULL,36,20,5,12,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R6','S2','A-06-02',1,6,NULL,NULL,'New','Active',NULL),(7,'Coolant Filter Bag 25 micron','FLT-CB25',NULL,60,20,9.10,NULL,'Coolant Filter Bag 25 micron','Nordwerk Industrial Supply','FLT2651',NULL,120,7,5,40,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R1','S3','A-01-03',1,1,NULL,NULL,'New','Active',NULL),(8,'Compressor Air Filter GA55','FLT-GA55',NULL,2,3,121.00,NULL,'Compressor Air Filter GA55','Atlas Pneumatic Group','FLT1817',NULL,12,3,5,3,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'A','R2','S4','A-02-04',1,4,NULL,NULL,'New','Active',NULL),(9,'Pneumatic Cylinder 32x100 ISO','PNU-32100',NULL,7,4,96.40,NULL,'Pneumatic Cylinder 32x100 ISO','Atlas Pneumatic Group','PNU3946',NULL,16,7,1,4,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R3','S1','B-03-01',0,4,NULL,NULL,'New','Active',NULL),(10,'Solenoid Valve 5/2 24VDC','PNU-SV52',NULL,18,8,73.20,NULL,'Solenoid Valve 5/2 24VDC','Atlas Pneumatic Group','PNU2071',NULL,40,11,3,10,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R4','S2','B-04-02',1,4,NULL,NULL,'New','Active',NULL),(11,'FRL Unit 1/2in with Regulator','PNU-FRL12',NULL,5,3,158.00,NULL,'FRL Unit 1/2in with Regulator','Atlas Pneumatic Group','PNU5387',NULL,10,7,1,2,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R5','S3','B-05-03',0,4,NULL,NULL,'New','Active',NULL),(12,'Servo Motor 1FK7 Replacement','ELC-1FK7',NULL,1,2,1480.00,NULL,'Servo Motor 1FK7 Replacement','Siemens Drive Services','ELC8894',NULL,4,6,3,1,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R6','S4','B-06-04',1,3,NULL,NULL,'New','Active',NULL),(13,'VFD 7.5kW 400V','ELC-VFD75',NULL,3,2,890.00,NULL,'VFD 7.5kW 400V','Siemens Drive Services','ELC7399',NULL,8,21,2,1,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R1','S1','B-01-01',1,3,NULL,NULL,'New','Active',NULL),(14,'Contactor 3RT 25A','ELC-3RT25',NULL,22,10,44.30,NULL,'Contactor 3RT 25A','Volt & Circuit Electricals','ELC4852',NULL,50,16,3,10,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R2','S2','B-02-02',1,7,NULL,NULL,'New','Active',NULL),(15,'Safety Relay PNOZ s5','ELC-PNOZ',NULL,6,4,212.00,NULL,'Safety Relay PNOZ s5','Volt & Circuit Electricals','ELC1020',NULL,12,7,2,2,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R3','S3','B-03-03',1,7,NULL,NULL,'New','Active',NULL),(16,'Proximity Sensor M12 PNP NO','ELC-PRX12',NULL,35,15,28.60,NULL,'Proximity Sensor M12 PNP NO','Volt & Circuit Electricals','ELC4340',NULL,80,17,2,20,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'B','R4','S4','B-04-04',1,7,NULL,NULL,'New','Active',NULL),(17,'Photoelectric Sensor Retro 10m','ELC-PHT10',NULL,0,6,61.40,NULL,'Photoelectric Sensor Retro 10m','Volt & Circuit Electricals','ELC6244',NULL,24,10,5,6,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'C','R5','S1','C-05-01',1,7,NULL,NULL,'New','Active',NULL),(18,'E-Stop Mushroom Button 22mm','ELC-ESTOP',NULL,19,8,33.10,NULL,'E-Stop Mushroom Button 22mm','Volt & Circuit Electricals','ELC1787',NULL,40,8,4,10,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'C','R6','S2','C-06-02',0,7,NULL,NULL,'New','Active',NULL),(19,'Timing Belt HTD 8M-1600-30','MEC-HTD16',NULL,11,6,78.90,NULL,'Timing Belt HTD 8M-1600-30','Nordwerk Industrial Supply','MEC7675',NULL,24,9,2,6,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'C','R1','S3','C-01-03',1,1,NULL,NULL,'New','Active',NULL),(20,'V-Belt SPZ 1600','MEC-SPZ16',NULL,26,10,17.40,NULL,'V-Belt SPZ 1600','Nordwerk Industrial Supply','MEC1836',NULL,60,19,2,20,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'C','R2','S4','C-02-04',1,1,NULL,NULL,'New','Active',NULL),(21,'Conveyor Belt PVC 600mm (per m)','MEC-CB600',NULL,35,15,52.00,NULL,'Conveyor Belt PVC 600mm (per m)','Nordwerk Industrial Supply','MEC7612',NULL,90,11,5,30,'m','EUR',NULL,NULL,0,NULL,NULL,1,'C','R3','S1','C-03-01',1,1,NULL,NULL,'New','Active',NULL),(22,'Drive Chain 12B-1 (per m)','MEC-DC12B',NULL,12,8,24.80,NULL,'Drive Chain 12B-1 (per m)','Nordwerk Industrial Supply','MEC5726',NULL,40,7,1,10,'m','EUR',NULL,NULL,0,NULL,NULL,1,'C','R4','S2','C-04-02',0,1,NULL,NULL,'New','Active',NULL),(23,'Linear Guide Block HGH25','MEC-HGH25',NULL,4,4,143.50,NULL,'Linear Guide Block HGH25','ToolCraft Precision Ltd','MEC4081',NULL,12,5,4,2,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'C','R5','S3','C-05-03',1,8,NULL,NULL,'New','Active',NULL),(24,'Ball Screw Support Unit BK15','MEC-BK15',NULL,8,3,118.00,NULL,'Ball Screw Support Unit BK15','ToolCraft Precision Ltd','MEC7284',NULL,16,12,4,2,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'C','R6','S4','C-06-04',0,8,NULL,NULL,'New','Active',NULL),(25,'Carbide End Mill 12mm 4FL','TOL-EM12',NULL,30,12,47.90,NULL,'Carbide End Mill 12mm 4FL','ToolCraft Precision Ltd','TOL6259',NULL,80,18,2,20,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'D','R1','S1','D-01-01',1,8,NULL,NULL,'New','Active',NULL),(26,'Carbide Insert CNMG 120408','TOL-CN120',NULL,95,40,11.75,NULL,'Carbide Insert CNMG 120408','ToolCraft Precision Ltd','TOL8581',NULL,200,19,4,50,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'D','R2','S2','D-02-02',1,8,NULL,NULL,'New','Active',NULL),(27,'Collet ER32 12mm','TOL-ER32',NULL,16,6,38.00,NULL,'Collet ER32 12mm','ToolCraft Precision Ltd','TOL9976',NULL,30,15,5,6,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'D','R3','S3','D-03-03',0,8,NULL,NULL,'New','Active',NULL),(28,'Welding Torch Nozzle M8','TOL-WTN8',NULL,24,12,15.30,NULL,'Welding Torch Nozzle M8','Atlas Pneumatic Group','TOL5646',NULL,60,3,3,20,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'D','R4','S4','D-04-04',1,4,NULL,NULL,'New','Active',NULL),(29,'Weld Contact Tip 1.0mm','TOL-WCT10',NULL,150,60,2.85,NULL,'Weld Contact Tip 1.0mm','Atlas Pneumatic Group','TOL7448',NULL,400,12,4,100,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'D','R5','S1','D-05-01',1,4,NULL,NULL,'New','Active',NULL),(30,'Hydraulic Hose 3/8in R2 (per m)','HYD-H38',NULL,18,8,21.60,NULL,'Hydraulic Hose 3/8in R2 (per m)','Hydratech Fluid Power','HYD8831',NULL,50,9,2,10,'m','EUR',NULL,NULL,0,NULL,NULL,1,'D','R6','S2','D-06-02',1,6,NULL,NULL,'New','Active',NULL),(31,'Hydraulic Oil ISO VG46 (20L)','HYD-OIL46',NULL,7,4,96.00,NULL,'Hydraulic Oil ISO VG46 (20L)','Hydratech Fluid Power','HYD3352',NULL,20,17,4,4,'drum','EUR',NULL,NULL,0,NULL,NULL,1,'D','R1','S3','D-01-03',1,6,NULL,NULL,'New','Active',NULL),(32,'Way Lube ISO VG68 (5L)','HYD-WL68',NULL,13,6,41.20,NULL,'Way Lube ISO VG68 (5L)','Hydratech Fluid Power','HYD4370',NULL,30,18,3,6,'can','EUR',NULL,NULL,0,NULL,NULL,1,'D','R2','S4','D-02-04',0,6,NULL,NULL,'New','Active',NULL),(33,'Spindle Grease NLGI 2 (400g)','HYD-GRS2',NULL,20,8,27.50,NULL,'Spindle Grease NLGI 2 (400g)','SKF Authorised Partner BV','HYD2566',NULL,40,18,1,10,'tube','EUR',NULL,NULL,0,NULL,NULL,1,'E','R3','S1','E-03-01',1,2,NULL,NULL,'New','Active',NULL),(34,'Air Filter Panel G4 592x592','FAC-AFG4',NULL,24,12,18.90,NULL,'Air Filter Panel G4 592x592','Nordwerk Industrial Supply','FAC7972',NULL,60,13,2,24,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'E','R4','S2','E-04-02',1,1,NULL,NULL,'New','Active',NULL),(35,'LED High Bay 150W IP65','FAC-LED150',NULL,9,4,87.00,NULL,'LED High Bay 150W IP65','Volt & Circuit Electricals','FAC5336',NULL,20,3,2,4,'pcs','EUR',NULL,NULL,0,NULL,NULL,1,'E','R5','S3','E-05-03',0,7,NULL,NULL,'New','Obsolete',NULL);
+/*!40000 ALTER TABLE `inventory_parts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notification_broadcast`
+--
+
+DROP TABLE IF EXISTS `notification_broadcast`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notification_broadcast` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` text NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notification_broadcast`
+--
+
+LOCK TABLES `notification_broadcast` WRITE;
+/*!40000 ALTER TABLE `notification_broadcast` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notification_broadcast` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL DEFAULT 'system',
+  `message` text NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `severity` varchar(10) NOT NULL DEFAULT 'info',
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notifications`
+--
+
+LOCK TABLES `notifications` WRITE;
+/*!40000 ALTER TABLE `notifications` DISABLE KEYS */;
+INSERT INTO `notifications` VALUES (1,1,'inventory','Low stock: Photoelectric Sensor Retro 10m at 0 (minimum 6)','/_logi/inventory.php','danger',0,'2026-07-29 03:29:43'),(2,1,'inventory','Low stock: Servo Motor 1FK7 Replacement at 1 (minimum 2)','/_logi/inventory.php','warning',0,'2026-07-29 17:59:43'),(3,1,'inventory','Low stock: Compressor Air Filter GA55 at 2 (minimum 3)','/_logi/inventory.php','warning',0,'2026-07-25 14:48:05'),(4,1,'inventory','Low stock: Spherical Roller Bearing 22215 at 3 (minimum 4)','/_logi/inventory.php','warning',0,'2026-07-29 16:50:26'),(5,1,'inventory','Low stock: Linear Guide Block HGH25 at 4 (minimum 4)','/_logi/inventory.php','warning',0,'2026-07-30 14:40:02'),(6,1,'procurement','4 purchase requests are waiting for your approval','/_logi/purchase_orders.php','warning',0,'2026-07-29 09:45:16'),(7,1,'work_order','3 work orders are past their scheduled date','/_maint/work_orders.php','danger',0,'2026-07-25 13:15:33'),(8,1,'ticket','New critical event registered on Okuma LB3000 EX II Lathe','/_maint/active_tickets.php','danger',0,'2026-07-27 14:04:26'),(9,1,'pm','2 PM schedules are overdue and need rescheduling','/_maint/pm_calendar.php','warning',0,'2026-07-30 17:35:10'),(10,1,'procurement','PO fully received and checked into stores','/_logi/purchase_orders.php','info',1,'2026-07-27 07:32:19'),(11,1,'ticket','Event closed: coolant pressure restored on CNC Cell 1','/_rpt/history.php','info',1,'2026-07-25 14:44:30'),(12,1,'system','Nightly backup completed successfully','/_mgmt/admin_backup.php','info',1,'2026-07-28 14:44:44'),(13,2,'inventory','Low stock: Photoelectric Sensor Retro 10m at 0 (minimum 6)','/_logi/inventory.php','danger',0,'2026-07-28 03:06:57'),(14,2,'inventory','Low stock: Servo Motor 1FK7 Replacement at 1 (minimum 2)','/_logi/inventory.php','warning',0,'2026-07-28 06:31:51'),(15,2,'inventory','Low stock: Compressor Air Filter GA55 at 2 (minimum 3)','/_logi/inventory.php','warning',0,'2026-07-26 08:28:43'),(16,2,'inventory','Low stock: Spherical Roller Bearing 22215 at 3 (minimum 4)','/_logi/inventory.php','warning',0,'2026-07-30 06:16:37'),(17,2,'inventory','Low stock: Linear Guide Block HGH25 at 4 (minimum 4)','/_logi/inventory.php','warning',0,'2026-07-30 08:43:27'),(18,2,'procurement','4 purchase requests are waiting for your approval','/_logi/purchase_orders.php','warning',0,'2026-07-27 08:15:39'),(19,2,'work_order','3 work orders are past their scheduled date','/_maint/work_orders.php','danger',0,'2026-07-26 06:34:26'),(20,2,'ticket','New critical event registered on Okuma LB3000 EX II Lathe','/_maint/active_tickets.php','danger',0,'2026-07-27 07:09:15'),(21,2,'pm','2 PM schedules are overdue and need rescheduling','/_maint/pm_calendar.php','warning',0,'2026-07-27 13:26:26'),(22,2,'procurement','PO fully received and checked into stores','/_logi/purchase_orders.php','info',1,'2026-07-29 17:56:23'),(23,2,'ticket','Event closed: coolant pressure restored on CNC Cell 1','/_rpt/history.php','info',1,'2026-07-29 06:53:33'),(24,2,'system','Nightly backup completed successfully','/_mgmt/admin_backup.php','info',1,'2026-07-28 16:56:39'),(25,10,'inventory','Low stock: Photoelectric Sensor Retro 10m at 0 (minimum 6)','/_logi/inventory.php','danger',0,'2026-07-27 14:40:26'),(26,10,'inventory','Low stock: Servo Motor 1FK7 Replacement at 1 (minimum 2)','/_logi/inventory.php','warning',0,'2026-07-29 06:04:26'),(27,10,'inventory','Low stock: Compressor Air Filter GA55 at 2 (minimum 3)','/_logi/inventory.php','warning',0,'2026-07-26 14:01:54'),(28,10,'inventory','Low stock: Spherical Roller Bearing 22215 at 3 (minimum 4)','/_logi/inventory.php','warning',0,'2026-07-26 13:00:25'),(29,10,'inventory','Low stock: Linear Guide Block HGH25 at 4 (minimum 4)','/_logi/inventory.php','warning',0,'2026-07-26 13:56:20'),(30,10,'procurement','4 purchase requests are waiting for your approval','/_logi/purchase_orders.php','warning',0,'2026-07-28 10:09:10'),(31,10,'procurement','PO fully received and checked into stores','/_logi/purchase_orders.php','info',1,'2026-07-27 03:30:54');
+/*!40000 ALTER TABLE `notifications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pm_checklist_items`
+--
+
+DROP TABLE IF EXISTS `pm_checklist_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pm_checklist_items` (
+  `item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `checklist_id` int(11) NOT NULL,
+  `task_desc` varchar(255) NOT NULL,
+  `expected_time_mins` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`item_id`),
+  KEY `fk_checklist_id` (`checklist_id`),
+  CONSTRAINT `fk_checklist_id` FOREIGN KEY (`checklist_id`) REFERENCES `pm_checklists` (`checklist_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pm_checklist_items`
+--
+
+LOCK TABLES `pm_checklist_items` WRITE;
+/*!40000 ALTER TABLE `pm_checklist_items` DISABLE KEYS */;
+INSERT INTO `pm_checklist_items` VALUES (1,1,'Check and top spindle lubrication reservoir',10),(2,1,'Inspect way covers and wipers for damage',10),(3,1,'Clean chip conveyor and coolant tank strainer',25),(4,1,'Verify coolant concentration with refractometer',10),(5,1,'Check air pressure and drain FRL bowl',5),(6,1,'Inspect drag chains and cable routing',15),(7,1,'Run axis backlash check and record values',20),(8,1,'Verify E-stop and guard interlocks',10),(9,2,'Inspect belt for wear, cuts and tracking',15),(10,2,'Check and re-tension belt to spec',15),(11,2,'Grease head and tail pulley bearings',10),(12,2,'Inspect drive chain and sprocket wear',10),(13,2,'Verify emergency pull-cord operation',10),(14,3,'Inspect and clean robot arm and cabling',20),(15,3,'Check axis backlash against baseline',30),(16,3,'Verify brake test on all axes',20),(17,3,'Check gearbox oil level and condition',25),(18,3,'Confirm mastering and re-master if required',30),(19,3,'Test safety-rated monitored stop',15),(20,4,'Check and record discharge temperature',5),(21,4,'Inspect and replace air intake filter if loaded',20),(22,4,'Drain receiver and check autodrain operation',10),(23,4,'Check oil level and top if required',10),(24,4,'Leak survey on main header',30),(25,5,'Verify all E-stops halt motion within spec',30),(26,5,'Test guard interlocks, dual channel',30),(27,5,'Verify light curtain response time',25),(28,5,'Confirm LOTO points match documented protocol',20),(29,5,'Record results and sign off',15);
+/*!40000 ALTER TABLE `pm_checklist_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pm_checklists`
+--
+
+DROP TABLE IF EXISTS `pm_checklists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pm_checklists` (
+  `checklist_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`checklist_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pm_checklists`
+--
+
+LOCK TABLES `pm_checklists` WRITE;
+/*!40000 ALTER TABLE `pm_checklists` DISABLE KEYS */;
+INSERT INTO `pm_checklists` VALUES (1,'CNC Machining Centre - Monthly PM','Monthly preventive routine for machining centres.','2025-10-21 08:05:08'),(2,'Conveyor - Quarterly PM','Quarterly routine for belt conveyors.','2026-01-11 11:34:20'),(3,'Industrial Robot - Semi-annual PM','Semi-annual routine for articulated robots.','2025-12-07 17:47:47'),(4,'Compressed Air System - Monthly PM','Monthly routine for compressor and air network.','2025-12-10 16:17:43'),(5,'Safety Systems - Annual Verification','Annual verification of safety functions.','2025-11-09 08:58:48');
+/*!40000 ALTER TABLE `pm_checklists` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pm_schedules`
+--
+
+DROP TABLE IF EXISTS `pm_schedules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pm_schedules` (
+  `schedule_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `equipment_id` int(11) DEFAULT NULL,
+  `assigned_to` int(11) DEFAULT NULL,
+  `parts_list` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`parts_list`)),
+  `checklist_id` int(11) DEFAULT NULL,
+  `frequency_days` int(11) DEFAULT NULL,
+  `next_run_date` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`schedule_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pm_schedules`
+--
+
+LOCK TABLES `pm_schedules` WRITE;
+/*!40000 ALTER TABLE `pm_schedules` DISABLE KEYS */;
+INSERT INTO `pm_schedules` VALUES (1,'CNC Machining Centre - Monthly PM - DMG Mori NHX 5000 Machining Ctr','Scheduled preventive maintenance per OEM interval.',1,4,NULL,1,30,'2026-07-26','2025-12-27 07:58:07'),(2,'CNC Machining Centre - Monthly PM - Mazak VTC-800 Vertical Center','Scheduled preventive maintenance per OEM interval.',2,4,NULL,1,30,'2026-07-29','2026-01-12 09:58:17'),(3,'CNC Machining Centre - Monthly PM - Okuma LB3000 EX II Lathe','Scheduled preventive maintenance per OEM interval.',3,7,NULL,1,30,'2026-08-05','2025-12-28 07:27:27'),(4,'CNC Machining Centre - Monthly PM - Haas VF-4SS Mill','Scheduled preventive maintenance per OEM interval.',4,5,NULL,1,30,'2026-08-25','2025-10-28 15:10:35'),(5,'Conveyor - Quarterly PM - Assembly Conveyor A1 (Main)','Scheduled preventive maintenance per OEM interval.',11,4,NULL,2,90,'2026-08-16','2025-11-22 09:20:05'),(6,'Conveyor - Quarterly PM - Assembly Conveyor A2','Scheduled preventive maintenance per OEM interval.',15,6,NULL,2,90,'2026-08-01','2025-11-04 05:50:45'),(7,'Industrial Robot - Semi-annual PM - KUKA KR 60 Weld Robot','Scheduled preventive maintenance per OEM interval.',8,4,NULL,3,180,'2026-08-12','2025-12-08 12:27:29'),(8,'Industrial Robot - Semi-annual PM - FANUC M-20iD Pick and Place','Scheduled preventive maintenance per OEM interval.',14,4,NULL,3,180,'2026-08-13','2025-11-10 07:36:03'),(9,'Compressed Air System - Monthly PM - Atlas Copco GA 55 Compressor','Scheduled preventive maintenance per OEM interval.',21,6,NULL,4,30,'2026-08-21','2025-12-09 18:28:49'),(10,'Safety Systems - Annual Verification - Trumpf TruLaser 3030 Cutter','Scheduled preventive maintenance per OEM interval.',10,6,NULL,5,365,'2026-09-23','2026-01-07 05:13:29'),(11,'Safety Systems - Annual Verification - Servo Press Station A2','Scheduled preventive maintenance per OEM interval.',16,7,NULL,5,365,'2026-08-18','2025-11-01 10:05:32');
+/*!40000 ALTER TABLE `pm_schedules` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `po_documents`
+--
+
+DROP TABLE IF EXISTS `po_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `po_documents` (
+  `doc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `po_id` int(11) NOT NULL,
+  `doc_type` varchar(30) NOT NULL COMMENT 'pr_generated | invoice',
+  `file_path` varchar(500) DEFAULT NULL COMMENT 'stored path for uploaded docs (invoice); NULL for on-the-fly generated (PR)',
+  `original_name` varchar(255) DEFAULT NULL,
+  `uploaded_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`doc_id`),
+  KEY `idx_po` (`po_id`),
+  KEY `idx_type` (`doc_type`),
+  CONSTRAINT `fk_podoc_po` FOREIGN KEY (`po_id`) REFERENCES `purchase_orders` (`po_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `po_documents`
+--
+
+LOCK TABLES `po_documents` WRITE;
+/*!40000 ALTER TABLE `po_documents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `po_documents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `po_items`
+--
+
+DROP TABLE IF EXISTS `po_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `po_items` (
+  `po_item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `po_id` int(11) NOT NULL,
+  `part_id` int(11) NOT NULL,
+  `ordered_qty` int(11) NOT NULL DEFAULT 1,
+  `received_qty` int(11) NOT NULL DEFAULT 0,
+  `unit_price` decimal(10,2) NOT NULL,
+  `currency` varchar(10) DEFAULT 'USD',
+  `status` enum('Pending','Received','Backordered','Quarantined') DEFAULT 'Pending',
+  PRIMARY KEY (`po_item_id`),
+  KEY `po_id` (`po_id`),
+  KEY `part_id` (`part_id`),
+  CONSTRAINT `po_items_ibfk_1` FOREIGN KEY (`po_id`) REFERENCES `purchase_orders` (`po_id`) ON DELETE CASCADE,
+  CONSTRAINT `po_items_ibfk_2` FOREIGN KEY (`part_id`) REFERENCES `inventory_parts` (`part_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `po_items`
+--
+
+LOCK TABLES `po_items` WRITE;
+/*!40000 ALTER TABLE `po_items` DISABLE KEYS */;
+INSERT INTO `po_items` VALUES (1,1,1,15,0,14.50,'EUR','Pending'),(2,2,7,23,0,9.10,'EUR','Pending'),(3,2,10,18,0,73.20,'EUR','Pending'),(4,2,13,7,0,890.00,'EUR','Pending'),(5,3,13,4,0,890.00,'EUR','Pending'),(6,3,16,4,0,28.60,'EUR','Pending'),(7,4,19,15,0,78.90,'EUR','Pending'),(8,5,25,20,0,47.90,'EUR','Pending'),(9,5,28,11,0,15.30,'EUR','Pending'),(10,5,31,10,0,96.00,'EUR','Pending'),(11,6,31,17,0,96.00,'EUR','Pending'),(12,6,34,2,0,18.90,'EUR','Pending'),(13,6,2,2,0,38.90,'EUR','Pending'),(14,7,2,11,0,38.90,'EUR','Pending'),(15,7,5,5,0,42.00,'EUR','Pending'),(16,8,8,23,0,121.00,'EUR','Pending'),(17,8,11,22,0,158.00,'EUR','Pending'),(18,8,14,5,0,44.30,'EUR','Pending'),(19,8,17,6,0,61.40,'EUR','Pending'),(20,9,14,12,0,44.30,'EUR','Pending'),(21,9,17,3,0,61.40,'EUR','Pending'),(22,9,20,23,0,17.40,'EUR','Pending'),(23,9,23,2,0,143.50,'EUR','Pending'),(24,10,20,15,0,17.40,'EUR','Pending'),(25,11,26,20,0,11.75,'EUR','Pending'),(26,11,29,22,0,2.85,'EUR','Pending'),(27,12,32,17,0,41.20,'EUR','Pending'),(28,12,35,20,0,87.00,'EUR','Pending'),(29,13,3,9,0,187.00,'EUR','Pending'),(30,13,6,18,0,64.75,'EUR','Pending'),(31,14,9,18,0,96.40,'EUR','Pending'),(32,14,12,13,0,1480.00,'EUR','Pending'),(33,14,15,2,0,212.00,'EUR','Pending'),(34,14,18,22,0,33.10,'EUR','Pending'),(35,15,15,15,0,212.00,'EUR','Pending'),(36,15,18,17,0,33.10,'EUR','Pending'),(37,15,21,10,0,52.00,'EUR','Pending'),(38,16,21,4,0,52.00,'EUR','Pending'),(39,16,24,15,0,118.00,'EUR','Pending'),(40,16,27,15,0,38.00,'EUR','Pending'),(41,17,27,7,3,38.00,'EUR','Pending'),(42,17,30,14,7,21.60,'EUR','Pending'),(43,17,33,6,3,27.50,'EUR','Pending'),(44,17,1,23,11,14.50,'EUR','Pending'),(45,18,33,5,2,27.50,'EUR','Pending'),(46,18,1,14,7,14.50,'EUR','Pending'),(47,19,4,5,5,6.20,'EUR','Received'),(48,19,7,8,8,9.10,'EUR','Received'),(49,20,10,23,23,73.20,'EUR','Received'),(50,20,13,9,9,890.00,'EUR','Received'),(51,20,16,4,4,28.60,'EUR','Received'),(52,20,19,5,5,78.90,'EUR','Received'),(53,21,16,12,12,28.60,'EUR','Received'),(54,22,22,13,13,24.80,'EUR','Received'),(55,23,28,25,25,15.30,'EUR','Received'),(56,23,31,15,15,96.00,'EUR','Received'),(57,24,34,7,7,18.90,'EUR','Received'),(58,24,2,12,12,38.90,'EUR','Received'),(59,25,5,24,24,42.00,'EUR','Received'),(60,25,8,20,20,121.00,'EUR','Received'),(61,26,11,11,11,158.00,'EUR','Received'),(62,26,14,9,9,44.30,'EUR','Received'),(63,26,17,2,2,61.40,'EUR','Received'),(64,26,20,19,19,17.40,'EUR','Received'),(65,27,17,18,18,61.40,'EUR','Received'),(66,27,20,23,23,17.40,'EUR','Received'),(67,28,23,12,12,143.50,'EUR','Received'),(68,28,26,3,3,11.75,'EUR','Received'),(69,29,29,4,4,2.85,'EUR','Received'),(70,29,32,18,18,41.20,'EUR','Received'),(71,30,35,19,19,87.00,'EUR','Received'),(72,30,3,3,3,187.00,'EUR','Received'),(73,30,6,25,25,64.75,'EUR','Received'),(74,31,6,15,15,64.75,'EUR','Received'),(75,31,9,4,4,96.40,'EUR','Received'),(76,31,12,16,16,1480.00,'EUR','Received'),(77,31,15,14,14,212.00,'EUR','Received'),(78,32,12,24,0,1480.00,'EUR','Pending'),(79,32,15,3,0,212.00,'EUR','Pending'),(80,32,18,4,0,33.10,'EUR','Pending'),(81,33,18,5,0,33.10,'EUR','Pending'),(82,33,21,15,0,52.00,'EUR','Pending'),(83,33,24,25,0,118.00,'EUR','Pending'),(84,33,27,10,0,38.00,'EUR','Pending');
+/*!40000 ALTER TABLE `po_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `po_status_logs`
+--
+
+DROP TABLE IF EXISTS `po_status_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `po_status_logs` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `po_id` int(11) NOT NULL,
+  `action_type` varchar(50) NOT NULL,
+  `status_from` varchar(50) DEFAULT NULL,
+  `status_to` varchar(50) DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`log_id`),
+  KEY `po_id` (`po_id`),
+  KEY `changed_by` (`changed_by`),
+  CONSTRAINT `po_status_logs_ibfk_1` FOREIGN KEY (`po_id`) REFERENCES `purchase_orders` (`po_id`) ON DELETE CASCADE,
+  CONSTRAINT `po_status_logs_ibfk_2` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `po_status_logs`
+--
+
+LOCK TABLES `po_status_logs` WRITE;
+/*!40000 ALTER TABLE `po_status_logs` DISABLE KEYS */;
+INSERT INTO `po_status_logs` VALUES (1,1,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-24 16:15:21'),(2,2,'created',NULL,'Draft','Purchase request raised.',2,'2026-07-25 18:17:26'),(3,3,'created',NULL,'Draft','Purchase request raised.',1,'2026-07-26 06:21:52'),(4,3,'status_change','Draft','Pending Approval',NULL,1,'2026-07-27 06:21:52'),(5,4,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-27 06:27:03'),(6,4,'status_change','Draft','Pending Approval',NULL,1,'2026-07-28 06:27:03'),(7,5,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-29 07:45:30'),(8,5,'status_change','Draft','Pending Approval',NULL,2,'2026-08-02 07:45:30'),(9,6,'created',NULL,'Draft','Purchase request raised.',2,'2026-07-29 12:09:18'),(10,6,'status_change','Draft','Pending Approval',NULL,2,'2026-07-30 12:09:18'),(11,7,'created',NULL,'Draft','Purchase request raised.',2,'2026-07-09 15:34:06'),(12,7,'status_change','Draft','Pending Approval',NULL,10,'2026-07-11 15:34:06'),(13,7,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',10,'2026-07-13 15:34:06'),(14,8,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-25 04:28:29'),(15,8,'status_change','Draft','Pending Approval',NULL,1,'2026-07-28 04:28:29'),(16,8,'status_change','Pending Approval','Issued','Approved by Plant Director.',2,'2026-07-29 04:28:29'),(17,9,'created',NULL,'Draft','Purchase request raised.',2,'2026-07-10 07:16:42'),(18,9,'status_change','Draft','Pending Approval',NULL,2,'2026-07-11 07:16:42'),(19,9,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',10,'2026-07-13 07:16:42'),(20,10,'created',NULL,'Draft','Purchase request raised.',1,'2026-07-14 03:06:58'),(21,10,'status_change','Draft','Pending Approval',NULL,1,'2026-07-19 03:06:58'),(22,10,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',1,'2026-07-22 03:06:58'),(23,11,'created',NULL,'Draft','Purchase request raised.',1,'2026-06-30 14:37:30'),(24,11,'status_change','Draft','Pending Approval',NULL,10,'2026-07-04 14:37:30'),(25,11,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',1,'2026-07-09 14:37:30'),(26,11,'status_change','Issued','Shipped',NULL,1,'2026-07-10 14:37:30'),(27,12,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-06 04:50:04'),(28,12,'status_change','Draft','Pending Approval',NULL,10,'2026-07-10 04:50:04'),(29,12,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',1,'2026-07-13 04:50:04'),(30,12,'status_change','Issued','Shipped',NULL,10,'2026-07-15 04:50:04'),(31,13,'created',NULL,'Draft','Purchase request raised.',2,'2026-07-10 18:33:11'),(32,13,'status_change','Draft','Pending Approval',NULL,2,'2026-07-15 18:33:11'),(33,13,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',1,'2026-07-17 18:33:11'),(34,13,'status_change','Issued','Shipped',NULL,2,'2026-07-22 18:33:11'),(35,14,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-03 15:39:00'),(36,14,'status_change','Draft','Pending Approval',NULL,2,'2026-07-04 15:39:00'),(37,14,'status_change','Pending Approval','Issued','Approved by Plant Director.',2,'2026-07-07 15:39:00'),(38,14,'status_change','Issued','Shipped',NULL,2,'2026-07-08 15:39:00'),(39,14,'status_change','Shipped','In Transit',NULL,2,'2026-07-10 15:39:00'),(40,15,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-06 13:35:39'),(41,15,'status_change','Draft','Pending Approval',NULL,1,'2026-07-10 13:35:39'),(42,15,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',2,'2026-07-11 13:35:39'),(43,15,'status_change','Issued','Shipped',NULL,1,'2026-07-12 13:35:39'),(44,15,'status_change','Shipped','In Transit',NULL,2,'2026-07-13 13:35:39'),(45,16,'created',NULL,'Draft','Purchase request raised.',10,'2026-06-23 17:36:10'),(46,16,'status_change','Draft','Pending Approval',NULL,2,'2026-06-25 17:36:10'),(47,16,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',10,'2026-06-28 17:36:10'),(48,16,'status_change','Issued','Shipped',NULL,10,'2026-06-29 17:36:10'),(49,16,'status_change','Shipped','In Transit',NULL,1,'2026-07-01 17:36:10'),(50,17,'created',NULL,'Draft','Purchase request raised.',10,'2026-06-16 14:46:10'),(51,17,'status_change','Draft','Pending Approval',NULL,2,'2026-06-19 14:46:10'),(52,17,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',2,'2026-06-21 14:46:10'),(53,17,'status_change','Issued','Shipped',NULL,2,'2026-06-24 14:46:10'),(54,17,'status_change','Shipped','In Transit',NULL,1,'2026-06-27 14:46:10'),(55,17,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',2,'2026-07-01 14:46:10'),(56,18,'created',NULL,'Draft','Purchase request raised.',10,'2026-07-02 14:42:01'),(57,18,'status_change','Draft','Pending Approval',NULL,10,'2026-07-03 14:42:01'),(58,18,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',10,'2026-07-04 14:42:01'),(59,18,'status_change','Issued','Shipped',NULL,2,'2026-07-05 14:42:01'),(60,18,'status_change','Shipped','In Transit',NULL,1,'2026-07-07 14:42:01'),(61,18,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',2,'2026-07-11 14:42:01'),(62,19,'created',NULL,'Draft','Purchase request raised.',10,'2026-06-07 09:44:22'),(63,19,'status_change','Draft','Pending Approval',NULL,2,'2026-06-10 09:44:22'),(64,19,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',10,'2026-06-15 09:44:22'),(65,19,'status_change','Issued','Shipped',NULL,2,'2026-06-20 09:44:22'),(66,19,'status_change','Shipped','In Transit',NULL,1,'2026-06-22 09:44:22'),(67,19,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',10,'2026-06-24 09:44:22'),(68,19,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',2,'2026-06-25 09:44:22'),(69,20,'created',NULL,'Draft','Purchase request raised.',1,'2026-06-01 17:03:29'),(70,20,'status_change','Draft','Pending Approval',NULL,10,'2026-06-02 17:03:29'),(71,20,'status_change','Pending Approval','Issued','Approved by Plant Director.',1,'2026-06-03 17:03:29'),(72,20,'status_change','Issued','Shipped',NULL,1,'2026-06-07 17:03:29'),(73,20,'status_change','Shipped','In Transit',NULL,10,'2026-06-12 17:03:29'),(74,20,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',1,'2026-06-13 17:03:29'),(75,20,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',1,'2026-06-18 17:03:29'),(76,21,'created',NULL,'Draft','Purchase request raised.',1,'2026-06-09 16:00:03'),(77,21,'status_change','Draft','Pending Approval',NULL,10,'2026-06-12 16:00:03'),(78,21,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',10,'2026-06-17 16:00:03'),(79,21,'status_change','Issued','Shipped',NULL,2,'2026-06-22 16:00:03'),(80,21,'status_change','Shipped','In Transit',NULL,1,'2026-06-24 16:00:03'),(81,21,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',1,'2026-06-29 16:00:03'),(82,21,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',10,'2026-07-02 16:00:03'),(83,22,'created',NULL,'Draft','Purchase request raised.',10,'2026-06-10 07:19:15'),(84,22,'status_change','Draft','Pending Approval',NULL,1,'2026-06-14 07:19:15'),(85,22,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',2,'2026-06-17 07:19:15'),(86,22,'status_change','Issued','Shipped',NULL,2,'2026-06-19 07:19:15'),(87,22,'status_change','Shipped','In Transit',NULL,10,'2026-06-24 07:19:15'),(88,22,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',2,'2026-06-29 07:19:15'),(89,22,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',1,'2026-07-02 07:19:15'),(90,23,'created',NULL,'Draft','Purchase request raised.',2,'2026-06-01 03:46:42'),(91,23,'status_change','Draft','Pending Approval',NULL,1,'2026-06-04 03:46:42'),(92,23,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',1,'2026-06-05 03:46:42'),(93,23,'status_change','Issued','Shipped',NULL,1,'2026-06-07 03:46:42'),(94,23,'status_change','Shipped','In Transit',NULL,1,'2026-06-10 03:46:42'),(95,23,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',10,'2026-06-14 03:46:42'),(96,23,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',2,'2026-06-18 03:46:42'),(97,24,'created',NULL,'Draft','Purchase request raised.',10,'2026-04-02 14:54:25'),(98,24,'status_change','Draft','Pending Approval',NULL,1,'2026-04-05 14:54:25'),(99,24,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',1,'2026-04-07 14:54:25'),(100,24,'status_change','Issued','Shipped',NULL,1,'2026-04-08 14:54:25'),(101,24,'status_change','Shipped','In Transit',NULL,1,'2026-04-12 14:54:25'),(102,24,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',10,'2026-04-16 14:54:25'),(103,24,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',10,'2026-04-19 14:54:25'),(104,24,'status_change','Fully Received','Closed','Invoice matched, order closed.',10,'2026-04-24 14:54:25'),(105,25,'created',NULL,'Draft','Purchase request raised.',1,'2026-04-07 14:54:41'),(106,25,'status_change','Draft','Pending Approval',NULL,2,'2026-04-12 14:54:41'),(107,25,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',2,'2026-04-13 14:54:41'),(108,25,'status_change','Issued','Shipped',NULL,10,'2026-04-17 14:54:41'),(109,25,'status_change','Shipped','In Transit',NULL,10,'2026-04-21 14:54:41'),(110,25,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',1,'2026-04-22 14:54:41'),(111,25,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',1,'2026-04-25 14:54:41'),(112,25,'status_change','Fully Received','Closed','Invoice matched, order closed.',10,'2026-04-28 14:54:41'),(113,26,'created',NULL,'Draft','Purchase request raised.',10,'2026-04-20 12:33:10'),(114,26,'status_change','Draft','Pending Approval',NULL,10,'2026-04-24 12:33:10'),(115,26,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',2,'2026-04-25 12:33:10'),(116,26,'status_change','Issued','Shipped',NULL,2,'2026-04-29 12:33:10'),(117,26,'status_change','Shipped','In Transit',NULL,2,'2026-05-01 12:33:10'),(118,26,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',10,'2026-05-04 12:33:10'),(119,26,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',10,'2026-05-06 12:33:10'),(120,26,'status_change','Fully Received','Closed','Invoice matched, order closed.',2,'2026-05-08 12:33:10'),(121,27,'created',NULL,'Draft','Purchase request raised.',2,'2026-04-14 05:54:36'),(122,27,'status_change','Draft','Pending Approval',NULL,1,'2026-04-17 05:54:36'),(123,27,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',1,'2026-04-20 05:54:36'),(124,27,'status_change','Issued','Shipped',NULL,1,'2026-04-23 05:54:36'),(125,27,'status_change','Shipped','In Transit',NULL,10,'2026-04-26 05:54:36'),(126,27,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',10,'2026-04-30 05:54:36'),(127,27,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',1,'2026-05-05 05:54:36'),(128,27,'status_change','Fully Received','Closed','Invoice matched, order closed.',1,'2026-05-06 05:54:36'),(129,28,'created',NULL,'Draft','Purchase request raised.',10,'2026-04-02 13:13:49'),(130,28,'status_change','Draft','Pending Approval',NULL,10,'2026-04-03 13:13:49'),(131,28,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',10,'2026-04-06 13:13:49'),(132,28,'status_change','Issued','Shipped',NULL,2,'2026-04-08 13:13:49'),(133,28,'status_change','Shipped','In Transit',NULL,1,'2026-04-12 13:13:49'),(134,28,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',2,'2026-04-13 13:13:49'),(135,28,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',10,'2026-04-18 13:13:49'),(136,28,'status_change','Fully Received','Closed','Invoice matched, order closed.',2,'2026-04-23 13:13:49'),(137,29,'created',NULL,'Draft','Purchase request raised.',2,'2026-04-13 12:54:05'),(138,29,'status_change','Draft','Pending Approval',NULL,2,'2026-04-15 12:54:05'),(139,29,'status_change','Pending Approval','Issued','Auto-approved: total within the configured approval limit.',10,'2026-04-17 12:54:05'),(140,29,'status_change','Issued','Shipped',NULL,2,'2026-04-18 12:54:05'),(141,29,'status_change','Shipped','In Transit',NULL,2,'2026-04-19 12:54:05'),(142,29,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',2,'2026-04-24 12:54:05'),(143,29,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',1,'2026-04-28 12:54:05'),(144,29,'status_change','Fully Received','Closed','Invoice matched, order closed.',10,'2026-04-29 12:54:05'),(145,30,'created',NULL,'Draft','Purchase request raised.',1,'2026-04-20 10:02:31'),(146,30,'status_change','Draft','Pending Approval',NULL,10,'2026-04-24 10:02:31'),(147,30,'status_change','Pending Approval','Issued','Approved by Maintenance Manager.',2,'2026-04-25 10:02:31'),(148,30,'status_change','Issued','Shipped',NULL,1,'2026-04-27 10:02:31'),(149,30,'status_change','Shipped','In Transit',NULL,10,'2026-05-01 10:02:31'),(150,30,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',2,'2026-05-04 10:02:31'),(151,30,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',10,'2026-05-05 10:02:31'),(152,30,'status_change','Fully Received','Closed','Invoice matched, order closed.',10,'2026-05-08 10:02:31'),(153,31,'created',NULL,'Draft','Purchase request raised.',10,'2026-04-11 08:09:37'),(154,31,'status_change','Draft','Pending Approval',NULL,2,'2026-04-13 08:09:37'),(155,31,'status_change','Pending Approval','Issued','Approved by Plant Director.',10,'2026-04-18 08:09:37'),(156,31,'status_change','Issued','Shipped',NULL,10,'2026-04-22 08:09:37'),(157,31,'status_change','Shipped','In Transit',NULL,2,'2026-04-25 08:09:37'),(158,31,'status_change','In Transit','Partially Received','Part shipment received, balance outstanding.',10,'2026-04-27 08:09:37'),(159,31,'status_change','Partially Received','Fully Received','All lines received and checked into stores.',2,'2026-04-29 08:09:37'),(160,31,'status_change','Fully Received','Closed','Invoice matched, order closed.',10,'2026-05-02 08:09:37'),(161,32,'created',NULL,'Draft','Purchase request raised.',10,'2026-05-17 05:46:47'),(162,32,'status_change','Draft','Pending Approval',NULL,2,'2026-05-20 05:46:47'),(163,32,'status_change','Pending Approval','Cancelled','Cancelled - requirement covered from stock.',1,'2026-05-21 05:46:47'),(164,33,'created',NULL,'Draft','Purchase request raised.',10,'2026-05-21 03:49:43'),(165,33,'status_change','Draft','Pending Approval',NULL,1,'2026-05-23 03:49:43'),(166,33,'status_change','Pending Approval','Cancelled','Cancelled - requirement covered from stock.',1,'2026-05-25 03:49:43');
+/*!40000 ALTER TABLE `po_status_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_api_keys`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_api_keys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_api_keys` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `key_prefix` varchar(16) NOT NULL DEFAULT '',
+  `key_hash` varchar(64) NOT NULL,
+  `permissions_json` longtext DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `last_used_at` varchar(40) DEFAULT NULL,
+  `created_by` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppcl_api_hash` (`key_hash`),
+  KEY `idx_ppcl_api_active` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_api_keys`
+--
+
+LOCK TABLES `ppcl_s_api_keys` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_api_keys` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_api_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_attachments`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_attachments` (
+  `id` varchar(64) NOT NULL,
+  `entity_type` varchar(64) NOT NULL,
+  `entity_id` varchar(64) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `original_name` varchar(255) NOT NULL DEFAULT '',
+  `mime` varchar(120) DEFAULT NULL,
+  `size_bytes` int(10) unsigned NOT NULL DEFAULT 0,
+  `note` varchar(500) DEFAULT NULL,
+  `uploaded_by` varchar(64) DEFAULT NULL,
+  `uploaded_by_name` varchar(120) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_att_entity` (`entity_type`,`entity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_attachments`
+--
+
+LOCK TABLES `ppcl_s_attachments` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_attachments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_attachments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_audit_log`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_audit_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_audit_log` (
+  `id` varchar(64) NOT NULL,
+  `created_at` varchar(40) NOT NULL,
+  `user_id` varchar(64) DEFAULT NULL,
+  `username` varchar(80) DEFAULT NULL,
+  `display_name` varchar(120) DEFAULT NULL,
+  `action` varchar(64) NOT NULL DEFAULT 'modify',
+  `entity_type` varchar(64) DEFAULT NULL,
+  `entity_id` varchar(64) DEFAULT NULL,
+  `entity_label` varchar(255) DEFAULT NULL,
+  `path_label` varchar(512) DEFAULT NULL,
+  `field_name` varchar(120) DEFAULT NULL,
+  `old_value` text DEFAULT NULL,
+  `new_value` text DEFAULT NULL,
+  `summary` text NOT NULL,
+  `meta_json` longtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_audit_created` (`created_at`),
+  KEY `idx_ppcl_audit_user` (`user_id`),
+  KEY `idx_ppcl_audit_entity` (`entity_type`,`entity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_audit_log`
+--
+
+LOCK TABLES `ppcl_s_audit_log` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_audit_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_audit_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_buildings`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_buildings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_buildings` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_buildings`
+--
+
+LOCK TABLES `ppcl_s_buildings` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_buildings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_buildings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_config_templates`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_config_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_config_templates` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `category` varchar(120) DEFAULT NULL,
+  `parameters_json` longtext DEFAULT NULL,
+  `parameter_sets_json` longtext DEFAULT NULL,
+  `revision` int(10) unsigned NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_config_templates`
+--
+
+LOCK TABLES `ppcl_s_config_templates` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_config_templates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_config_templates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_drafts`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_drafts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_drafts` (
+  `process_id` varchar(64) NOT NULL,
+  `payload_json` longtext NOT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`process_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_drafts`
+--
+
+LOCK TABLES `ppcl_s_drafts` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_drafts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_drafts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_meta`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_meta` (
+  `id` tinyint(4) NOT NULL DEFAULT 1,
+  `app_user` varchar(120) NOT NULL DEFAULT 'Operator',
+  `theme` varchar(16) NOT NULL DEFAULT 'light',
+  `record_seq` int(10) unsigned NOT NULL DEFAULT 0,
+  `retention_years` int(10) unsigned NOT NULL DEFAULT 15,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_meta`
+--
+
+LOCK TABLES `ppcl_s_meta` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_meta` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_processes`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_processes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_processes` (
+  `id` varchar(64) NOT NULL,
+  `product_id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `parameters_json` longtext DEFAULT NULL,
+  `parameter_sets_json` longtext DEFAULT NULL,
+  `assigned_line_ids_json` text DEFAULT NULL,
+  `line_param_overrides_json` longtext DEFAULT NULL,
+  `pinned` tinyint(1) NOT NULL DEFAULT 0,
+  `use_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `last_used_at` varchar(40) DEFAULT NULL,
+  `revision` int(10) unsigned NOT NULL DEFAULT 1,
+  `source_template_id` varchar(64) DEFAULT NULL,
+  `source_template_revision` int(10) unsigned DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_proc_prod` (`product_id`),
+  KEY `idx_ppcl_proc_tmpl` (`source_template_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_processes`
+--
+
+LOCK TABLES `ppcl_s_processes` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_processes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_processes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_product_families`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_product_families`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_product_families` (
+  `id` varchar(64) NOT NULL,
+  `project_id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_fam_proj` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_product_families`
+--
+
+LOCK TABLES `ppcl_s_product_families` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_product_families` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_product_families` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_production_lines`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_production_lines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_production_lines` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `code` varchar(64) DEFAULT NULL,
+  `building_id` varchar(64) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_line_bldg` (`building_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_production_lines`
+--
+
+LOCK TABLES `ppcl_s_production_lines` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_production_lines` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_production_lines` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_products`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_products` (
+  `id` varchar(64) NOT NULL,
+  `product_family_id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_prod_fam` (`product_family_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_products`
+--
+
+LOCK TABLES `ppcl_s_products` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_products` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_projects`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_projects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_projects` (
+  `id` varchar(64) NOT NULL,
+  `building_id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_proj_bldg` (`building_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_projects`
+--
+
+LOCK TABLES `ppcl_s_projects` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_projects` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_projects` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_records`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_records`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_records` (
+  `id` varchar(64) NOT NULL,
+  `order_id` varchar(50) DEFAULT NULL,
+  `routing_step_id` varchar(50) DEFAULT NULL,
+  `record_number` varchar(64) NOT NULL,
+  `payload_json` longtext NOT NULL,
+  `overall_status` varchar(16) DEFAULT NULL,
+  `production_line_id` varchar(64) DEFAULT NULL,
+  `production_line_name` varchar(255) DEFAULT NULL,
+  `batch_or_lot` varchar(255) DEFAULT NULL,
+  `filled_by` varchar(255) DEFAULT NULL,
+  `started_at` varchar(40) DEFAULT NULL,
+  `completed_at` varchar(40) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `voided` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppcl_rec_number` (`record_number`),
+  KEY `idx_ppcl_rec_completed` (`completed_at`),
+  KEY `idx_ppcl_rec_line` (`production_line_id`),
+  KEY `idx_ppcl_rec_status` (`overall_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_records`
+--
+
+LOCK TABLES `ppcl_s_records` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_records` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_records` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_roles`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_roles` (
+  `id` varchar(64) NOT NULL,
+  `slug` varchar(80) NOT NULL,
+  `display_name` varchar(120) NOT NULL,
+  `permissions_json` longtext NOT NULL,
+  `is_system` tinyint(1) NOT NULL DEFAULT 0,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppcl_role_slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_roles`
+--
+
+LOCK TABLES `ppcl_s_roles` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_roles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_sessions`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_sessions` (
+  `token` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`token`),
+  KEY `idx_ppcl_sess_user` (`user_id`),
+  KEY `idx_ppcl_sess_exp` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_sessions`
+--
+
+LOCK TABLES `ppcl_s_sessions` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_users`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_users` (
+  `id` varchar(64) NOT NULL,
+  `username` varchar(80) NOT NULL,
+  `display_name` varchar(120) NOT NULL DEFAULT '',
+  `password_hash` varchar(255) NOT NULL,
+  `role` varchar(80) NOT NULL DEFAULT 'operator',
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  `last_login_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppcl_username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_users`
+--
+
+LOCK TABLES `ppcl_s_users` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_webhook_deliveries`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_webhook_deliveries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_webhook_deliveries` (
+  `id` varchar(64) NOT NULL,
+  `webhook_id` varchar(64) NOT NULL,
+  `event` varchar(80) NOT NULL,
+  `payload_json` longtext DEFAULT NULL,
+  `success` tinyint(1) NOT NULL DEFAULT 0,
+  `status_code` int(11) DEFAULT NULL,
+  `response_snippet` varchar(500) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_whd_wh` (`webhook_id`),
+  KEY `idx_ppcl_whd_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_webhook_deliveries`
+--
+
+LOCK TABLES `ppcl_s_webhook_deliveries` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_webhook_deliveries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_webhook_deliveries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppcl_s_webhooks`
+--
+
+DROP TABLE IF EXISTS `ppcl_s_webhooks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppcl_s_webhooks` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `url` text NOT NULL,
+  `secret` varchar(128) DEFAULT NULL,
+  `events_json` longtext DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `last_fired_at` varchar(40) DEFAULT NULL,
+  `last_status_code` int(11) DEFAULT NULL,
+  `last_error` text DEFAULT NULL,
+  `created_by` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppcl_wh_active` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppcl_s_webhooks`
+--
+
+LOCK TABLES `ppcl_s_webhooks` WRITE;
+/*!40000 ALTER TABLE `ppcl_s_webhooks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppcl_s_webhooks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_api_keys`
+--
+
+DROP TABLE IF EXISTS `ppr_api_keys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_api_keys` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `key_prefix` varchar(16) NOT NULL DEFAULT '',
+  `key_hash` varchar(64) NOT NULL,
+  `permissions_json` longtext DEFAULT NULL,
+  `project_ids_json` longtext DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `last_used_at` varchar(40) DEFAULT NULL,
+  `created_by` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppr_api_hash` (`key_hash`),
+  KEY `idx_ppr_api_active` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_api_keys`
+--
+
+LOCK TABLES `ppr_api_keys` WRITE;
+/*!40000 ALTER TABLE `ppr_api_keys` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_api_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_attachments`
+--
+
+DROP TABLE IF EXISTS `ppr_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_attachments` (
+  `id` varchar(64) NOT NULL,
+  `entity_type` varchar(64) NOT NULL,
+  `entity_id` varchar(64) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `original_name` varchar(255) NOT NULL DEFAULT '',
+  `mime` varchar(120) DEFAULT NULL,
+  `size_bytes` int(10) unsigned NOT NULL DEFAULT 0,
+  `note` varchar(500) DEFAULT NULL,
+  `uploaded_by` varchar(64) DEFAULT NULL,
+  `uploaded_by_name` varchar(120) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppr_att_entity` (`entity_type`,`entity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_attachments`
+--
+
+LOCK TABLES `ppr_attachments` WRITE;
+/*!40000 ALTER TABLE `ppr_attachments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_attachments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_audit_log`
+--
+
+DROP TABLE IF EXISTS `ppr_audit_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_audit_log` (
+  `id` varchar(64) NOT NULL,
+  `created_at` varchar(40) NOT NULL,
+  `user_id` varchar(64) DEFAULT NULL,
+  `username` varchar(80) DEFAULT NULL,
+  `display_name` varchar(120) DEFAULT NULL,
+  `action` varchar(64) NOT NULL DEFAULT 'modify',
+  `entity_type` varchar(64) DEFAULT NULL,
+  `entity_id` varchar(64) DEFAULT NULL,
+  `entity_label` varchar(255) DEFAULT NULL,
+  `summary` text NOT NULL,
+  `meta_json` longtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppr_audit_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_audit_log`
+--
+
+LOCK TABLES `ppr_audit_log` WRITE;
+/*!40000 ALTER TABLE `ppr_audit_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_audit_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_breaks`
+--
+
+DROP TABLE IF EXISTS `ppr_breaks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_breaks` (
+  `id` varchar(64) NOT NULL,
+  `shift_id` varchar(64) NOT NULL,
+  `name` varchar(120) NOT NULL DEFAULT 'Break',
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppr_break_shift` (`shift_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_breaks`
+--
+
+LOCK TABLES `ppr_breaks` WRITE;
+/*!40000 ALTER TABLE `ppr_breaks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_breaks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_downtime_codes`
+--
+
+DROP TABLE IF EXISTS `ppr_downtime_codes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_downtime_codes` (
+  `id` varchar(64) NOT NULL,
+  `code` varchar(40) NOT NULL,
+  `name` varchar(160) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppr_dt_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_downtime_codes`
+--
+
+LOCK TABLES `ppr_downtime_codes` WRITE;
+/*!40000 ALTER TABLE `ppr_downtime_codes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_downtime_codes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_lines`
+--
+
+DROP TABLE IF EXISTS `ppr_lines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_lines` (
+  `id` varchar(64) NOT NULL,
+  `code` varchar(64) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `project_id` varchar(64) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_lines`
+--
+
+LOCK TABLES `ppr_lines` WRITE;
+/*!40000 ALTER TABLE `ppr_lines` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_lines` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_meta`
+--
+
+DROP TABLE IF EXISTS `ppr_meta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_meta` (
+  `id` tinyint(4) NOT NULL DEFAULT 1,
+  `webhook_url` text DEFAULT NULL,
+  `base_public_url` varchar(512) DEFAULT NULL,
+  `retention_days` int(10) unsigned NOT NULL DEFAULT 730,
+  `target_band_pct` decimal(6,2) NOT NULL DEFAULT 5.00,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `max_log_hours` int(10) unsigned NOT NULL DEFAULT 8,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_meta`
+--
+
+LOCK TABLES `ppr_meta` WRITE;
+/*!40000 ALTER TABLE `ppr_meta` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_meta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_production_logs`
+--
+
+DROP TABLE IF EXISTS `ppr_production_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_production_logs` (
+  `id` varchar(64) NOT NULL,
+  `order_id` varchar(50) DEFAULT NULL,
+  `line_id` varchar(64) NOT NULL,
+  `project_id` varchar(64) NOT NULL,
+  `product_id` varchar(64) NOT NULL,
+  `shift_id` varchar(64) NOT NULL,
+  `business_date` date NOT NULL,
+  `start_at` datetime NOT NULL,
+  `end_at` datetime DEFAULT NULL,
+  `quantity` decimal(14,3) NOT NULL DEFAULT 0.000,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(16) NOT NULL DEFAULT 'open',
+  `opened_by` varchar(64) DEFAULT NULL,
+  `opened_by_name` varchar(120) DEFAULT NULL,
+  `signed_by` varchar(64) DEFAULT NULL,
+  `signed_by_name` varchar(120) DEFAULT NULL,
+  `signed_at` varchar(40) DEFAULT NULL,
+  `gross_seconds` int(10) unsigned DEFAULT NULL,
+  `break_seconds` int(10) unsigned DEFAULT NULL,
+  `net_seconds` int(10) unsigned DEFAULT NULL,
+  `uph` decimal(14,4) DEFAULT NULL,
+  `cycle_seconds` decimal(14,4) DEFAULT NULL,
+  `anomaly` tinyint(1) NOT NULL DEFAULT 0,
+  `anomaly_note` varchar(255) DEFAULT NULL,
+  `voided` tinyint(1) NOT NULL DEFAULT 0,
+  `void_reason` varchar(255) DEFAULT NULL,
+  `items_json` longtext DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  `target_uph` decimal(12,4) DEFAULT NULL,
+  `target_band_pct` decimal(6,2) DEFAULT NULL,
+  `target_uph_min` decimal(12,4) DEFAULT NULL,
+  `target_uph_max` decimal(12,4) DEFAULT NULL,
+  `hours_json` longtext DEFAULT NULL,
+  `changeover_seconds` int(10) unsigned DEFAULT NULL,
+  `overtime_hours` int(10) unsigned NOT NULL DEFAULT 0,
+  `plan_quantity` decimal(14,3) DEFAULT NULL,
+  `good_quantity` decimal(14,3) DEFAULT NULL,
+  `scrap_quantity` decimal(14,3) DEFAULT NULL,
+  `rework_quantity` decimal(14,3) DEFAULT NULL,
+  `downtime_seconds` int(10) unsigned DEFAULT NULL,
+  `oee_availability` decimal(8,4) DEFAULT NULL,
+  `oee_performance` decimal(8,4) DEFAULT NULL,
+  `oee_quality` decimal(8,4) DEFAULT NULL,
+  `oee` decimal(8,4) DEFAULT NULL,
+  `signature_data` longtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppr_log_line_start` (`line_id`,`start_at`),
+  KEY `idx_ppr_log_date_shift` (`business_date`,`shift_id`),
+  KEY `idx_ppr_log_status` (`status`),
+  KEY `idx_ppr_log_line_status` (`line_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_production_logs`
+--
+
+LOCK TABLES `ppr_production_logs` WRITE;
+/*!40000 ALTER TABLE `ppr_production_logs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_production_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_products`
+--
+
+DROP TABLE IF EXISTS `ppr_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_products` (
+  `id` varchar(64) NOT NULL,
+  `project_id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `code` varchar(64) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `target_uph` decimal(12,4) DEFAULT NULL,
+  `source` varchar(16) NOT NULL DEFAULT 'manual',
+  `ppcl_product_id` varchar(64) DEFAULT NULL,
+  `family_name` varchar(255) DEFAULT NULL,
+  `search_blob` varchar(768) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  `target_uph_min` decimal(12,4) DEFAULT NULL,
+  `target_uph_max` decimal(12,4) DEFAULT NULL,
+  `ideal_cycle_seconds` decimal(12,4) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppr_prod_ppcl` (`ppcl_product_id`),
+  KEY `idx_ppr_prod_proj` (`project_id`),
+  KEY `idx_ppr_prod_search` (`search_blob`(191))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_products`
+--
+
+LOCK TABLES `ppr_products` WRITE;
+/*!40000 ALTER TABLE `ppr_products` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_projects`
+--
+
+DROP TABLE IF EXISTS `ppr_projects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_projects` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `source` varchar(16) NOT NULL DEFAULT 'manual',
+  `ppcl_project_id` varchar(64) DEFAULT NULL,
+  `search_blob` varchar(512) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppr_proj_ppcl` (`ppcl_project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_projects`
+--
+
+LOCK TABLES `ppr_projects` WRITE;
+/*!40000 ALTER TABLE `ppr_projects` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_projects` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_roles`
+--
+
+DROP TABLE IF EXISTS `ppr_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_roles` (
+  `id` varchar(64) NOT NULL,
+  `slug` varchar(80) NOT NULL,
+  `display_name` varchar(120) NOT NULL,
+  `permissions_json` longtext NOT NULL,
+  `is_system` tinyint(1) NOT NULL DEFAULT 0,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppr_role_slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_roles`
+--
+
+LOCK TABLES `ppr_roles` WRITE;
+/*!40000 ALTER TABLE `ppr_roles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_sessions`
+--
+
+DROP TABLE IF EXISTS `ppr_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_sessions` (
+  `token` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`token`),
+  KEY `idx_ppr_sess_user` (`user_id`),
+  KEY `idx_ppr_sess_exp` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_sessions`
+--
+
+LOCK TABLES `ppr_sessions` WRITE;
+/*!40000 ALTER TABLE `ppr_sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_shifts`
+--
+
+DROP TABLE IF EXISTS `ppr_shifts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_shifts` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `code` varchar(40) DEFAULT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `crosses_midnight` tinyint(1) NOT NULL DEFAULT 0,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_shifts`
+--
+
+LOCK TABLES `ppr_shifts` WRITE;
+/*!40000 ALTER TABLE `ppr_shifts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_shifts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_users`
+--
+
+DROP TABLE IF EXISTS `ppr_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_users` (
+  `id` varchar(64) NOT NULL,
+  `username` varchar(80) NOT NULL,
+  `display_name` varchar(120) NOT NULL DEFAULT '',
+  `password_hash` varchar(255) NOT NULL,
+  `role` varchar(80) NOT NULL DEFAULT 'operator',
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `project_ids_json` longtext DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  `updated_at` varchar(40) DEFAULT NULL,
+  `last_login_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ppr_username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_users`
+--
+
+LOCK TABLES `ppr_users` WRITE;
+/*!40000 ALTER TABLE `ppr_users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_webhook_deliveries`
+--
+
+DROP TABLE IF EXISTS `ppr_webhook_deliveries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_webhook_deliveries` (
+  `id` varchar(64) NOT NULL,
+  `webhook_id` varchar(64) NOT NULL,
+  `event` varchar(80) NOT NULL,
+  `payload_json` longtext DEFAULT NULL,
+  `success` tinyint(1) NOT NULL DEFAULT 0,
+  `status_code` int(11) DEFAULT NULL,
+  `response_snippet` varchar(500) DEFAULT NULL,
+  `created_at` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppr_whd_wh` (`webhook_id`),
+  KEY `idx_ppr_whd_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_webhook_deliveries`
+--
+
+LOCK TABLES `ppr_webhook_deliveries` WRITE;
+/*!40000 ALTER TABLE `ppr_webhook_deliveries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_webhook_deliveries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ppr_webhooks`
+--
+
+DROP TABLE IF EXISTS `ppr_webhooks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ppr_webhooks` (
+  `id` varchar(64) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `url` text NOT NULL,
+  `secret` varchar(128) DEFAULT NULL,
+  `events_json` longtext DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` varchar(40) DEFAULT NULL,
+  `last_fired_at` varchar(40) DEFAULT NULL,
+  `last_status_code` int(11) DEFAULT NULL,
+  `last_error` text DEFAULT NULL,
+  `created_by` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ppr_wh_active` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ppr_webhooks`
+--
+
+LOCK TABLES `ppr_webhooks` WRITE;
+/*!40000 ALTER TABLE `ppr_webhooks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ppr_webhooks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `production_lines`
+--
+
+DROP TABLE IF EXISTS `production_lines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `production_lines` (
+  `line_id` int(11) NOT NULL AUTO_INCREMENT,
+  `workshop_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `products_built` text DEFAULT NULL,
+  `status` varchar(50) DEFAULT 'Active',
+  PRIMARY KEY (`line_id`),
+  KEY `workshop_id` (`workshop_id`),
+  CONSTRAINT `production_lines_ibfk_1` FOREIGN KEY (`workshop_id`) REFERENCES `workshops` (`workshop_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `production_lines`
+--
+
+LOCK TABLES `production_lines` WRITE;
+/*!40000 ALTER TABLE `production_lines` DISABLE KEYS */;
+INSERT INTO `production_lines` VALUES (1,1,'CNC Cell 1','Hydraulic manifolds, valve bodies','Active'),(2,1,'CNC Cell 2','Pump housings, flange sets','Active'),(3,1,'Fabrication Line','Weldments, frames, brackets','Active'),(4,2,'Assembly Line 1','Pump assemblies (series 400)','Active'),(5,2,'Assembly Line 2','Actuator modules','Active'),(6,2,'Packaging Line','Palletised finished goods','Active');
+/*!40000 ALTER TABLE `production_lines` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `purchase_orders`
+--
+
+DROP TABLE IF EXISTS `purchase_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `purchase_orders` (
+  `po_id` int(11) NOT NULL AUTO_INCREMENT,
+  `po_number` varchar(50) NOT NULL,
+  `vendor_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `dept_id` int(11) DEFAULT NULL,
+  `total_amount` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `status` enum('Draft','Pending Approval','Issued','Shipped','In Transit','Partially Received','Fully Received','Closed','Cancelled') DEFAULT 'Draft',
+  `approval_level` varchar(50) DEFAULT 'Auto-Approved',
+  `is_emergency_bypass` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`po_id`),
+  UNIQUE KEY `po_number` (`po_number`),
+  KEY `vendor_id` (`vendor_id`),
+  KEY `created_by` (`created_by`),
+  KEY `purchase_orders_ibfk_3` (`dept_id`),
+  CONSTRAINT `purchase_orders_ibfk_1` FOREIGN KEY (`vendor_id`) REFERENCES `vendors_suppliers` (`vendor_id`),
+  CONSTRAINT `purchase_orders_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `purchase_orders_ibfk_3` FOREIGN KEY (`dept_id`) REFERENCES `departments` (`dept_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `purchase_orders`
+--
+
+LOCK TABLES `purchase_orders` WRITE;
+/*!40000 ALTER TABLE `purchase_orders` DISABLE KEYS */;
+INSERT INTO `purchase_orders` VALUES (1,'PR-20260724-1001',3,2,1,217.50,'Draft','Auto-Approved',0,'2026-07-24 16:15:21'),(2,'PR-20260725-1002',1,10,2,7756.90,'Draft','Plant Director',0,'2026-07-25 18:17:26'),(3,'PR-20260726-1003',6,2,3,3674.40,'Pending Approval','Maintenance Manager',0,'2026-07-26 06:21:52'),(4,'PR-20260727-1004',4,2,4,1183.50,'Pending Approval','Auto-Approved',0,'2026-07-27 06:27:03'),(5,'PR-20260729-1005',3,10,5,2086.30,'Pending Approval','Maintenance Manager',0,'2026-07-29 07:45:30'),(6,'PR-20260729-1006',5,10,1,1747.60,'Pending Approval','Maintenance Manager',0,'2026-07-29 12:09:18'),(7,'PR-20260709-1007',5,10,2,637.90,'Issued','Auto-Approved',1,'2026-07-09 15:34:06'),(8,'PR-20260725-1008',8,1,3,6848.90,'Issued','Plant Director',0,'2026-07-25 04:28:29'),(9,'PR-20260710-1009',7,2,4,1403.00,'Issued','Auto-Approved',0,'2026-07-10 07:16:42'),(10,'PR-20260714-1010',6,2,5,261.00,'Issued','Auto-Approved',0,'2026-07-14 03:06:58'),(11,'PR-20260630-1011',8,2,1,297.70,'Shipped','Auto-Approved',0,'2026-06-30 14:37:30'),(12,'PR-20260706-1012',6,2,2,2440.40,'Shipped','Maintenance Manager',0,'2026-07-06 04:50:04'),(13,'PR-20260710-1013',5,2,3,2848.50,'Shipped','Maintenance Manager',0,'2026-07-10 18:33:11'),(14,'PR-20260703-1014',1,10,4,22127.40,'In Transit','Plant Director',0,'2026-07-03 15:39:00'),(15,'PR-20260706-1015',8,10,5,4262.70,'In Transit','Maintenance Manager',0,'2026-07-06 13:35:39'),(16,'PR-20260623-1016',5,1,1,2548.00,'In Transit','Maintenance Manager',0,'2026-06-23 17:36:10'),(17,'PR-20260616-1017',7,1,2,1066.90,'Partially Received','Auto-Approved',0,'2026-06-16 14:46:10'),(18,'PR-20260702-1018',5,2,3,340.50,'Partially Received','Auto-Approved',0,'2026-07-02 14:42:01'),(19,'PR-20260607-1019',5,1,4,103.80,'Fully Received','Auto-Approved',0,'2026-06-07 09:44:22'),(20,'PR-20260601-1020',1,1,5,10202.50,'Fully Received','Plant Director',0,'2026-06-01 17:03:29'),(21,'PR-20260609-1021',8,2,1,343.20,'Fully Received','Auto-Approved',0,'2026-06-09 16:00:03'),(22,'PR-20260610-1022',8,2,2,322.40,'Fully Received','Auto-Approved',0,'2026-06-10 07:19:15'),(23,'PR-20260601-1023',7,10,3,1822.50,'Fully Received','Maintenance Manager',0,'2026-06-01 03:46:42'),(24,'PR-20260402-1024',3,10,4,599.10,'Closed','Auto-Approved',0,'2026-04-02 14:54:25'),(25,'PR-20260407-1025',4,10,5,3428.00,'Closed','Maintenance Manager',0,'2026-04-07 14:54:41'),(26,'PR-20260420-1026',5,1,1,2590.10,'Closed','Maintenance Manager',0,'2026-04-20 12:33:10'),(27,'PR-20260414-1027',4,2,2,1505.40,'Closed','Maintenance Manager',0,'2026-04-14 05:54:36'),(28,'PR-20260402-1028',3,1,3,1757.25,'Closed','Maintenance Manager',0,'2026-04-02 13:13:49'),(29,'PR-20260413-1029',7,1,4,753.00,'Closed','Auto-Approved',0,'2026-04-13 12:54:05'),(30,'PR-20260420-1030',3,10,5,3832.75,'Closed','Maintenance Manager',0,'2026-04-20 10:02:31'),(31,'PR-20260411-1031',3,10,1,28004.85,'Closed','Plant Director',0,'2026-04-11 08:09:37'),(32,'PR-20260517-1032',3,10,2,36288.40,'Cancelled','Plant Director',0,'2026-05-17 05:46:47'),(33,'PR-20260521-1033',8,10,3,4275.50,'Cancelled','Maintenance Manager',0,'2026-05-21 03:49:43');
+/*!40000 ALTER TABLE `purchase_orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rate_limit`
+--
+
+DROP TABLE IF EXISTS `rate_limit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rate_limit` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `endpoint` varchar(100) NOT NULL,
+  `window_start` int(11) NOT NULL,
+  `request_count` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_ip_endpoint` (`ip_address`,`endpoint`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rate_limit`
+--
+
+LOCK TABLES `rate_limit` WRITE;
+/*!40000 ALTER TABLE `rate_limit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rate_limit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `role_definitions`
+--
+
+DROP TABLE IF EXISTS `role_definitions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `role_definitions` (
+  `role_level` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `permissions_json` text NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`role_level`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role_definitions`
+--
+
+LOCK TABLES `role_definitions` WRITE;
+/*!40000 ALTER TABLE `role_definitions` DISABLE KEYS */;
+INSERT INTO `role_definitions` VALUES (1,'Operator','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":false,\"closeout_tickets\":false,\"view_history\":true,\"view_statistics\":false,\"view_equipment\":true,\"manage_equipment\":false,\"view_toolings\":true,\"manage_toolings\":false,\"view_inventory\":false,\"manage_inventory\":false,\"view_vendors\":false,\"manage_vendors\":false,\"view_purchase_requests\":false,\"create_purchase_requests\":false,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":false,\"manage_work_orders\":false,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33','Basic access - create and view tickets, limited visibility.'),(2,'Technician','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":true,\"closeout_tickets\":false,\"view_history\":true,\"view_statistics\":true,\"view_equipment\":true,\"manage_equipment\":false,\"view_toolings\":true,\"manage_toolings\":false,\"view_inventory\":true,\"manage_inventory\":false,\"view_vendors\":true,\"manage_vendors\":false,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":true,\"manage_work_orders\":false,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33','Field technicians - can take over and view most operational data.'),(3,'Supervisor','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":true,\"closeout_tickets\":true,\"view_history\":true,\"view_statistics\":true,\"view_equipment\":true,\"manage_equipment\":true,\"view_toolings\":true,\"manage_toolings\":true,\"view_inventory\":true,\"manage_inventory\":false,\"view_vendors\":true,\"manage_vendors\":false,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":true,\"manage_work_orders\":true,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33','Supervisors - full ticket lifecycle + manage equipment/tooling and work orders.'),(4,'Admin','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":true,\"closeout_tickets\":true,\"view_history\":true,\"view_statistics\":true,\"view_equipment\":true,\"manage_equipment\":true,\"view_toolings\":true,\"manage_toolings\":true,\"view_inventory\":true,\"manage_inventory\":true,\"view_vendors\":true,\"manage_vendors\":true,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":true,\"fulfill_purchase_orders\":true,\"view_work_orders\":true,\"manage_work_orders\":true,\"manage_users\":true,\"manage_settings\":true,\"reset_passwords\":true,\"delete_users\":true}','2026-07-27 16:00:33','Full system access including user management and settings.'),(5,'Custom Viewer','{\"view_toolings\":false,\"manage_toolings\":false,\"view_tickets\":false,\"create_tickets\":false,\"takeover_tickets\":false,\"closeout_tickets\":false,\"view_history\":false,\"view_statistics\":false,\"view_equipment\":false,\"manage_equipment\":false,\"view_inventory\":false,\"manage_inventory\":false,\"view_vendors\":false,\"manage_vendors\":false,\"view_purchase_requests\":false,\"create_purchase_requests\":false,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":false,\"manage_work_orders\":false,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33',NULL),(6,'Storekeeper','{\"view_tickets\":false,\"create_tickets\":false,\"takeover_tickets\":false,\"closeout_tickets\":false,\"view_history\":false,\"view_statistics\":false,\"view_equipment\":true,\"view_inventory\":true,\"view_vendors\":true,\"view_work_orders\":false,\"manage_work_orders\":false,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":true,\"manage_users\":false,\"manage_settings\":false,\"manage_equipment\":false,\"manage_inventory\":true,\"manage_vendors\":false,\"reset_passwords\":false,\"delete_users\":false,\"view_toolings\":true,\"manage_toolings\":false}','2026-07-27 16:00:33',NULL);
+/*!40000 ALTER TABLE `role_definitions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `scheduled_reports`
+--
+
+DROP TABLE IF EXISTS `scheduled_reports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `scheduled_reports` (
+  `report_id` int(11) NOT NULL AUTO_INCREMENT,
+  `report_date` date NOT NULL,
+  `total_tickets` int(11) NOT NULL DEFAULT 0,
+  `mttr_minutes` int(11) NOT NULL DEFAULT 0,
+  `generated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`report_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `scheduled_reports`
+--
+
+LOCK TABLES `scheduled_reports` WRITE;
+/*!40000 ALTER TABLE `scheduled_reports` DISABLE KEYS */;
+/*!40000 ALTER TABLE `scheduled_reports` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `schema_migrations`
+--
+
+DROP TABLE IF EXISTS `schema_migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `schema_migrations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `filename` varchar(255) NOT NULL,
+  `applied_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_filename` (`filename`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schema_migrations`
+--
+
+LOCK TABLES `schema_migrations` WRITE;
+/*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
+INSERT INTO `schema_migrations` VALUES (1,'0001_create_schema_migrations_table.sql','2026-07-12 19:12:25'),(2,'0002_add_closed_by_to_active_tickets.sql','2026-07-12 19:12:25'),(3,'0003_add_theme_prefs_json_to_users.sql','2026-07-12 19:12:25'),(4,'0004_create_audit_log_table.sql','2026-07-12 19:17:19'),(5,'0005_add_soft_delete_columns.sql','2026-07-12 19:18:02'),(6,'0006_create_inventory_ledger.sql','2026-07-12 19:18:41'),(7,'0007_enhance_users_table.sql','2026-07-14 18:16:20'),(8,'0008_add_badge_number_and_registration_config.sql','2026-07-14 18:16:20'),(9,'0010_create_equipment_documents.sql','2026-07-14 18:16:20'),(10,'0011_add_api_key_to_users.sql','2026-07-18 13:38:21'),(11,'0012_po_comments_and_documents.sql','2026-07-18 18:09:18'),(12,'0013_procurement_workflow.sql','2026-07-18 23:44:01'),(13,'0007_create_skill_automation_config.sql','2026-07-19 08:45:33'),(14,'0014_add_admin_layout_json_to_users.sql','2026-07-19 08:45:33'),(15,'0015_create_notifications.sql','2026-07-21 17:30:48'),(16,'0016_add_event_class_to_active_tickets.sql','2026-07-24 19:27:16'),(17,'0017_create_toolings.sql','2026-07-26 10:49:06'),(18,'0018_create_tooling_bom.sql','2026-07-26 11:03:43'),(19,'0019_create_tooling_documents.sql','2026-07-27 19:00:10'),(20,'0020_add_closed_at_to_active_tickets.sql','2026-07-27 19:00:10'),(21,'0021_add_locale_to_users.sql','2026-07-27 19:00:10'),(22,'0009_add_role_definitions.sql','2026-07-27 19:00:33'),(23,'0022_create_donation_prompt_prefs.sql','2026-07-28 18:09:56');
+/*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `skill_automation_config`
+--
+
+DROP TABLE IF EXISTS `skill_automation_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `skill_automation_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `skill_name` varchar(255) NOT NULL,
+  `equipment_category` varchar(100) NOT NULL,
+  `icon` varchar(50) DEFAULT '?',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_category` (`equipment_category`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `skill_automation_config`
+--
+
+LOCK TABLES `skill_automation_config` WRITE;
+/*!40000 ALTER TABLE `skill_automation_config` DISABLE KEYS */;
+INSERT INTO `skill_automation_config` VALUES (1,'Machining Specialist','Machining','⚙️'),(2,'Robotics Technician','Robotics','🤖'),(3,'Conveyor Master','Conveyance','📦'),(4,'Fabrication Expert','Fabrication','🔥'),(5,'Assembly Specialist','Assembly','🔩'),(6,'Quality Systems Tech','Quality','🎯'),(7,'Packaging Technician','Packaging','📦'),(8,'Utilities Engineer','Utilities','⚡'),(9,'Lifting & Handling','Handling','🏗️'),(10,'Auxiliary Systems','Auxiliary','🧰');
+/*!40000 ALTER TABLE `skill_automation_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `system_audit_logs`
+--
+
+DROP TABLE IF EXISTS `system_audit_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `system_audit_logs` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `action` varchar(100) NOT NULL,
+  `details` text DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`log_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `system_audit_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `system_audit_logs`
+--
+
+LOCK TABLES `system_audit_logs` WRITE;
+/*!40000 ALTER TABLE `system_audit_logs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `system_audit_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `team_directory`
+--
+
+DROP TABLE IF EXISTS `team_directory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `team_directory` (
+  `member_id` int(11) NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(100) NOT NULL,
+  `role_type` varchar(50) NOT NULL COMMENT 'technical | production',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`member_id`),
+  KEY `idx_role_active` (`role_type`,`is_active`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `team_directory`
+--
+
+LOCK TABLES `team_directory` WRITE;
+/*!40000 ALTER TABLE `team_directory` DISABLE KEYS */;
+INSERT INTO `team_directory` VALUES (1,'Alex Rivera','technical',1,'2025-09-28 16:52:05'),(2,'Priya Nair','technical',1,'2025-07-03 03:44:35'),(3,'Marc Dubois','technical',1,'2025-10-04 07:19:18'),(4,'Jide Okafor','technical',1,'2025-07-16 05:35:01'),(5,'Sara Lindqvist','technical',1,'2025-09-11 16:08:52'),(6,'Taro Yamamoto','technical',1,'2025-07-18 11:32:38'),(7,'Katerina Novak','technical',1,'2025-08-03 18:51:26'),(8,'Rui Silva','production',1,'2025-07-25 11:21:54'),(9,'Elise Moreau','production',1,'2025-09-06 06:58:25'),(10,'Hendrik Bakker','production',1,'2025-07-08 12:12:04'),(11,'Claire Whitfield','production',1,'2025-06-28 15:10:56');
+/*!40000 ALTER TABLE `team_directory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ticket_actions`
+--
+
+DROP TABLE IF EXISTS `ticket_actions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ticket_actions` (
+  `action_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ticket_id` varchar(50) NOT NULL,
+  `tech_name` varchar(100) DEFAULT NULL,
+  `action_start` datetime DEFAULT NULL,
+  `action_end` datetime DEFAULT NULL,
+  `fault_type` varchar(100) DEFAULT NULL,
+  `root_cause` text DEFAULT NULL,
+  `action_taken` text DEFAULT NULL,
+  `parts_used` text DEFAULT NULL,
+  `escalated_to` varchar(100) DEFAULT NULL,
+  `timestamp_logged` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`action_id`),
+  KEY `ticket_actions_ibfk_1` (`ticket_id`),
+  CONSTRAINT `ticket_actions_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `active_tickets` (`ticket_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=426 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket_actions`
+--
+
+LOCK TABLES `ticket_actions` WRITE;
+/*!40000 ALTER TABLE `ticket_actions` DISABLE KEYS */;
+INSERT INTO `ticket_actions` VALUES (1,'TK-260716-005','Sara Lindqvist','2026-07-16 23:15:10',NULL,'Mechanical','Tail pulley bearing seized, belt pulling right','Diagnosis in progress - tail pulley bearing seized, belt pulling right. Awaiting spare part.','',NULL,'2026-07-16 20:15:10'),(2,'TK-260726-006','Jide Okafor','2026-07-26 19:05:13',NULL,'Electrical','Axis 3 brake contactor welded closed','Diagnosis in progress - axis 3 brake contactor welded closed. Awaiting spare part.','',NULL,'2026-07-26 16:05:13'),(3,'TK-260720-007','Jide Okafor','2026-07-20 20:37:04',NULL,'Process','Contact tip worn and shielding gas flow low','Diagnosis in progress - contact tip worn and shielding gas flow low. Awaiting spare part.','',NULL,'2026-07-20 17:37:04'),(4,'TK-251105-008','Jide Okafor','2025-11-05 20:14:32',NULL,'Mechanical','Sheet not seated, height sensor calibration drifted','Diagnosis in progress - sheet not seated, height sensor calibration drifted. Awaiting spare part.','',NULL,'2025-11-05 18:14:32'),(5,'TK-260507-009','Jide Okafor','2026-05-07 07:05:52',NULL,'Hydraulic','Main cylinder seal blown','Diagnosis in progress - main cylinder seal blown. Awaiting spare part.','',NULL,'2026-05-07 04:05:52'),(6,'TK-260620-010','Katerina Novak','2026-06-20 23:18:04','2026-06-21 01:50:04','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','VFD 7.5kW 400V x3',NULL,'2026-06-20 22:50:04'),(7,'TK-260317-011','Sara Lindqvist','2026-03-17 19:36:33','2026-03-17 20:59:33','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','E-Stop Mushroom Button 22mm x2',NULL,'2026-03-17 18:59:33'),(8,'TK-260527-012','Katerina Novak','2026-05-27 15:59:02','2026-05-27 18:15:02','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Linear Guide Block HGH25 x3',NULL,'2026-05-27 15:15:02'),(9,'TK-260104-013','Katerina Novak','2026-01-04 13:31:16','2026-01-04 14:49:16','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-01-04 12:49:16'),(10,'TK-251121-014','Sara Lindqvist','2025-11-21 09:47:11','2025-11-21 12:48:11','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Spindle Grease NLGI 2 (400g) x2',NULL,'2025-11-21 10:48:11'),(11,'TK-260607-015','Sara Lindqvist','2026-06-07 11:29:31','2026-06-07 12:11:31','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Spherical Roller Bearing 22215 x2',NULL,'2026-06-07 09:11:31'),(12,'TK-260726-016','Sara Lindqvist','2026-07-26 09:56:35','2026-07-26 10:57:35','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Compressor Air Filter GA55 x2',NULL,'2026-07-26 07:57:35'),(13,'TK-260724-017','Taro Yamamoto','2026-07-24 10:48:38','2026-07-24 13:50:38','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','VFD 7.5kW 400V x3',NULL,'2026-07-24 10:50:38'),(14,'TK-260610-018','Taro Yamamoto','2026-06-10 19:18:53','2026-06-10 21:39:53','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','E-Stop Mushroom Button 22mm x2',NULL,'2026-06-10 18:39:53'),(15,'TK-260510-019','Katerina Novak','2026-05-10 21:31:54','2026-05-10 23:11:54','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','',NULL,'2026-05-10 20:11:54'),(16,'TK-260520-020','Taro Yamamoto','2026-05-20 13:13:28','2026-05-20 14:31:28','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Welding Torch Nozzle M8 x2',NULL,'2026-05-20 11:31:28'),(17,'TK-251201-021','Jide Okafor','2025-12-01 17:47:56','2025-12-01 18:55:56','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Spindle Grease NLGI 2 (400g) x3',NULL,'2025-12-01 16:55:56'),(18,'TK-260529-022','Jide Okafor','2026-05-29 18:12:10','2026-05-29 20:13:10','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Spherical Roller Bearing 22215 x3',NULL,'2026-05-29 17:13:10'),(19,'TK-251229-023','Taro Yamamoto','2025-12-29 18:36:47','2025-12-29 23:36:47','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Compressor Air Filter GA55 x2',NULL,'2025-12-29 21:36:47'),(20,'TK-260518-024','Jide Okafor','2026-05-18 17:08:48','2026-05-18 18:35:48','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','VFD 7.5kW 400V x3',NULL,'2026-05-18 15:35:48'),(21,'TK-260511-025','Taro Yamamoto','2026-05-11 14:20:45','2026-05-11 18:10:45','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2026-05-11 15:10:45'),(22,'TK-260117-026','Taro Yamamoto','2026-01-17 21:18:53','2026-01-18 01:05:53','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','',NULL,'2026-01-17 23:05:53'),(23,'TK-260729-027','Sara Lindqvist','2026-07-29 20:21:51','2026-07-29 22:03:51','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Welding Torch Nozzle M8 x2',NULL,'2026-07-29 19:03:51'),(24,'TK-251226-028','Jide Okafor','2025-12-26 15:02:10','2025-12-26 16:52:10','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Spindle Grease NLGI 2 (400g) x2',NULL,'2025-12-26 14:52:10'),(25,'TK-260514-029','Jide Okafor','2026-05-14 09:49:40','2026-05-14 10:33:40','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Spherical Roller Bearing 22215 x3',NULL,'2026-05-14 07:33:40'),(26,'TK-260103-030','Jide Okafor','2026-01-03 14:38:39','2026-01-03 16:00:39','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Compressor Air Filter GA55 x1',NULL,'2026-01-03 14:00:39'),(27,'TK-251127-031','Jide Okafor','2025-11-27 13:37:51','2025-11-27 19:12:51','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2025-11-27 17:12:51'),(28,'TK-260724-032','Sara Lindqvist','2026-07-24 13:20:15','2026-07-24 14:53:15','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-07-24 11:53:15'),(29,'TK-260330-033','Katerina Novak','2026-03-30 16:12:57','2026-03-30 17:42:57','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Linear Guide Block HGH25 x1',NULL,'2026-03-30 14:42:57'),(30,'TK-260128-034','Katerina Novak','2026-01-28 09:53:31','2026-01-28 11:51:31','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Welding Torch Nozzle M8 x3',NULL,'2026-01-28 09:51:31'),(31,'TK-260725-035','Katerina Novak','2026-07-25 19:13:03','2026-07-25 20:49:03','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-07-25 17:49:03'),(32,'TK-260615-036','Sara Lindqvist','2026-06-15 17:26:00','2026-06-15 19:55:00','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Spherical Roller Bearing 22215 x2',NULL,'2026-06-15 16:55:00'),(33,'TK-260627-037','Sara Lindqvist','2026-06-27 21:43:00','2026-06-27 22:30:00','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Compressor Air Filter GA55 x2',NULL,'2026-06-27 19:30:00'),(34,'TK-260503-038','Sara Lindqvist','2026-05-03 19:56:20','2026-05-03 21:02:20','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','VFD 7.5kW 400V x2',NULL,'2026-05-03 18:02:20'),(35,'TK-260407-039','Taro Yamamoto','2026-04-07 08:28:07','2026-04-07 12:06:07','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','E-Stop Mushroom Button 22mm x2',NULL,'2026-04-07 09:06:07'),(36,'TK-251231-040','Taro Yamamoto','2025-12-31 14:25:39','2025-12-31 16:40:39','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Linear Guide Block HGH25 x1',NULL,'2025-12-31 14:40:39'),(37,'TK-251225-041','Katerina Novak','2025-12-25 11:43:37','2025-12-25 13:17:37','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Welding Torch Nozzle M8 x1',NULL,'2025-12-25 11:17:37'),(38,'TK-260601-042','Taro Yamamoto','2026-06-01 21:43:20','2026-06-01 23:21:20','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-06-01 20:21:20'),(39,'TK-251213-043','Jide Okafor','2025-12-13 14:18:06','2025-12-13 15:55:06','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Spherical Roller Bearing 22215 x3',NULL,'2025-12-13 13:55:06'),(40,'TK-260626-044','Jide Okafor','2026-06-26 18:56:58','2026-06-26 21:12:58','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','',NULL,'2026-06-26 18:12:58'),(41,'TK-260731-045','Taro Yamamoto','2026-07-31 15:37:08','2026-07-31 20:00:08','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','VFD 7.5kW 400V x3',NULL,'2026-07-31 17:00:08'),(42,'TK-260215-046','Katerina Novak','2026-02-15 08:42:45','2026-02-15 09:33:45','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','E-Stop Mushroom Button 22mm x2',NULL,'2026-02-15 07:33:45'),(43,'TK-251229-047','Taro Yamamoto','2025-12-29 07:32:30','2025-12-29 10:46:30','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Linear Guide Block HGH25 x3',NULL,'2025-12-29 08:46:30'),(44,'TK-260516-048','Taro Yamamoto','2026-05-16 11:43:39','2026-05-16 14:34:39','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Welding Torch Nozzle M8 x3',NULL,'2026-05-16 11:34:39'),(45,'TK-260626-049','Sara Lindqvist','2026-06-26 07:10:10','2026-06-26 08:40:10','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-06-26 05:40:10'),(46,'TK-251228-050','Jide Okafor','2025-12-28 08:19:06','2025-12-28 10:12:06','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Spherical Roller Bearing 22215 x2',NULL,'2025-12-28 08:12:06'),(47,'TK-260715-051','Jide Okafor','2026-07-15 15:50:49','2026-07-15 17:02:49','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Compressor Air Filter GA55 x1',NULL,'2026-07-15 14:02:49'),(48,'TK-260604-052','Jide Okafor','2026-06-04 15:20:10','2026-06-04 17:35:10','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-06-04 14:35:10'),(49,'TK-251205-053','Jide Okafor','2025-12-05 17:31:52','2025-12-05 23:44:52','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','E-Stop Mushroom Button 22mm x1',NULL,'2025-12-05 21:44:52'),(50,'TK-260726-054','Katerina Novak','2026-07-26 16:07:53','2026-07-26 18:36:53','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','Linear Guide Block HGH25 x2',NULL,'2026-07-26 15:36:53'),(51,'TK-251220-055','Katerina Novak','2025-12-20 20:10:16','2025-12-20 21:18:16','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Welding Torch Nozzle M8 x2',NULL,'2025-12-20 19:18:16'),(52,'TK-260125-056','Katerina Novak','2026-01-25 09:47:42','2026-01-25 12:45:42','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','',NULL,'2026-01-25 10:45:42'),(53,'TK-260628-057','Katerina Novak','2026-06-28 14:16:14','2026-06-28 15:52:14','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-06-28 12:52:14'),(54,'TK-260522-058','Sara Lindqvist','2026-05-22 21:17:40','2026-05-22 23:27:40','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Compressor Air Filter GA55 x3',NULL,'2026-05-22 20:27:40'),(55,'TK-260630-059','Sara Lindqvist','2026-06-30 13:48:54','2026-06-30 14:54:54','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','VFD 7.5kW 400V x3',NULL,'2026-06-30 11:54:54'),(56,'TK-260415-060','Sara Lindqvist','2026-04-15 10:32:43','2026-04-15 11:33:43','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','E-Stop Mushroom Button 22mm x2',NULL,'2026-04-15 08:33:43'),(57,'TK-260625-061','Taro Yamamoto','2026-06-25 14:53:26','2026-06-25 17:06:26','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Linear Guide Block HGH25 x1',NULL,'2026-06-25 14:06:26'),(58,'TK-260502-062','Taro Yamamoto','2026-05-02 10:24:19','2026-05-02 12:44:19','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-05-02 09:44:19'),(59,'TK-260728-063','Katerina Novak','2026-07-28 20:37:50','2026-07-28 22:33:50','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','',NULL,'2026-07-28 19:33:50'),(60,'TK-260320-064','Taro Yamamoto','2026-03-20 09:43:14','2026-03-20 10:51:14','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','',NULL,'2026-03-20 08:51:14'),(61,'TK-260106-065','Jide Okafor','2026-01-06 20:25:59','2026-01-06 22:02:59','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-01-06 20:02:59'),(62,'TK-251224-066','Jide Okafor','2025-12-24 19:47:08','2025-12-24 21:59:08','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','',NULL,'2025-12-24 19:59:08'),(63,'TK-260728-067','Taro Yamamoto','2026-07-28 18:45:00','2026-07-28 22:38:00','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','E-Stop Mushroom Button 22mm x3',NULL,'2026-07-28 19:38:00'),(64,'TK-251103-068','Taro Yamamoto','2025-11-03 10:06:07','2025-11-03 10:58:07','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2025-11-03 08:58:07'),(65,'TK-251112-069','Taro Yamamoto','2025-11-12 18:35:09','2025-11-12 22:22:09','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2025-11-12 20:22:09'),(66,'TK-260218-070','Taro Yamamoto','2026-02-18 08:55:18','2026-02-18 11:43:18','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-02-18 09:43:18'),(67,'TK-260103-071','Sara Lindqvist','2026-01-03 12:28:06','2026-01-03 14:24:06','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Spherical Roller Bearing 22215 x1',NULL,'2026-01-03 12:24:06'),(68,'TK-260728-072','Jide Okafor','2026-07-28 10:47:03','2026-07-28 13:03:03','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Compressor Air Filter GA55 x3',NULL,'2026-07-28 10:03:03'),(69,'TK-260212-073','Jide Okafor','2026-02-12 09:38:49','2026-02-12 10:36:49','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','VFD 7.5kW 400V x1',NULL,'2026-02-12 08:36:49'),(70,'TK-260701-074','Sara Lindqvist','2026-07-01 22:51:26','2026-07-02 00:46:26','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-07-01 21:46:26'),(71,'TK-260117-075','Jide Okafor','2026-01-17 10:56:06','2026-01-17 16:03:06','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-01-17 14:03:06'),(72,'TK-260711-076','Katerina Novak','2026-07-11 08:39:01','2026-07-11 11:16:01','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','Welding Torch Nozzle M8 x3',NULL,'2026-07-11 08:16:01'),(73,'TK-260117-077','Sara Lindqvist','2026-01-17 09:12:51','2026-01-17 10:34:51','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2026-01-17 08:34:51'),(74,'TK-260315-078','Katerina Novak','2026-03-15 13:10:26','2026-03-15 15:37:26','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Spherical Roller Bearing 22215 x2',NULL,'2026-03-15 13:37:26'),(75,'TK-260717-079','Taro Yamamoto','2026-07-17 22:20:56','2026-07-18 00:29:56','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','Compressor Air Filter GA55 x2',NULL,'2026-07-17 21:29:56'),(76,'TK-260303-080','Sara Lindqvist','2026-03-03 07:59:30','2026-03-03 10:36:30','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','',NULL,'2026-03-03 08:36:30'),(77,'TK-251121-081','Taro Yamamoto','2025-11-21 08:37:06','2025-11-21 09:26:06','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','',NULL,'2025-11-21 07:26:06'),(78,'TK-260124-082','Sara Lindqvist','2026-01-24 13:50:45','2026-01-24 15:20:45','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Linear Guide Block HGH25 x1',NULL,'2026-01-24 13:20:45'),(79,'TK-260727-083','Taro Yamamoto','2026-07-27 07:36:46','2026-07-27 10:52:46','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Welding Torch Nozzle M8 x2',NULL,'2026-07-27 07:52:46'),(80,'TK-260210-084','Taro Yamamoto','2026-02-10 20:56:59','2026-02-10 23:06:59','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-02-10 21:06:59'),(81,'TK-251107-085','Sara Lindqvist','2025-11-07 07:52:15','2025-11-07 10:15:15','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Spherical Roller Bearing 22215 x2',NULL,'2025-11-07 08:15:15'),(82,'TK-260127-086','Taro Yamamoto','2026-01-27 06:58:52','2026-01-27 08:44:52','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Compressor Air Filter GA55 x3',NULL,'2026-01-27 06:44:52'),(83,'TK-260527-087','Jide Okafor','2026-05-27 18:13:55','2026-05-27 19:29:55','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','VFD 7.5kW 400V x1',NULL,'2026-05-27 16:29:55'),(84,'TK-260715-088','Taro Yamamoto','2026-07-15 17:14:10','2026-07-15 18:36:10','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','E-Stop Mushroom Button 22mm x3',NULL,'2026-07-15 15:36:10'),(85,'TK-260106-089','Taro Yamamoto','2026-01-06 12:07:46','2026-01-06 16:26:46','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Linear Guide Block HGH25 x2',NULL,'2026-01-06 14:26:46'),(86,'TK-251216-090','Taro Yamamoto','2025-12-16 13:17:13','2025-12-16 14:41:13','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2025-12-16 12:41:13'),(87,'TK-260131-091','Taro Yamamoto','2026-01-31 10:37:26','2026-01-31 12:46:26','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2026-01-31 10:46:26'),(88,'TK-260725-092','Taro Yamamoto','2026-07-25 16:36:32','2026-07-25 20:14:32','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Spherical Roller Bearing 22215 x2',NULL,'2026-07-25 17:14:32'),(89,'TK-260521-093','Sara Lindqvist','2026-05-21 18:22:24','2026-05-21 19:37:24','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Compressor Air Filter GA55 x2',NULL,'2026-05-21 16:37:24'),(90,'TK-260605-094','Jide Okafor','2026-06-05 13:27:41','2026-06-05 15:10:41','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','VFD 7.5kW 400V x3',NULL,'2026-06-05 12:10:41'),(91,'TK-251114-095','Sara Lindqvist','2025-11-14 15:58:07','2025-11-14 16:51:07','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','',NULL,'2025-11-14 14:51:07'),(92,'TK-260320-096','Jide Okafor','2026-03-20 19:21:43','2026-03-20 21:35:43','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Linear Guide Block HGH25 x2',NULL,'2026-03-20 19:35:43'),(93,'TK-260609-097','Katerina Novak','2026-06-09 18:45:11','2026-06-09 23:16:11','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','Welding Torch Nozzle M8 x3',NULL,'2026-06-09 20:16:11'),(94,'TK-260725-098','Katerina Novak','2026-07-25 06:58:47','2026-07-25 09:05:47','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-07-25 06:05:47'),(95,'TK-251217-099','Katerina Novak','2025-12-17 15:22:51','2025-12-17 16:58:51','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2025-12-17 14:58:51'),(96,'TK-260602-100','Katerina Novak','2026-06-02 09:40:21','2026-06-02 11:41:21','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Compressor Air Filter GA55 x2',NULL,'2026-06-02 08:41:21'),(97,'TK-260515-101','Taro Yamamoto','2026-05-15 16:05:07','2026-05-15 17:47:07','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','VFD 7.5kW 400V x3',NULL,'2026-05-15 14:47:07'),(98,'TK-260201-102','Sara Lindqvist','2026-02-01 08:57:16','2026-02-01 11:28:16','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','E-Stop Mushroom Button 22mm x2',NULL,'2026-02-01 09:28:16'),(99,'TK-260120-103','Sara Lindqvist','2026-01-20 21:31:01','2026-01-20 22:39:01','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Linear Guide Block HGH25 x1',NULL,'2026-01-20 20:39:01'),(100,'TK-260416-104','Sara Lindqvist','2026-04-16 21:59:08','2026-04-16 23:18:08','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','',NULL,'2026-04-16 20:18:08'),(101,'TK-260327-105','Taro Yamamoto','2026-03-27 06:46:02','2026-03-27 09:31:02','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-03-27 07:31:02'),(102,'TK-260212-106','Taro Yamamoto','2026-02-12 19:19:46','2026-02-12 21:28:46','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Spherical Roller Bearing 22215 x3',NULL,'2026-02-12 19:28:46'),(103,'TK-251113-107','Katerina Novak','2025-11-13 11:13:59','2025-11-13 13:02:59','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Compressor Air Filter GA55 x2',NULL,'2025-11-13 11:02:59'),(104,'TK-260720-108','Taro Yamamoto','2026-07-20 13:31:59','2026-07-20 15:22:59','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','VFD 7.5kW 400V x1',NULL,'2026-07-20 12:22:59'),(105,'TK-260225-109','Jide Okafor','2026-02-25 12:52:36','2026-02-25 14:18:36','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-02-25 12:18:36'),(106,'TK-260324-110','Jide Okafor','2026-03-24 15:41:23','2026-03-24 17:01:23','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Linear Guide Block HGH25 x2',NULL,'2026-03-24 15:01:23'),(107,'TK-260618-111','Taro Yamamoto','2026-06-18 23:08:59','2026-06-19 02:55:59','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Welding Torch Nozzle M8 x1',NULL,'2026-06-18 23:55:59'),(108,'TK-260721-112','Taro Yamamoto','2026-07-21 16:46:47','2026-07-21 18:05:47','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-21 15:05:47'),(109,'TK-260112-113','Taro Yamamoto','2026-01-12 10:58:03','2026-01-12 14:18:03','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2026-01-12 12:18:03'),(110,'TK-260107-114','Taro Yamamoto','2026-01-07 12:58:46','2026-01-07 15:39:46','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Compressor Air Filter GA55 x2',NULL,'2026-01-07 13:39:46'),(111,'TK-260113-115','Sara Lindqvist','2026-01-13 19:55:42','2026-01-13 21:45:42','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','VFD 7.5kW 400V x2',NULL,'2026-01-13 19:45:42'),(112,'TK-260305-116','Jide Okafor','2026-03-05 19:58:28','2026-03-05 22:54:28','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-03-05 20:54:28'),(113,'TK-260728-117','Jide Okafor','2026-07-28 22:27:04','2026-07-28 23:41:04','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Linear Guide Block HGH25 x2',NULL,'2026-07-28 20:41:04'),(114,'TK-260627-118','Jide Okafor','2026-06-27 14:10:18','2026-06-27 15:47:18','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Welding Torch Nozzle M8 x3',NULL,'2026-06-27 12:47:18'),(115,'TK-260727-119','Jide Okafor','2026-07-27 13:15:01','2026-07-27 19:11:01','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-27 16:11:01'),(116,'TK-260102-120','Katerina Novak','2026-01-02 20:57:28','2026-01-02 22:38:28','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','Spherical Roller Bearing 22215 x3',NULL,'2026-01-02 20:38:28'),(117,'TK-260128-121','Katerina Novak','2026-01-28 21:01:23','2026-01-28 22:37:23','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2026-01-28 20:37:23'),(118,'TK-260514-122','Katerina Novak','2026-05-14 21:10:27','2026-05-15 00:11:27','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','',NULL,'2026-05-14 21:11:27'),(119,'TK-260731-123','Katerina Novak','2026-07-31 19:42:34','2026-07-31 21:38:34','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-07-31 18:38:34'),(120,'TK-260512-124','Jide Okafor','2026-05-12 19:20:40','2026-05-12 21:40:40','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Linear Guide Block HGH25 x1',NULL,'2026-05-12 18:40:40'),(121,'TK-260605-125','Sara Lindqvist','2026-06-05 06:48:28','2026-06-05 07:42:28','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Welding Torch Nozzle M8 x1',NULL,'2026-06-05 04:42:28'),(122,'TK-260724-126','Sara Lindqvist','2026-07-24 14:04:42','2026-07-24 15:29:42','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-24 12:29:42'),(123,'TK-260412-127','Taro Yamamoto','2026-04-12 15:04:04','2026-04-12 18:19:04','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Spherical Roller Bearing 22215 x3',NULL,'2026-04-12 15:19:04'),(124,'TK-260221-128','Taro Yamamoto','2026-02-21 18:56:47','2026-02-21 21:46:47','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Compressor Air Filter GA55 x1',NULL,'2026-02-21 19:46:47'),(125,'TK-260312-129','Sara Lindqvist','2026-03-12 09:04:26','2026-03-12 10:54:26','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','VFD 7.5kW 400V x1',NULL,'2026-03-12 08:54:26'),(126,'TK-260729-130','Jide Okafor','2026-07-29 08:36:25','2026-07-29 10:09:25','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','E-Stop Mushroom Button 22mm x1',NULL,'2026-07-29 07:09:25'),(127,'TK-260325-131','Sara Lindqvist','2026-03-25 13:22:45','2026-03-25 14:52:45','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Linear Guide Block HGH25 x1',NULL,'2026-03-25 12:52:45'),(128,'TK-260725-132','Jide Okafor','2026-07-25 09:06:20','2026-07-25 10:27:20','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Welding Torch Nozzle M8 x1',NULL,'2026-07-25 07:27:20'),(129,'TK-260705-133','Taro Yamamoto','2026-07-05 09:37:04','2026-07-05 13:40:04','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','',NULL,'2026-07-05 10:40:04'),(130,'TK-260228-134','Taro Yamamoto','2026-02-28 06:50:44','2026-02-28 07:44:44','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2026-02-28 05:44:44'),(131,'TK-260215-135','Taro Yamamoto','2026-02-15 11:13:02','2026-02-15 13:54:02','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Compressor Air Filter GA55 x3',NULL,'2026-02-15 11:54:02'),(132,'TK-260227-136','Taro Yamamoto','2026-02-27 13:50:17','2026-02-27 16:47:17','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','',NULL,'2026-02-27 14:47:17'),(133,'TK-260108-137','Jide Okafor','2026-01-08 19:27:03','2026-01-08 20:30:03','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','E-Stop Mushroom Button 22mm x3',NULL,'2026-01-08 18:30:03'),(134,'TK-260305-138','Jide Okafor','2026-03-05 08:31:37','2026-03-05 11:18:37','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-03-05 09:18:37'),(135,'TK-260703-139','Jide Okafor','2026-07-03 06:59:33','2026-07-03 07:52:33','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Welding Torch Nozzle M8 x3',NULL,'2026-07-03 04:52:33'),(136,'TK-251201-140','Jide Okafor','2025-12-01 10:25:20','2025-12-01 12:09:20','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Spindle Grease NLGI 2 (400g) x3',NULL,'2025-12-01 10:09:20'),(137,'TK-260403-141','Jide Okafor','2026-04-03 19:24:17','2026-04-04 00:38:17','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','Spherical Roller Bearing 22215 x3',NULL,'2026-04-03 21:38:17'),(138,'TK-260527-142','Katerina Novak','2026-05-27 10:04:39','2026-05-27 12:42:39','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','Compressor Air Filter GA55 x2',NULL,'2026-05-27 09:42:39'),(139,'TK-260301-143','Katerina Novak','2026-03-01 16:22:02','2026-03-01 17:38:02','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','VFD 7.5kW 400V x3',NULL,'2026-03-01 15:38:02'),(140,'TK-260516-144','Katerina Novak','2026-05-16 13:00:06','2026-05-16 15:48:06','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','E-Stop Mushroom Button 22mm x3',NULL,'2026-05-16 12:48:06'),(141,'TK-260612-145','Katerina Novak','2026-06-12 08:40:55','2026-06-12 10:12:55','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','Linear Guide Block HGH25 x3',NULL,'2026-06-12 07:12:55'),(142,'TK-260424-146','Sara Lindqvist','2026-04-24 11:18:25','2026-04-24 14:26:25','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','',NULL,'2026-04-24 11:26:25'),(143,'TK-260430-147','Sara Lindqvist','2026-04-30 12:43:30','2026-04-30 13:25:30','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-04-30 10:25:30'),(144,'TK-260505-148','Sara Lindqvist','2026-05-05 08:23:23','2026-05-05 09:22:23','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Spherical Roller Bearing 22215 x1',NULL,'2026-05-05 06:22:23'),(145,'TK-260731-149','Taro Yamamoto','2026-07-31 17:24:48','2026-07-31 20:19:48','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','',NULL,'2026-07-31 17:19:48'),(146,'TK-260523-150','Sara Lindqvist','2026-05-23 10:43:48','2026-05-23 12:54:48','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','VFD 7.5kW 400V x2',NULL,'2026-05-23 09:54:48'),(147,'TK-260327-151','Katerina Novak','2026-03-27 21:58:28','2026-03-28 00:20:28','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','',NULL,'2026-03-27 22:20:28'),(148,'TK-260317-152','Taro Yamamoto','2026-03-17 13:36:19','2026-03-17 14:58:19','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Linear Guide Block HGH25 x2',NULL,'2026-03-17 12:58:19'),(149,'TK-260330-153','Jide Okafor','2026-03-30 19:18:05','2026-03-30 20:17:05','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Welding Torch Nozzle M8 x2',NULL,'2026-03-30 17:17:05'),(150,'TK-251119-154','Jide Okafor','2025-11-19 17:41:38','2025-11-19 19:45:38','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','',NULL,'2025-11-19 17:45:38'),(151,'TK-260730-155','Taro Yamamoto','2026-07-30 08:37:08','2026-07-30 12:28:08','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Spherical Roller Bearing 22215 x2',NULL,'2026-07-30 09:28:08'),(152,'TK-260315-156','Taro Yamamoto','2026-03-15 15:21:06','2026-03-15 16:28:06','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Compressor Air Filter GA55 x2',NULL,'2026-03-15 14:28:06'),(153,'TK-260703-157','Taro Yamamoto','2026-07-03 19:22:00','2026-07-03 22:05:00','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','VFD 7.5kW 400V x1',NULL,'2026-07-03 19:05:00'),(154,'TK-260506-158','Taro Yamamoto','2026-05-06 11:43:14','2026-05-06 15:30:14','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','E-Stop Mushroom Button 22mm x2',NULL,'2026-05-06 12:30:14'),(155,'TK-260509-159','Katerina Novak','2026-05-09 08:43:02','2026-05-09 09:44:02','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Linear Guide Block HGH25 x1',NULL,'2026-05-09 06:44:02'),(156,'TK-251201-160','Jide Okafor','2025-12-01 11:55:19','2025-12-01 13:33:19','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2025-12-01 11:33:19'),(157,'TK-260423-161','Jide Okafor','2026-04-23 16:37:37','2026-04-23 17:40:37','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-04-23 14:40:37'),(158,'TK-260610-162','Jide Okafor','2026-06-10 09:05:19','2026-06-10 10:46:19','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Spherical Roller Bearing 22215 x3',NULL,'2026-06-10 07:46:19'),(159,'TK-260214-163','Jide Okafor','2026-02-14 08:27:34','2026-02-14 12:49:34','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-02-14 10:49:34'),(160,'TK-260220-164','Katerina Novak','2026-02-20 14:53:34','2026-02-20 17:32:34','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','VFD 7.5kW 400V x2',NULL,'2026-02-20 15:32:34'),(161,'TK-260212-165','Katerina Novak','2026-02-12 11:49:24','2026-02-12 13:12:24','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2026-02-12 11:12:24'),(162,'TK-260217-166','Katerina Novak','2026-02-17 14:53:54','2026-02-17 17:55:54','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Linear Guide Block HGH25 x3',NULL,'2026-02-17 15:55:54'),(163,'TK-260620-167','Katerina Novak','2026-06-20 22:04:16','2026-06-20 23:18:16','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-06-20 20:18:16'),(164,'TK-251219-168','Sara Lindqvist','2025-12-19 14:26:19','2025-12-19 17:12:19','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Spindle Grease NLGI 2 (400g) x3',NULL,'2025-12-19 15:12:19'),(165,'TK-260101-169','Sara Lindqvist','2026-01-01 08:24:34','2026-01-01 09:14:34','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Spherical Roller Bearing 22215 x3',NULL,'2026-01-01 07:14:34'),(166,'TK-260728-170','Sara Lindqvist','2026-07-28 18:09:00','2026-07-28 19:33:00','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','',NULL,'2026-07-28 16:33:00'),(167,'TK-260710-171','Taro Yamamoto','2026-07-10 21:56:24','2026-07-11 01:13:24','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','VFD 7.5kW 400V x2',NULL,'2026-07-10 22:13:24'),(168,'TK-260309-172','Taro Yamamoto','2026-03-09 15:30:26','2026-03-09 17:23:26','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-03-09 15:23:26'),(169,'TK-260223-173','Katerina Novak','2026-02-23 15:18:12','2026-02-23 16:55:12','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Linear Guide Block HGH25 x3',NULL,'2026-02-23 14:55:12'),(170,'TK-260316-174','Taro Yamamoto','2026-03-16 21:52:07','2026-03-16 23:24:07','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Welding Torch Nozzle M8 x1',NULL,'2026-03-16 21:24:07'),(171,'TK-260109-175','Jide Okafor','2026-01-09 19:55:14','2026-01-09 20:59:14','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-01-09 18:59:14'),(172,'TK-260201-176','Jide Okafor','2026-02-01 09:08:45','2026-02-01 11:08:45','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Spherical Roller Bearing 22215 x1',NULL,'2026-02-01 09:08:45'),(173,'TK-251129-177','Taro Yamamoto','2025-11-29 11:51:57','2025-11-29 15:42:57','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Compressor Air Filter GA55 x3',NULL,'2025-11-29 13:42:57'),(174,'TK-260419-178','Taro Yamamoto','2026-04-19 10:00:51','2026-04-19 11:27:51','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','VFD 7.5kW 400V x3',NULL,'2026-04-19 08:27:51'),(175,'TK-260406-179','Taro Yamamoto','2026-04-06 11:56:13','2026-04-06 15:42:13','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','E-Stop Mushroom Button 22mm x2',NULL,'2026-04-06 12:42:13'),(176,'TK-251128-180','Taro Yamamoto','2025-11-28 13:39:50','2025-11-28 16:45:50','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Linear Guide Block HGH25 x1',NULL,'2025-11-28 14:45:50'),(177,'TK-260323-181','Sara Lindqvist','2026-03-23 08:33:50','2026-03-23 09:36:50','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Welding Torch Nozzle M8 x1',NULL,'2026-03-23 07:36:50'),(178,'TK-260713-182','Jide Okafor','2026-07-13 22:05:57','2026-07-14 00:11:57','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-07-13 21:11:57'),(179,'TK-260404-183','Jide Okafor','2026-04-04 09:45:41','2026-04-04 10:42:41','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Spherical Roller Bearing 22215 x2',NULL,'2026-04-04 07:42:41'),(180,'TK-260527-184','Jide Okafor','2026-05-27 15:40:05','2026-05-27 17:26:05','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-05-27 14:26:05'),(181,'TK-260715-185','Jide Okafor','2026-07-15 16:49:20','2026-07-15 22:28:20','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-15 19:28:20'),(182,'TK-260730-186','Katerina Novak','2026-07-30 13:46:42','2026-07-30 15:57:42','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-07-30 12:57:42'),(183,'TK-251125-187','Katerina Novak','2025-11-25 13:15:27','2025-11-25 14:48:27','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Linear Guide Block HGH25 x1',NULL,'2025-11-25 12:48:27'),(184,'TK-251205-188','Katerina Novak','2025-12-05 09:25:06','2025-12-05 12:37:06','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Welding Torch Nozzle M8 x3',NULL,'2025-12-05 10:37:06'),(185,'TK-251213-189','Katerina Novak','2025-12-13 14:47:39','2025-12-13 16:51:39','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2025-12-13 14:51:39'),(186,'TK-251203-190','Sara Lindqvist','2025-12-03 16:14:20','2025-12-03 18:48:20','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Spherical Roller Bearing 22215 x2',NULL,'2025-12-03 16:48:20'),(187,'TK-260614-191','Sara Lindqvist','2026-06-14 18:08:16','2026-06-14 18:48:16','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','',NULL,'2026-06-14 15:48:16'),(188,'TK-260112-192','Sara Lindqvist','2026-01-12 20:37:32','2026-01-12 21:32:32','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','VFD 7.5kW 400V x3',NULL,'2026-01-12 19:32:32'),(189,'TK-260310-193','Katerina Novak','2026-03-10 20:08:19','2026-03-10 23:39:19','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','E-Stop Mushroom Button 22mm x1',NULL,'2026-03-10 21:39:19'),(190,'TK-260626-194','Taro Yamamoto','2026-06-26 19:25:03','2026-06-26 22:13:03','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Linear Guide Block HGH25 x1',NULL,'2026-06-26 19:13:03'),(191,'TK-260531-195','Katerina Novak','2026-05-31 16:14:36','2026-05-31 18:42:36','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Welding Torch Nozzle M8 x2',NULL,'2026-05-31 15:42:36'),(192,'TK-260730-196','Taro Yamamoto','2026-07-30 12:18:53','2026-07-30 14:07:53','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-07-30 11:07:53'),(193,'TK-260621-197','Jide Okafor','2026-06-21 20:53:04','2026-06-21 22:09:04','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Spherical Roller Bearing 22215 x1',NULL,'2026-06-21 19:09:04'),(194,'TK-260312-198','Jide Okafor','2026-03-12 19:33:51','2026-03-12 21:38:51','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Compressor Air Filter GA55 x3',NULL,'2026-03-12 19:38:51'),(195,'TK-260523-199','Taro Yamamoto','2026-05-23 14:00:22','2026-05-23 17:19:22','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','VFD 7.5kW 400V x3',NULL,'2026-05-23 14:19:22'),(196,'TK-251130-200','Katerina Novak','2025-11-30 17:19:42','2025-11-30 18:41:42','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2025-11-30 16:41:42'),(197,'TK-260701-201','Taro Yamamoto','2026-07-01 18:34:17','2026-07-01 21:24:17','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2026-07-01 18:24:17'),(198,'TK-260511-202','Taro Yamamoto','2026-05-11 10:33:39','2026-05-11 14:17:39','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Welding Torch Nozzle M8 x2',NULL,'2026-05-11 11:17:39'),(199,'TK-260326-203','Katerina Novak','2026-03-26 11:19:21','2026-03-26 12:40:21','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-03-26 10:40:21'),(200,'TK-260606-204','Jide Okafor','2026-06-06 08:46:55','2026-06-06 10:16:55','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Spherical Roller Bearing 22215 x3',NULL,'2026-06-06 07:16:55'),(201,'TK-251111-205','Jide Okafor','2025-11-11 08:58:53','2025-11-11 09:48:53','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','',NULL,'2025-11-11 07:48:53'),(202,'TK-251113-206','Jide Okafor','2025-11-13 10:32:21','2025-11-13 12:53:21','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','VFD 7.5kW 400V x3',NULL,'2025-11-13 10:53:21'),(203,'TK-260418-207','Jide Okafor','2026-04-18 11:33:48','2026-04-18 17:30:48','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','E-Stop Mushroom Button 22mm x3',NULL,'2026-04-18 14:30:48'),(204,'TK-251224-208','Jide Okafor','2025-12-24 19:46:15','2025-12-24 21:38:15','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2025-12-24 19:38:15'),(205,'TK-260324-209','Katerina Novak','2026-03-24 08:02:59','2026-03-24 09:02:59','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Welding Torch Nozzle M8 x1',NULL,'2026-03-24 07:02:59'),(206,'TK-260120-210','Katerina Novak','2026-01-20 22:47:33','2026-01-21 00:33:33','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-01-20 22:33:33'),(207,'TK-260727-211','Katerina Novak','2026-07-27 16:12:13','2026-07-27 17:35:13','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','Spherical Roller Bearing 22215 x2',NULL,'2026-07-27 14:35:13'),(208,'TK-260312-212','Sara Lindqvist','2026-03-12 14:49:11','2026-03-12 17:37:11','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Compressor Air Filter GA55 x1',NULL,'2026-03-12 15:37:11'),(209,'TK-260617-213','Sara Lindqvist','2026-06-17 22:41:43','2026-06-17 23:40:43','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','VFD 7.5kW 400V x3',NULL,'2026-06-17 20:40:43'),(210,'TK-260126-214','Sara Lindqvist','2026-01-26 15:10:11','2026-01-26 16:11:11','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','E-Stop Mushroom Button 22mm x2',NULL,'2026-01-26 14:11:11'),(211,'TK-260623-215','Taro Yamamoto','2026-06-23 16:37:49','2026-06-23 20:15:49','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Linear Guide Block HGH25 x2',NULL,'2026-06-23 17:15:49'),(212,'TK-251203-216','Taro Yamamoto','2025-12-03 18:15:36','2025-12-03 19:56:36','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Welding Torch Nozzle M8 x3',NULL,'2025-12-03 17:56:36'),(213,'TK-260729-217','Katerina Novak','2026-07-29 09:50:18','2026-07-29 11:54:18','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-29 08:54:18'),(214,'TK-260513-218','Taro Yamamoto','2026-05-13 09:39:00','2026-05-13 11:08:00','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Spherical Roller Bearing 22215 x1',NULL,'2026-05-13 08:08:00'),(215,'TK-260124-219','Jide Okafor','2026-01-24 13:48:55','2026-01-24 15:25:55','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-01-24 13:25:55'),(216,'TK-260627-220','Jide Okafor','2026-06-27 18:26:54','2026-06-27 20:22:54','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','VFD 7.5kW 400V x2',NULL,'2026-06-27 17:22:54'),(217,'TK-260328-221','Taro Yamamoto','2026-03-28 18:05:46','2026-03-28 21:15:46','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','E-Stop Mushroom Button 22mm x3',NULL,'2026-03-28 19:15:46'),(218,'TK-260730-222','Taro Yamamoto','2026-07-30 11:43:15','2026-07-30 12:45:15','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Linear Guide Block HGH25 x1',NULL,'2026-07-30 09:45:15'),(219,'TK-260623-223','Taro Yamamoto','2026-06-23 10:46:49','2026-06-23 14:03:49','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Welding Torch Nozzle M8 x3',NULL,'2026-06-23 11:03:49'),(220,'TK-260718-224','Taro Yamamoto','2026-07-18 20:57:30','2026-07-19 01:14:30','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-07-18 22:14:30'),(221,'TK-251112-225','Sara Lindqvist','2025-11-12 22:33:35','2025-11-13 00:01:35','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','',NULL,'2025-11-12 22:01:35'),(222,'TK-260506-226','Jide Okafor','2026-05-06 08:58:18','2026-05-06 11:43:18','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-05-06 08:43:18'),(223,'TK-260719-227','Jide Okafor','2026-07-19 17:22:27','2026-07-19 18:33:27','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','',NULL,'2026-07-19 15:33:27'),(224,'TK-260523-228','Jide Okafor','2026-05-23 21:06:10','2026-05-23 23:19:10','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-05-23 20:19:10'),(225,'TK-260114-229','Jide Okafor','2026-01-14 11:42:52','2026-01-14 16:56:52','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-01-14 14:56:52'),(226,'TK-251229-230','Katerina Novak','2025-12-29 17:24:18','2025-12-29 19:40:18','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2025-12-29 17:40:18'),(227,'TK-260726-231','Katerina Novak','2026-07-26 10:11:16','2026-07-26 11:41:16','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-26 08:41:16'),(228,'TK-260203-232','Katerina Novak','2026-02-03 21:21:39','2026-02-03 23:07:39','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Spherical Roller Bearing 22215 x2',NULL,'2026-02-03 21:07:39'),(229,'TK-260114-233','Katerina Novak','2026-01-14 15:35:35','2026-01-14 16:51:35','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','Compressor Air Filter GA55 x1',NULL,'2026-01-14 14:51:35'),(230,'TK-260304-234','Sara Lindqvist','2026-03-04 20:11:56','2026-03-04 22:53:56','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','VFD 7.5kW 400V x3',NULL,'2026-03-04 20:53:56'),(231,'TK-260720-235','Sara Lindqvist','2026-07-20 22:54:20','2026-07-20 23:57:20','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','E-Stop Mushroom Button 22mm x2',NULL,'2026-07-20 20:57:20'),(232,'TK-260409-236','Sara Lindqvist','2026-04-09 19:09:37','2026-04-09 20:19:37','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Linear Guide Block HGH25 x3',NULL,'2026-04-09 17:19:37'),(233,'TK-260718-237','Taro Yamamoto','2026-07-18 13:14:49','2026-07-18 16:07:49','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','',NULL,'2026-07-18 13:07:49'),(234,'TK-260329-238','Katerina Novak','2026-03-29 19:21:02','2026-03-29 22:11:02','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-03-29 19:11:02'),(235,'TK-251118-239','Katerina Novak','2025-11-18 22:40:04','2025-11-19 00:28:04','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','',NULL,'2025-11-18 22:28:04'),(236,'TK-260705-240','Taro Yamamoto','2026-07-05 10:58:46','2026-07-05 12:40:46','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','',NULL,'2026-07-05 09:40:46'),(237,'TK-260729-241','Jide Okafor','2026-07-29 14:59:31','2026-07-29 16:35:31','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','VFD 7.5kW 400V x3',NULL,'2026-07-29 13:35:31'),(238,'TK-260722-242','Jide Okafor','2026-07-22 17:35:47','2026-07-22 19:01:47','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','E-Stop Mushroom Button 22mm x1',NULL,'2026-07-22 16:01:47'),(239,'TK-260322-243','Jide Okafor','2026-03-22 10:52:06','2026-03-22 15:14:06','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','',NULL,'2026-03-22 13:14:06'),(240,'TK-251222-244','Taro Yamamoto','2025-12-22 10:54:15','2025-12-22 12:03:15','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2025-12-22 10:03:15'),(241,'TK-260209-245','Taro Yamamoto','2026-02-09 22:30:10','2026-02-10 02:06:10','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-02-10 00:06:10'),(242,'TK-260523-246','Taro Yamamoto','2026-05-23 19:10:43','2026-05-23 22:03:43','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Spherical Roller Bearing 22215 x3',NULL,'2026-05-23 19:03:43'),(243,'TK-260621-247','Sara Lindqvist','2026-06-21 15:02:43','2026-06-21 16:15:43','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Compressor Air Filter GA55 x3',NULL,'2026-06-21 13:15:43'),(244,'TK-251230-248','Jide Okafor','2025-12-30 07:29:13','2025-12-30 10:05:13','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','VFD 7.5kW 400V x1',NULL,'2025-12-30 08:05:13'),(245,'TK-260531-249','Jide Okafor','2026-05-31 13:51:17','2026-05-31 14:54:17','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','E-Stop Mushroom Button 22mm x1',NULL,'2026-05-31 11:54:17'),(246,'TK-260703-250','Jide Okafor','2026-07-03 21:29:55','2026-07-03 22:46:55','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-07-03 19:46:55'),(247,'TK-260719-251','Jide Okafor','2026-07-19 18:30:20','2026-07-19 23:39:20','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-19 20:39:20'),(248,'TK-260728-252','Katerina Novak','2026-07-28 18:41:53','2026-07-28 21:13:53','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-07-28 18:13:53'),(249,'TK-260524-253','Katerina Novak','2026-05-24 14:28:39','2026-05-24 15:43:39','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2026-05-24 12:43:39'),(250,'TK-260324-254','Katerina Novak','2026-03-24 21:03:50','2026-03-25 00:03:50','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Compressor Air Filter GA55 x2',NULL,'2026-03-24 22:03:50'),(251,'TK-260208-255','Katerina Novak','2026-02-08 08:31:15','2026-02-08 09:48:15','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','VFD 7.5kW 400V x1',NULL,'2026-02-08 07:48:15'),(252,'TK-260518-256','Sara Lindqvist','2026-05-18 20:23:42','2026-05-18 22:13:42','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','E-Stop Mushroom Button 22mm x1',NULL,'2026-05-18 19:13:42'),(253,'TK-260614-257','Sara Lindqvist','2026-06-14 19:01:13','2026-06-14 19:51:13','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Linear Guide Block HGH25 x1',NULL,'2026-06-14 16:51:13'),(254,'TK-260627-258','Sara Lindqvist','2026-06-27 19:14:21','2026-06-27 20:14:21','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Welding Torch Nozzle M8 x3',NULL,'2026-06-27 17:14:21'),(255,'TK-260428-259','Taro Yamamoto','2026-04-28 20:40:41','2026-04-28 23:09:41','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-04-28 20:09:41'),(256,'TK-260729-260','Taro Yamamoto','2026-07-29 15:31:07','2026-07-29 17:11:07','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-07-29 14:11:07'),(257,'TK-260616-261','Katerina Novak','2026-06-16 20:36:29','2026-06-16 22:31:29','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Compressor Air Filter GA55 x1',NULL,'2026-06-16 19:31:29'),(258,'TK-260630-262','Taro Yamamoto','2026-06-30 21:55:50','2026-06-30 23:13:50','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','VFD 7.5kW 400V x2',NULL,'2026-06-30 20:13:50'),(259,'TK-260729-263','Sara Lindqvist','2026-07-29 13:33:52','2026-07-29 14:44:52','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-07-29 11:44:52'),(260,'TK-260509-264','Jide Okafor','2026-05-09 12:57:13','2026-05-09 14:27:13','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Linear Guide Block HGH25 x3',NULL,'2026-05-09 11:27:13'),(261,'TK-260525-265','Taro Yamamoto','2026-05-25 19:06:40','2026-05-25 23:29:40','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Welding Torch Nozzle M8 x1',NULL,'2026-05-25 20:29:40'),(262,'TK-260730-266','Taro Yamamoto','2026-07-30 11:33:06','2026-07-30 12:27:06','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2026-07-30 09:27:06'),(263,'TK-260414-267','Taro Yamamoto','2026-04-14 16:08:57','2026-04-14 18:26:57','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Spherical Roller Bearing 22215 x1',NULL,'2026-04-14 15:26:57'),(264,'TK-260531-268','Jide Okafor','2026-05-31 20:45:49','2026-06-01 00:39:49','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Compressor Air Filter GA55 x2',NULL,'2026-05-31 21:39:49'),(265,'TK-260729-269','Sara Lindqvist','2026-07-29 18:51:46','2026-07-29 20:27:46','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','VFD 7.5kW 400V x3',NULL,'2026-07-29 17:27:46'),(266,'TK-260425-270','Taro Yamamoto','2026-04-25 21:16:40','2026-04-25 23:37:40','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-04-25 20:37:40'),(267,'TK-260701-271','Jide Okafor','2026-07-01 15:16:49','2026-07-01 16:08:49','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Linear Guide Block HGH25 x3',NULL,'2026-07-01 13:08:49'),(268,'TK-260511-272','Jide Okafor','2026-05-11 17:51:24','2026-05-11 19:27:24','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Welding Torch Nozzle M8 x1',NULL,'2026-05-11 16:27:24'),(269,'TK-260719-273','Jide Okafor','2026-07-19 18:00:52','2026-07-20 00:37:52','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-07-19 21:37:52'),(270,'TK-260730-274','Katerina Novak','2026-07-30 22:27:59','2026-07-31 00:55:59','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-07-30 21:55:59'),(271,'TK-260729-275','Katerina Novak','2026-07-29 22:34:27','2026-07-30 00:23:27','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Compressor Air Filter GA55 x1',NULL,'2026-07-29 21:23:27'),(272,'TK-260128-276','Katerina Novak','2026-01-28 17:35:31','2026-01-28 20:12:31','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','VFD 7.5kW 400V x3',NULL,'2026-01-28 18:12:31'),(273,'TK-260717-277','Katerina Novak','2026-07-17 15:54:23','2026-07-17 17:37:23','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','E-Stop Mushroom Button 22mm x2',NULL,'2026-07-17 14:37:23'),(274,'TK-251216-278','Sara Lindqvist','2025-12-16 19:00:44','2025-12-16 21:55:44','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Linear Guide Block HGH25 x1',NULL,'2025-12-16 19:55:44'),(275,'TK-260415-279','Katerina Novak','2026-04-15 06:54:40','2026-04-15 07:48:40','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Welding Torch Nozzle M8 x2',NULL,'2026-04-15 04:48:40'),(276,'TK-260730-280','Sara Lindqvist','2026-07-30 09:56:32','2026-07-30 11:02:32','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','',NULL,'2026-07-30 08:02:32'),(277,'TK-260722-281','Taro Yamamoto','2026-07-22 22:32:19','2026-07-23 00:58:19','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Spherical Roller Bearing 22215 x1',NULL,'2026-07-22 21:58:19'),(278,'TK-260207-282','Taro Yamamoto','2026-02-07 08:33:49','2026-02-07 10:31:49','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-02-07 08:31:49'),(279,'TK-251106-283','Katerina Novak','2025-11-06 12:38:05','2025-11-06 15:06:05','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','VFD 7.5kW 400V x3',NULL,'2025-11-06 13:06:05'),(280,'TK-260728-284','Katerina Novak','2026-07-28 17:50:52','2026-07-28 19:43:52','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','E-Stop Mushroom Button 22mm x2',NULL,'2026-07-28 16:43:52'),(281,'TK-260530-285','Jide Okafor','2026-05-30 20:26:24','2026-05-30 21:48:24','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-05-30 18:48:24'),(282,'TK-260425-286','Jide Okafor','2026-04-25 20:08:42','2026-04-25 21:56:42','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Welding Torch Nozzle M8 x2',NULL,'2026-04-25 18:56:42'),(283,'TK-260716-287','Taro Yamamoto','2026-07-16 11:47:22','2026-07-16 15:56:22','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-07-16 12:56:22'),(284,'TK-251107-288','Taro Yamamoto','2025-11-07 13:00:06','2025-11-07 14:26:06','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Spherical Roller Bearing 22215 x1',NULL,'2025-11-07 12:26:06'),(285,'TK-251222-289','Taro Yamamoto','2025-12-22 17:47:18','2025-12-22 21:29:18','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2025-12-22 19:29:18'),(286,'TK-260420-290','Taro Yamamoto','2026-04-20 17:36:17','2026-04-20 21:41:17','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','VFD 7.5kW 400V x2',NULL,'2026-04-20 18:41:17'),(287,'TK-260629-291','Sara Lindqvist','2026-06-29 08:27:01','2026-06-29 09:53:01','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','',NULL,'2026-06-29 06:53:01'),(288,'TK-260701-292','Jide Okafor','2026-07-01 10:13:48','2026-07-01 13:03:48','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-07-01 10:03:48'),(289,'TK-260717-293','Jide Okafor','2026-07-17 11:43:25','2026-07-17 12:45:25','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','',NULL,'2026-07-17 09:45:25'),(290,'TK-260726-294','Jide Okafor','2026-07-26 11:50:15','2026-07-26 14:05:15','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-07-26 11:05:15'),(291,'TK-260107-295','Jide Okafor','2026-01-07 22:41:24','2026-01-08 02:46:24','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','Spherical Roller Bearing 22215 x1',NULL,'2026-01-08 00:46:24'),(292,'TK-260220-296','Jide Okafor','2026-02-20 09:46:57','2026-02-20 11:35:57','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','Compressor Air Filter GA55 x3',NULL,'2026-02-20 09:35:57'),(293,'TK-260721-297','Katerina Novak','2026-07-21 19:10:34','2026-07-21 20:44:34','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','VFD 7.5kW 400V x1',NULL,'2026-07-21 17:44:34'),(294,'TK-260203-298','Katerina Novak','2026-02-03 22:28:08','2026-02-04 01:27:08','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','E-Stop Mushroom Button 22mm x2',NULL,'2026-02-03 23:27:08'),(295,'TK-251219-299','Katerina Novak','2025-12-19 09:42:57','2025-12-19 11:37:57','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','Linear Guide Block HGH25 x1',NULL,'2025-12-19 09:37:57'),(296,'TK-260207-300','Sara Lindqvist','2026-02-07 19:53:09','2026-02-07 21:49:09','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','',NULL,'2026-02-07 19:49:09'),(297,'TK-260719-301','Sara Lindqvist','2026-07-19 07:54:01','2026-07-19 08:39:01','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-07-19 05:39:01'),(298,'TK-260727-302','Sara Lindqvist','2026-07-27 07:56:35','2026-07-27 09:17:35','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','',NULL,'2026-07-27 06:17:35'),(299,'TK-260706-303','Taro Yamamoto','2026-07-06 09:28:59','2026-07-06 12:44:59','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Compressor Air Filter GA55 x3',NULL,'2026-07-06 09:44:59'),(300,'TK-260328-304','Taro Yamamoto','2026-03-28 19:31:23','2026-03-28 21:34:23','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-03-28 19:34:23'),(301,'TK-260223-305','Sara Lindqvist','2026-02-23 17:38:27','2026-02-23 19:53:27','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','E-Stop Mushroom Button 22mm x2',NULL,'2026-02-23 17:53:27'),(302,'TK-260704-306','Taro Yamamoto','2026-07-04 22:20:33','2026-07-05 00:12:33','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Linear Guide Block HGH25 x1',NULL,'2026-07-04 21:12:33'),(303,'TK-260207-307','Jide Okafor','2026-02-07 10:03:03','2026-02-07 11:33:03','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-02-07 09:33:03'),(304,'TK-260630-308','Jide Okafor','2026-06-30 13:50:52','2026-06-30 15:34:52','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','',NULL,'2026-06-30 12:34:52'),(305,'TK-260425-309','Taro Yamamoto','2026-04-25 18:35:15','2026-04-25 22:28:15','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Spherical Roller Bearing 22215 x3',NULL,'2026-04-25 19:28:15'),(306,'TK-260301-310','Taro Yamamoto','2026-03-01 14:38:28','2026-03-01 16:02:28','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Compressor Air Filter GA55 x1',NULL,'2026-03-01 14:02:28'),(307,'TK-251106-311','Taro Yamamoto','2025-11-06 18:36:21','2025-11-06 21:34:21','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2025-11-06 19:34:21'),(308,'TK-260627-312','Taro Yamamoto','2026-06-27 19:25:00','2026-06-27 22:29:00','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','E-Stop Mushroom Button 22mm x3',NULL,'2026-06-27 19:29:00'),(309,'TK-260118-313','Taro Yamamoto','2026-01-18 19:54:29','2026-01-18 21:32:29','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Linear Guide Block HGH25 x3',NULL,'2026-01-18 19:32:29'),(310,'TK-260117-314','Jide Okafor','2026-01-17 16:10:31','2026-01-17 18:37:31','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Welding Torch Nozzle M8 x3',NULL,'2026-01-17 16:37:31'),(311,'TK-260730-315','Jide Okafor','2026-07-30 08:53:25','2026-07-30 09:36:25','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-30 06:36:25'),(312,'TK-260218-316','Jide Okafor','2026-02-18 13:12:03','2026-02-18 15:02:03','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Spherical Roller Bearing 22215 x2',NULL,'2026-02-18 13:02:03'),(313,'TK-260728-317','Jide Okafor','2026-07-28 07:05:56','2026-07-28 11:21:56','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-28 08:21:56'),(314,'TK-260729-318','Katerina Novak','2026-07-29 09:30:41','2026-07-29 11:29:41','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','VFD 7.5kW 400V x1',NULL,'2026-07-29 08:29:41'),(315,'TK-260623-319','Katerina Novak','2026-06-23 13:01:47','2026-06-23 14:12:47','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2026-06-23 11:12:47'),(316,'TK-260418-320','Katerina Novak','2026-04-18 23:02:14','2026-04-19 01:10:14','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','',NULL,'2026-04-18 22:10:14'),(317,'TK-251126-321','Katerina Novak','2025-11-26 14:31:19','2025-11-26 16:19:19','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2025-11-26 14:19:19'),(318,'TK-251119-322','Taro Yamamoto','2025-11-19 16:21:08','2025-11-19 19:22:08','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','',NULL,'2025-11-19 17:22:08'),(319,'TK-260619-323','Sara Lindqvist','2026-06-19 19:36:57','2026-06-19 20:36:57','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Spherical Roller Bearing 22215 x3',NULL,'2026-06-19 17:36:57'),(320,'TK-251229-324','Sara Lindqvist','2025-12-29 06:43:50','2025-12-29 08:00:50','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Compressor Air Filter GA55 x1',NULL,'2025-12-29 06:00:50'),(321,'TK-260126-325','Taro Yamamoto','2026-01-26 18:39:35','2026-01-26 21:59:35','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','VFD 7.5kW 400V x1',NULL,'2026-01-26 19:59:35'),(322,'TK-251130-326','Taro Yamamoto','2025-11-30 14:29:09','2025-11-30 16:07:09','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','E-Stop Mushroom Button 22mm x1',NULL,'2025-11-30 14:07:09'),(323,'TK-260529-327','Katerina Novak','2026-05-29 19:48:51','2026-05-29 21:48:51','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Linear Guide Block HGH25 x1',NULL,'2026-05-29 18:48:51'),(324,'TK-260416-328','Taro Yamamoto','2026-04-16 21:57:47','2026-04-16 23:07:47','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Welding Torch Nozzle M8 x1',NULL,'2026-04-16 20:07:47'),(325,'TK-260706-329','Jide Okafor','2026-07-06 08:58:40','2026-07-06 10:37:40','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2026-07-06 07:37:40'),(326,'TK-251216-330','Katerina Novak','2025-12-16 16:55:49','2025-12-16 18:55:49','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Spherical Roller Bearing 22215 x2',NULL,'2025-12-16 16:55:49'),(327,'TK-260208-331','Taro Yamamoto','2026-02-08 22:45:07','2026-02-09 01:56:07','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Compressor Air Filter GA55 x2',NULL,'2026-02-08 23:56:07'),(328,'TK-260521-332','Taro Yamamoto','2026-05-21 16:47:24','2026-05-21 18:10:24','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','VFD 7.5kW 400V x3',NULL,'2026-05-21 15:10:24'),(329,'TK-260706-333','Taro Yamamoto','2026-07-06 12:38:21','2026-07-06 16:31:21','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','E-Stop Mushroom Button 22mm x3',NULL,'2026-07-06 13:31:21'),(330,'TK-260501-334','Taro Yamamoto','2026-05-01 08:31:42','2026-05-01 11:48:42','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Linear Guide Block HGH25 x3',NULL,'2026-05-01 08:48:42'),(331,'TK-260226-335','Sara Lindqvist','2026-02-26 20:42:07','2026-02-26 22:25:07','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Welding Torch Nozzle M8 x2',NULL,'2026-02-26 20:25:07'),(332,'TK-260215-336','Jide Okafor','2026-02-15 08:47:08','2026-02-15 10:19:08','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-02-15 08:19:08'),(333,'TK-260724-337','Jide Okafor','2026-07-24 21:12:21','2026-07-24 22:17:21','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Spherical Roller Bearing 22215 x1',NULL,'2026-07-24 19:17:21'),(334,'TK-251202-338','Jide Okafor','2025-12-02 14:08:39','2025-12-02 15:56:39','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','Compressor Air Filter GA55 x1',NULL,'2025-12-02 13:56:39'),(335,'TK-260703-339','Jide Okafor','2026-07-03 13:03:52','2026-07-03 18:58:52','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-03 15:58:52'),(336,'TK-260630-340','Katerina Novak','2026-06-30 13:58:55','2026-06-30 15:29:55','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','E-Stop Mushroom Button 22mm x3',NULL,'2026-06-30 12:29:55'),(337,'TK-260116-341','Katerina Novak','2026-01-16 21:02:38','2026-01-16 22:26:38','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Linear Guide Block HGH25 x2',NULL,'2026-01-16 20:26:38'),(338,'TK-260710-342','Katerina Novak','2026-07-10 20:23:44','2026-07-10 22:33:44','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Welding Torch Nozzle M8 x2',NULL,'2026-07-10 19:33:44'),(339,'TK-260310-343','Katerina Novak','2026-03-10 09:10:34','2026-03-10 10:44:34','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-03-10 08:44:34'),(340,'TK-260727-344','Sara Lindqvist','2026-07-27 20:21:41','2026-07-27 22:12:41','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Spherical Roller Bearing 22215 x3',NULL,'2026-07-27 19:12:41'),(341,'TK-260622-345','Sara Lindqvist','2026-06-22 21:23:07','2026-06-22 22:11:07','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Compressor Air Filter GA55 x3',NULL,'2026-06-22 19:11:07'),(342,'TK-260404-346','Sara Lindqvist','2026-04-04 22:30:32','2026-04-04 23:35:32','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','',NULL,'2026-04-04 20:35:32'),(343,'TK-260417-347','Taro Yamamoto','2026-04-17 08:27:50','2026-04-17 10:57:50','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','',NULL,'2026-04-17 07:57:50'),(344,'TK-260607-348','Taro Yamamoto','2026-06-07 18:48:19','2026-06-07 20:27:19','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','',NULL,'2026-06-07 17:27:19'),(345,'TK-260329-349','Katerina Novak','2026-03-29 21:02:53','2026-03-29 23:27:53','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Welding Torch Nozzle M8 x2',NULL,'2026-03-29 20:27:53'),(346,'TK-260606-350','Taro Yamamoto','2026-06-06 07:41:43','2026-06-06 09:05:43','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-06-06 06:05:43'),(347,'TK-251219-351','Jide Okafor','2025-12-19 07:22:46','2025-12-19 08:43:46','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','',NULL,'2025-12-19 06:43:46'),(348,'TK-260128-352','Jide Okafor','2026-01-28 15:16:18','2026-01-28 16:38:18','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Compressor Air Filter GA55 x1',NULL,'2026-01-28 14:38:18'),(349,'TK-260513-353','Katerina Novak','2026-05-13 16:29:03','2026-05-13 21:04:03','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','VFD 7.5kW 400V x1',NULL,'2026-05-13 18:04:03'),(350,'TK-260530-354','Taro Yamamoto','2026-05-30 19:50:49','2026-05-30 21:00:49','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','',NULL,'2026-05-30 18:00:49'),(351,'TK-260531-355','Taro Yamamoto','2026-05-31 09:24:40','2026-05-31 12:02:40','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Linear Guide Block HGH25 x2',NULL,'2026-05-31 09:02:40'),(352,'TK-251220-356','Taro Yamamoto','2025-12-20 18:05:49','2025-12-20 21:32:49','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Welding Torch Nozzle M8 x3',NULL,'2025-12-20 19:32:49'),(353,'TK-260724-357','Sara Lindqvist','2026-07-24 16:06:18','2026-07-24 17:27:18','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-24 14:27:18'),(354,'TK-260728-358','Jide Okafor','2026-07-28 15:45:45','2026-07-28 17:26:45','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','',NULL,'2026-07-28 14:26:45'),(355,'TK-260409-359','Jide Okafor','2026-04-09 07:22:52','2026-04-09 08:12:52','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','Compressor Air Filter GA55 x1',NULL,'2026-04-09 05:12:52'),(356,'TK-260322-360','Jide Okafor','2026-03-22 12:30:46','2026-03-22 13:50:46','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','VFD 7.5kW 400V x2',NULL,'2026-03-22 11:50:46'),(357,'TK-260730-361','Jide Okafor','2026-07-30 06:56:01','2026-07-30 11:28:01','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-30 08:28:01'),(358,'TK-260101-362','Katerina Novak','2026-01-01 22:42:57','2026-01-02 01:18:57','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-01-01 23:18:57'),(359,'TK-260309-363','Katerina Novak','2026-03-09 20:38:53','2026-03-09 22:24:53','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','',NULL,'2026-03-09 20:24:53'),(360,'TK-260611-364','Katerina Novak','2026-06-11 08:36:06','2026-06-11 11:03:06','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-06-11 08:03:06'),(361,'TK-260105-365','Taro Yamamoto','2026-01-05 21:15:49','2026-01-05 22:41:49','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-01-05 20:41:49'),(362,'TK-260514-366','Sara Lindqvist','2026-05-14 11:42:26','2026-05-14 14:18:26','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','Compressor Air Filter GA55 x1',NULL,'2026-05-14 11:18:26'),(363,'TK-260513-367','Sara Lindqvist','2026-05-13 20:54:59','2026-05-13 22:02:59','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','VFD 7.5kW 400V x1',NULL,'2026-05-13 19:02:59'),(364,'TK-251126-368','Sara Lindqvist','2025-11-26 17:33:00','2025-11-26 18:52:00','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','E-Stop Mushroom Button 22mm x3',NULL,'2025-11-26 16:52:00'),(365,'TK-260502-369','Taro Yamamoto','2026-05-02 08:59:24','2026-05-02 11:48:24','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Linear Guide Block HGH25 x1',NULL,'2026-05-02 08:48:24'),(366,'TK-260621-370','Taro Yamamoto','2026-06-21 19:27:56','2026-06-21 21:05:56','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Welding Torch Nozzle M8 x1',NULL,'2026-06-21 18:05:56'),(367,'TK-251126-371','Taro Yamamoto','2025-11-26 14:20:37','2025-11-26 16:30:37','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Spindle Grease NLGI 2 (400g) x2',NULL,'2025-11-26 14:30:37'),(368,'TK-260606-372','Taro Yamamoto','2026-06-06 11:17:34','2026-06-06 12:54:34','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','Spherical Roller Bearing 22215 x1',NULL,'2026-06-06 09:54:34'),(369,'TK-260603-373','Jide Okafor','2026-06-03 17:14:26','2026-06-03 18:13:26','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','Compressor Air Filter GA55 x3',NULL,'2026-06-03 15:13:26'),(370,'TK-260202-374','Jide Okafor','2026-02-02 21:07:25','2026-02-02 22:41:25','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','VFD 7.5kW 400V x2',NULL,'2026-02-02 20:41:25'),(371,'TK-260723-375','Taro Yamamoto','2026-07-23 11:33:17','2026-07-23 15:33:17','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','E-Stop Mushroom Button 22mm x2',NULL,'2026-07-23 12:33:17'),(372,'TK-260616-376','Taro Yamamoto','2026-06-16 11:56:44','2026-06-16 12:54:44','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Linear Guide Block HGH25 x2',NULL,'2026-06-16 09:54:44'),(373,'TK-260721-377','Taro Yamamoto','2026-07-21 22:38:32','2026-07-22 01:56:32','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','',NULL,'2026-07-21 22:56:32'),(374,'TK-260218-378','Taro Yamamoto','2026-02-18 20:14:28','2026-02-19 00:23:28','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-02-18 22:23:28'),(375,'TK-260101-379','Sara Lindqvist','2026-01-01 14:53:57','2026-01-01 16:09:57','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Spherical Roller Bearing 22215 x2',NULL,'2026-01-01 14:09:57'),(376,'TK-260326-380','Jide Okafor','2026-03-26 17:35:02','2026-03-26 20:08:02','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','Compressor Air Filter GA55 x1',NULL,'2026-03-26 18:08:02'),(377,'TK-260603-381','Jide Okafor','2026-06-03 13:38:49','2026-06-03 14:29:49','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','VFD 7.5kW 400V x3',NULL,'2026-06-03 11:29:49'),(378,'TK-260731-382','Jide Okafor','2026-07-31 07:29:57','2026-07-31 09:40:57','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-07-31 06:40:57'),(379,'TK-260527-383','Jide Okafor','2026-05-27 16:20:00','2026-05-27 22:55:00','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','Linear Guide Block HGH25 x3',NULL,'2026-05-27 19:55:00'),(380,'TK-260507-384','Katerina Novak','2026-05-07 17:11:44','2026-05-07 19:51:44','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','',NULL,'2026-05-07 16:51:44'),(381,'TK-251213-385','Katerina Novak','2025-12-13 08:08:27','2025-12-13 09:53:27','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Spindle Grease NLGI 2 (400g) x1',NULL,'2025-12-13 07:53:27'),(382,'TK-260119-386','Katerina Novak','2026-01-19 06:31:32','2026-01-19 09:22:32','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Spherical Roller Bearing 22215 x1',NULL,'2026-01-19 07:22:32'),(383,'TK-260331-387','Katerina Novak','2026-03-31 16:25:20','2026-03-31 18:10:20','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','',NULL,'2026-03-31 15:10:20'),(384,'TK-251214-388','Sara Lindqvist','2025-12-14 07:13:16','2025-12-14 09:42:16','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','VFD 7.5kW 400V x2',NULL,'2025-12-14 07:42:16'),(385,'TK-260428-389','Sara Lindqvist','2026-04-28 21:59:40','2026-04-28 22:53:40','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','E-Stop Mushroom Button 22mm x3',NULL,'2026-04-28 19:53:40'),(386,'TK-260110-390','Taro Yamamoto','2026-01-10 10:06:26','2026-01-10 10:57:26','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Linear Guide Block HGH25 x1',NULL,'2026-01-10 08:57:26'),(387,'TK-260203-391','Taro Yamamoto','2026-02-03 13:41:00','2026-02-03 17:21:00','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','Welding Torch Nozzle M8 x3',NULL,'2026-02-03 15:21:00'),(388,'TK-260708-392','Taro Yamamoto','2026-07-08 20:03:15','2026-07-08 22:30:15','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Spindle Grease NLGI 2 (400g) x3',NULL,'2026-07-08 19:30:15'),(389,'TK-260703-393','Katerina Novak','2026-07-03 20:34:40','2026-07-03 22:04:40','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','',NULL,'2026-07-03 19:04:40'),(390,'TK-260729-394','Katerina Novak','2026-07-29 07:54:57','2026-07-29 09:38:57','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','',NULL,'2026-07-29 06:38:57'),(391,'TK-260121-395','Jide Okafor','2026-01-21 20:03:03','2026-01-21 21:37:03','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','VFD 7.5kW 400V x3',NULL,'2026-01-21 19:37:03'),(392,'TK-260603-396','Jide Okafor','2026-06-03 18:59:41','2026-06-03 21:17:41','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','E-Stop Mushroom Button 22mm x1',NULL,'2026-06-03 18:17:41'),(393,'TK-260721-397','Taro Yamamoto','2026-07-21 11:15:54','2026-07-21 14:25:54','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','',NULL,'2026-07-21 11:25:54'),(394,'TK-260724-398','Taro Yamamoto','2026-07-24 10:11:01','2026-07-24 11:40:01','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Welding Torch Nozzle M8 x3',NULL,'2026-07-24 08:40:01'),(395,'TK-260712-399','Taro Yamamoto','2026-07-12 13:04:35','2026-07-12 15:31:35','Electrical','Encoder cable chafed inside drag chain','Replaced encoder cable, added protective sleeve, re-homed axis','Spindle Grease NLGI 2 (400g) x1',NULL,'2026-07-12 12:31:35'),(396,'TK-260725-400','Taro Yamamoto','2026-07-25 16:20:37','2026-07-25 19:40:37','Mechanical','Cam follower worn, carousel indexing out of tolerance','Replaced cam follower, re-timed carousel, ran 50 change cycles clean','Spherical Roller Bearing 22215 x1',NULL,'2026-07-25 16:40:37'),(397,'TK-251231-401','Sara Lindqvist','2025-12-31 10:47:57','2025-12-31 12:28:57','Mechanical','Tail pulley bearing seized, belt pulling right','Replaced 6205 bearing, re-tensioned and re-tracked belt','Compressor Air Filter GA55 x2',NULL,'2025-12-31 10:28:57'),(398,'TK-260318-402','Jide Okafor','2026-03-18 10:42:57','2026-03-18 12:15:57','Electrical','Axis 3 brake contactor welded closed','Replaced contactor, verified brake test, re-mastered axis 3','VFD 7.5kW 400V x1',NULL,'2026-03-18 10:15:57'),(399,'TK-260419-403','Jide Okafor','2026-04-19 11:09:38','2026-04-19 12:12:38','Process','Contact tip worn and shielding gas flow low','Replaced contact tip and nozzle, corrected gas flow to 14 l/min, weld coupon passed','E-Stop Mushroom Button 22mm x3',NULL,'2026-04-19 09:12:38'),(400,'TK-260710-404','Jide Okafor','2026-07-10 21:23:47','2026-07-10 23:02:47','Mechanical','Sheet not seated, height sensor calibration drifted','Replaced ceramic, recalibrated capacitive height sensor, re-ran nest','',NULL,'2026-07-10 20:02:47'),(401,'TK-260722-405','Jide Okafor','2026-07-22 10:41:05','2026-07-22 17:12:05','Hydraulic','Main cylinder seal blown','Rebuilt cylinder with new seal kit, bled system, verified bend angle repeatability','',NULL,'2026-07-22 14:12:05'),(402,'TK-251123-406','Katerina Novak','2025-11-23 10:44:11','2025-11-23 12:16:11','Process','Reference volume drifted, test fixture O-ring cracked','Replaced fixture O-ring, recalibrated against master part, verified Cg/Cgk','Spindle Grease NLGI 2 (400g) x1',NULL,'2025-11-23 10:16:11'),(403,'TK-260710-407','Katerina Novak','2026-07-10 10:19:46','2026-07-10 11:41:46','Process','Transducer calibration expired','Recalibrated transducer, re-ran capability on 30 joints, released cell','Spherical Roller Bearing 22215 x3',NULL,'2026-07-10 08:41:46'),(404,'TK-260505-408','Katerina Novak','2026-05-05 10:56:15','2026-05-05 13:53:15','Electrical','Load cell signal noise from unshielded run','Rerouted load cell cable away from VFD, added shield bonding, error cleared','Compressor Air Filter GA55 x3',NULL,'2026-05-05 10:53:15'),(405,'TK-260105-409','Katerina Novak','2026-01-05 16:42:06','2026-01-05 18:02:06','Process','Ambient light change after lamp replacement','Re-taught vision model, fitted shroud, false reject back under 0.5 percent','VFD 7.5kW 400V x1',NULL,'2026-01-05 16:02:06'),(406,'TK-260516-410','Sara Lindqvist','2026-05-16 11:51:55','2026-05-16 14:30:55','Electrical','Heater band open circuit on zone 3','Replaced heater band and thermocouple, re-tuned PID for zone 3','E-Stop Mushroom Button 22mm x2',NULL,'2026-05-16 11:30:55'),(407,'TK-260611-411','Sara Lindqvist','2026-06-11 16:25:28','2026-06-11 17:12:28','Process','Printhead partially clogged, solvent low','Ran printhead clean cycle, topped solvent, replaced filter','Linear Guide Block HGH25 x1',NULL,'2026-06-11 14:12:28'),(408,'TK-260212-412','Taro Yamamoto','2026-02-12 18:19:47','2026-02-12 19:35:47','Electrical','Photoelectric sensor misaligned by pallet strike','Realigned and reinforced sensor bracket, verified pattern over 20 pallets','Welding Torch Nozzle M8 x3',NULL,'2026-02-12 17:35:47'),(409,'TK-260606-413','Taro Yamamoto','2026-06-06 21:45:06','2026-06-07 00:49:06','Utilities','Cooler matrix fouled, ambient extraction restricted','Cleaned cooler matrix, replaced air filter, restored discharge temp to 78C','',NULL,'2026-06-06 21:49:06'),(410,'TK-251130-414','Taro Yamamoto','2025-11-30 07:11:59','2025-11-30 09:14:59','Utilities','Glycol concentration low and strainer partially blocked','Topped glycol to 30 percent, cleaned strainer, delta-T back to 5.5K','Spherical Roller Bearing 22215 x3',NULL,'2025-11-30 07:14:59'),(411,'TK-260406-415','Katerina Novak','2026-04-06 15:30:53','2026-04-06 17:24:53','Electrical','Limit switch contact oxidised','Replaced limit switch, tested overtravel stop, load tested at 5T','Compressor Air Filter GA55 x1',NULL,'2026-04-06 14:24:53'),(412,'TK-260209-416','Taro Yamamoto','2026-02-09 14:55:08','2026-02-09 16:33:08','Mechanical','Filter cartridges loaded, pulse valve not firing','Replaced pulse valve diaphragm, cleaned cartridges, suction restored','VFD 7.5kW 400V x1',NULL,'2026-02-09 14:33:08'),(413,'TK-260630-417','Jide Okafor','2026-06-30 16:52:28','2026-06-30 18:28:28','Hydraulic','Oil level low, suction strainer drawing air','Topped VG46, replaced suction strainer, bled system','E-Stop Mushroom Button 22mm x1',NULL,'2026-06-30 15:28:28'),(414,'TK-260131-418','Jide Okafor','2026-01-31 07:55:22','2026-01-31 09:20:22','Safety','Safety relay channel fault after door impact','Replaced PNOZ s5 relay, verified dual-channel monitoring and stop category 1','Linear Guide Block HGH25 x3',NULL,'2026-01-31 07:20:22'),(415,'TK-260728-419','Taro Yamamoto','2026-07-28 15:42:10','2026-07-28 20:28:10','Mechanical','Spindle bearing grease degraded past service life','Regreased spindle, replaced front bearing set, ran warm-up cycle and verified temp curve','Welding Torch Nozzle M8 x2',NULL,'2026-07-28 17:28:10'),(416,'TK-260226-420','Taro Yamamoto','2026-02-26 15:01:30','2026-02-26 15:57:30','Hydraulic','Coolant filter blocked with fine swarf','Replaced filter bag, flushed lines, restored 4.2 bar at nozzle','Spindle Grease NLGI 2 (400g) x2',NULL,'2026-02-26 13:57:30'),(417,'TK-GHOST-001','Jide Okafor','2026-07-15 08:30:00','2026-07-15 09:30:00','Mechanical','Wear','Diagnosis: main clamp seal blown, pressure dropping under load.','None',NULL,'2026-07-15 06:30:00'),(418,'TK-GHOST-001','Jide Okafor','2026-07-15 10:00:00','2026-07-15 10:00:00','Other','On Hold','PLACED ON HOLD\nReason: Awaiting Parts\nExplanation: Seal kit not in stores, drawn from vendor.','None',NULL,'2026-07-15 07:00:00'),(419,'TK-GHOST-001','Jide Okafor','2026-07-15 14:00:00','2026-07-15 15:30:00','Mechanical','Wear','Seal kit received, cylinder reseated and pressure tested to spec.','None',NULL,'2026-07-15 12:30:00'),(420,'TK-GHOST-002','Priya Nair','2026-07-20 09:30:00','2026-07-20 10:15:00','Mechanical','Wear','Drive throwing overcurrent; confirmed failed output stage.','None',NULL,'2026-07-20 07:15:00'),(421,'TK-GHOST-002','Priya Nair','2026-07-20 10:15:00','2026-07-20 10:15:00','Other','On Hold','PLACED ON HOLD\nReason: Awaiting Parts\nExplanation: Replacement servo drive on next-day courier.','None',NULL,'2026-07-20 07:15:00'),(422,'TK-GHOST-002','Priya Nair','2026-07-21 07:00:00','2026-07-21 09:00:00','Mechanical','Wear','New drive fitted, parameters restored from backup, axis homed and verified.','None',NULL,'2026-07-21 06:00:00'),(423,'TK-GHOST-003','Rui Silva','2026-07-22 13:30:00','2026-07-22 14:00:00','Mechanical','Wear','Gearbox input bearing rumble; stripped and confirmed spalling.','None',NULL,'2026-07-22 11:00:00'),(424,'TK-GHOST-003','Rui Silva','2026-07-22 14:00:00','2026-07-22 14:00:00','Other','On Hold','PLACED ON HOLD\nReason: Awaiting Parts\nExplanation: Bearing ordered, overnight delivery.','None',NULL,'2026-07-22 11:00:00'),(425,'TK-GHOST-003','Rui Silva','2026-07-23 08:00:00','2026-07-23 10:00:00','Mechanical','Wear','Bearing pressed in, gearbox refilled and run-in; noise gone.','None',NULL,'2026-07-23 07:00:00');
+/*!40000 ALTER TABLE `ticket_actions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ticket_attachments`
+--
+
+DROP TABLE IF EXISTS `ticket_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ticket_attachments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ticket_id` varchar(50) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `caption` varchar(500) DEFAULT NULL,
+  `uploaded_by` int(11) DEFAULT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `ticket_id` (`ticket_id`),
+  CONSTRAINT `ticket_attachments_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `active_tickets` (`ticket_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket_attachments`
+--
+
+LOCK TABLES `ticket_attachments` WRITE;
+/*!40000 ALTER TABLE `ticket_attachments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ticket_attachments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ticket_comments`
+--
+
+DROP TABLE IF EXISTS `ticket_comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ticket_comments` (
+  `comment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ticket_id` varchar(50) NOT NULL,
+  `user_name` varchar(100) NOT NULL,
+  `comment_text` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`comment_id`),
+  KEY `ticket_id` (`ticket_id`),
+  CONSTRAINT `fk_ticket_comments` FOREIGN KEY (`ticket_id`) REFERENCES `active_tickets` (`ticket_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket_comments`
+--
+
+LOCK TABLES `ticket_comments` WRITE;
+/*!40000 ALTER TABLE `ticket_comments` DISABLE KEYS */;
+INSERT INTO `ticket_comments` VALUES (1,'TK-260620-010','Elise Moreau','Same symptom as last month, worth a PM interval review.','2026-06-20 23:50:04'),(2,'TK-260104-013','Rui Silva','Same symptom as last month, worth a PM interval review.','2026-01-04 13:49:16'),(3,'TK-260607-015','Marc Dubois','Spare was on the shelf, good catch by stores.','2026-06-07 10:11:31'),(4,'TK-260610-018','Priya Nair','Same symptom as last month, worth a PM interval review.','2026-06-10 19:39:53'),(5,'TK-260520-020','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-05-20 12:31:28'),(6,'TK-251201-021','Rui Silva','Same symptom as last month, worth a PM interval review.','2025-12-01 17:55:56'),(7,'TK-251229-023','Marc Dubois','Line was held for this - please prioritise next time.','2025-12-29 22:36:47'),(8,'TK-260511-025','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-05-11 16:10:45'),(9,'TK-260729-027','Elise Moreau','Same symptom as last month, worth a PM interval review.','2026-07-29 20:03:51'),(10,'TK-260724-032','Marc Dubois','Operator briefed on the restart procedure afterwards.','2026-07-24 12:53:15'),(11,'TK-260330-033','Rui Silva','Line was held for this - please prioritise next time.','2026-03-30 15:42:57'),(12,'TK-260128-034','Rui Silva','Line was held for this - please prioritise next time.','2026-01-28 10:51:31'),(13,'TK-251231-040','Priya Nair','Line was held for this - please prioritise next time.','2025-12-31 15:40:39'),(14,'TK-260215-046','Elise Moreau','Line was held for this - please prioritise next time.','2026-02-15 08:33:45'),(15,'TK-260626-049','Rui Silva','Line was held for this - please prioritise next time.','2026-06-26 06:40:10'),(16,'TK-251228-050','Elise Moreau','Line was held for this - please prioritise next time.','2025-12-28 09:12:06'),(17,'TK-260125-056','Rui Silva','Spare was on the shelf, good catch by stores.','2026-01-25 11:45:42'),(18,'TK-260502-062','Elise Moreau','Line was held for this - please prioritise next time.','2026-05-02 10:44:19'),(19,'TK-260320-064','Priya Nair','Spare was on the shelf, good catch by stores.','2026-03-20 09:51:14'),(20,'TK-251103-068','Rui Silva','Spare was on the shelf, good catch by stores.','2025-11-03 09:58:07'),(21,'TK-260218-070','Marc Dubois','Operator briefed on the restart procedure afterwards.','2026-02-18 10:43:18'),(22,'TK-260103-071','Elise Moreau','Operator briefed on the restart procedure afterwards.','2026-01-03 13:24:06'),(23,'TK-260728-072','Rui Silva','Spare was on the shelf, good catch by stores.','2026-07-28 11:03:03'),(24,'TK-260117-075','Marc Dubois','Spare was on the shelf, good catch by stores.','2026-01-17 15:03:06'),(25,'TK-260717-079','Marc Dubois','Line was held for this - please prioritise next time.','2026-07-17 22:29:56'),(26,'TK-260527-087','Rui Silva','Same symptom as last month, worth a PM interval review.','2026-05-27 17:29:55'),(27,'TK-260320-096','Rui Silva','Spare was on the shelf, good catch by stores.','2026-03-20 20:35:43'),(28,'TK-260609-097','Priya Nair','Line was held for this - please prioritise next time.','2026-06-09 21:16:11'),(29,'TK-260201-102','Elise Moreau','Operator briefed on the restart procedure afterwards.','2026-02-01 10:28:16'),(30,'TK-260720-108','Rui Silva','Line was held for this - please prioritise next time.','2026-07-20 13:22:59'),(31,'TK-260721-112','Elise Moreau','Spare was on the shelf, good catch by stores.','2026-07-21 16:05:47'),(32,'TK-260514-122','Marc Dubois','Line was held for this - please prioritise next time.','2026-05-14 22:11:27'),(33,'TK-260312-129','Elise Moreau','Spare was on the shelf, good catch by stores.','2026-03-12 09:54:26'),(34,'TK-260228-134','Marc Dubois','Same symptom as last month, worth a PM interval review.','2026-02-28 06:44:44'),(35,'TK-260305-138','Rui Silva','Operator briefed on the restart procedure afterwards.','2026-03-05 10:18:37'),(36,'TK-260430-147','Priya Nair','Line was held for this - please prioritise next time.','2026-04-30 11:25:30'),(37,'TK-260506-158','Rui Silva','Spare was on the shelf, good catch by stores.','2026-05-06 13:30:14'),(38,'TK-260309-172','Rui Silva','Spare was on the shelf, good catch by stores.','2026-03-09 16:23:26'),(39,'TK-260201-176','Marc Dubois','Spare was on the shelf, good catch by stores.','2026-02-01 10:08:45'),(40,'TK-251129-177','Elise Moreau','Line was held for this - please prioritise next time.','2025-11-29 14:42:57'),(41,'TK-251128-180','Elise Moreau','Same symptom as last month, worth a PM interval review.','2025-11-28 15:45:50'),(42,'TK-251203-190','Rui Silva','Spare was on the shelf, good catch by stores.','2025-12-03 17:48:20'),(43,'TK-260626-194','Marc Dubois','Spare was on the shelf, good catch by stores.','2026-06-26 20:13:03'),(44,'TK-260730-196','Marc Dubois','Operator briefed on the restart procedure afterwards.','2026-07-30 12:07:53'),(45,'TK-260120-210','Rui Silva','Operator briefed on the restart procedure afterwards.','2026-01-20 23:33:33'),(46,'TK-260623-215','Rui Silva','Same symptom as last month, worth a PM interval review.','2026-06-23 18:15:49'),(47,'TK-260124-219','Rui Silva','Spare was on the shelf, good catch by stores.','2026-01-24 14:25:55'),(48,'TK-260730-222','Marc Dubois','Spare was on the shelf, good catch by stores.','2026-07-30 10:45:15'),(49,'TK-260718-224','Priya Nair','Same symptom as last month, worth a PM interval review.','2026-07-18 23:14:30'),(50,'TK-260719-227','Rui Silva','Spare was on the shelf, good catch by stores.','2026-07-19 16:33:27'),(51,'TK-260523-228','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-05-23 21:19:10'),(52,'TK-251229-230','Elise Moreau','Operator briefed on the restart procedure afterwards.','2025-12-29 18:40:18'),(53,'TK-260720-235','Rui Silva','Same symptom as last month, worth a PM interval review.','2026-07-20 21:57:20'),(54,'TK-260409-236','Rui Silva','Operator briefed on the restart procedure afterwards.','2026-04-09 18:19:37'),(55,'TK-260718-237','Elise Moreau','Spare was on the shelf, good catch by stores.','2026-07-18 14:07:49'),(56,'TK-251230-248','Marc Dubois','Operator briefed on the restart procedure afterwards.','2025-12-30 09:05:13'),(57,'TK-260428-259','Rui Silva','Line was held for this - please prioritise next time.','2026-04-28 21:09:41'),(58,'TK-260616-261','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-06-16 20:31:29'),(59,'TK-260630-262','Elise Moreau','Same symptom as last month, worth a PM interval review.','2026-06-30 21:13:50'),(60,'TK-260525-265','Marc Dubois','Line was held for this - please prioritise next time.','2026-05-25 21:29:40'),(61,'TK-260425-270','Rui Silva','Spare was on the shelf, good catch by stores.','2026-04-25 21:37:40'),(62,'TK-251216-278','Priya Nair','Same symptom as last month, worth a PM interval review.','2025-12-16 20:55:44'),(63,'TK-251106-283','Priya Nair','Spare was on the shelf, good catch by stores.','2025-11-06 14:06:05'),(64,'TK-251222-289','Elise Moreau','Same symptom as last month, worth a PM interval review.','2025-12-22 20:29:18'),(65,'TK-260727-302','Rui Silva','Line was held for this - please prioritise next time.','2026-07-27 07:17:35'),(66,'TK-260207-307','Priya Nair','Same symptom as last month, worth a PM interval review.','2026-02-07 10:33:03'),(67,'TK-260117-314','Rui Silva','Same symptom as last month, worth a PM interval review.','2026-01-17 17:37:31'),(68,'TK-260730-315','Rui Silva','Spare was on the shelf, good catch by stores.','2026-07-30 07:36:25'),(69,'TK-260728-317','Rui Silva','Operator briefed on the restart procedure afterwards.','2026-07-28 09:21:56'),(70,'TK-260623-319','Rui Silva','Same symptom as last month, worth a PM interval review.','2026-06-23 12:12:47'),(71,'TK-260418-320','Marc Dubois','Operator briefed on the restart procedure afterwards.','2026-04-18 23:10:14'),(72,'TK-260416-328','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-04-16 21:07:47'),(73,'TK-260226-335','Rui Silva','Line was held for this - please prioritise next time.','2026-02-26 21:25:07'),(74,'TK-260703-339','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-07-03 16:58:52'),(75,'TK-260417-347','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-04-17 08:57:50'),(76,'TK-260607-348','Marc Dubois','Operator briefed on the restart procedure afterwards.','2026-06-07 18:27:19'),(77,'TK-260606-350','Rui Silva','Operator briefed on the restart procedure afterwards.','2026-06-06 07:05:43'),(78,'TK-260128-352','Priya Nair','Spare was on the shelf, good catch by stores.','2026-01-28 15:38:18'),(79,'TK-260531-355','Marc Dubois','Same symptom as last month, worth a PM interval review.','2026-05-31 10:02:40'),(80,'TK-260514-366','Elise Moreau','Spare was on the shelf, good catch by stores.','2026-05-14 12:18:26'),(81,'TK-260502-369','Priya Nair','Line was held for this - please prioritise next time.','2026-05-02 09:48:24'),(82,'TK-260621-370','Elise Moreau','Line was held for this - please prioritise next time.','2026-06-21 19:05:56'),(83,'TK-260603-373','Priya Nair','Spare was on the shelf, good catch by stores.','2026-06-03 16:13:26'),(84,'TK-260616-376','Priya Nair','Spare was on the shelf, good catch by stores.','2026-06-16 10:54:44'),(85,'TK-260101-379','Priya Nair','Line was held for this - please prioritise next time.','2026-01-01 15:09:57'),(86,'TK-260603-381','Marc Dubois','Same symptom as last month, worth a PM interval review.','2026-06-03 12:29:49'),(87,'TK-251214-388','Rui Silva','Spare was on the shelf, good catch by stores.','2025-12-14 08:42:16'),(88,'TK-260428-389','Elise Moreau','Operator briefed on the restart procedure afterwards.','2026-04-28 20:53:40'),(89,'TK-260708-392','Priya Nair','Operator briefed on the restart procedure afterwards.','2026-07-08 20:30:15'),(90,'TK-260712-399','Priya Nair','Spare was on the shelf, good catch by stores.','2026-07-12 13:31:35'),(91,'TK-251123-406','Elise Moreau','Operator briefed on the restart procedure afterwards.','2025-11-23 11:16:11'),(92,'TK-260710-407','Rui Silva','Spare was on the shelf, good catch by stores.','2026-07-10 09:41:46'),(93,'TK-260505-408','Rui Silva','Operator briefed on the restart procedure afterwards.','2026-05-05 11:53:15'),(94,'TK-260212-412','Marc Dubois','Line was held for this - please prioritise next time.','2026-02-12 18:35:47'),(95,'TK-260606-413','Marc Dubois','Operator briefed on the restart procedure afterwards.','2026-06-06 22:49:06'),(96,'TK-260630-417','Elise Moreau','Spare was on the shelf, good catch by stores.','2026-06-30 16:28:28');
+/*!40000 ALTER TABLE `ticket_comments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ticket_parts_consumed`
+--
+
+DROP TABLE IF EXISTS `ticket_parts_consumed`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ticket_parts_consumed` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ticket_id` varchar(50) DEFAULT NULL,
+  `part_id` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `consumed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `ticket_id` (`ticket_id`),
+  KEY `part_id` (`part_id`),
+  CONSTRAINT `ticket_parts_consumed_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `active_tickets` (`ticket_id`),
+  CONSTRAINT `ticket_parts_consumed_ibfk_2` FOREIGN KEY (`part_id`) REFERENCES `inventory_parts` (`part_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket_parts_consumed`
+--
+
+LOCK TABLES `ticket_parts_consumed` WRITE;
+/*!40000 ALTER TABLE `ticket_parts_consumed` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ticket_parts_consumed` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tooling_bom`
+--
+
+DROP TABLE IF EXISTS `tooling_bom`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tooling_bom` (
+  `bom_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tooling_id` int(11) NOT NULL,
+  `part_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `notes` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`bom_id`),
+  UNIQUE KEY `uq_tooling_bom_part` (`tooling_id`,`part_id`),
+  KEY `idx_tooling_bom_tooling` (`tooling_id`),
+  KEY `idx_tooling_bom_part` (`part_id`),
+  CONSTRAINT `tooling_bom_part_fk` FOREIGN KEY (`part_id`) REFERENCES `inventory_parts` (`part_id`) ON DELETE CASCADE,
+  CONSTRAINT `tooling_bom_tooling_fk` FOREIGN KEY (`tooling_id`) REFERENCES `toolings` (`tooling_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tooling_bom`
+--
+
+LOCK TABLES `tooling_bom` WRITE;
+/*!40000 ALTER TABLE `tooling_bom` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tooling_bom` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tooling_documents`
+--
+
+DROP TABLE IF EXISTS `tooling_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tooling_documents` (
+  `doc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tooling_id` int(11) NOT NULL,
+  `doc_title` varchar(255) NOT NULL,
+  `doc_type` varchar(50) DEFAULT 'SOP' COMMENT 'SOP, Manual, Drawing, Calibration, Diagram, Other',
+  `file_path` varchar(500) NOT NULL COMMENT 'Relative path inside _doc/',
+  `uploaded_by` varchar(100) NOT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`doc_id`),
+  KEY `idx_tooling_docs_tooling` (`tooling_id`),
+  CONSTRAINT `fk_tooling_docs_tooling_id` FOREIGN KEY (`tooling_id`) REFERENCES `toolings` (`tooling_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tooling_documents`
+--
+
+LOCK TABLES `tooling_documents` WRITE;
+/*!40000 ALTER TABLE `tooling_documents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tooling_documents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `toolings`
+--
+
+DROP TABLE IF EXISTS `toolings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `toolings` (
+  `tooling_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tooling_code` varchar(50) NOT NULL,
+  `tooling_name` varchar(150) NOT NULL,
+  `category` varchar(80) DEFAULT NULL COMMENT 'Die, Mold, Fixture, Jig, Gauge, Hand Tool, Cutting Tool, Other',
+  `tooling_type` varchar(80) DEFAULT NULL,
+  `barcode` varchar(100) DEFAULT NULL,
+  `asset_tag` varchar(100) DEFAULT NULL,
+  `oem_brand` varchar(100) DEFAULT NULL,
+  `oem_model` varchar(100) DEFAULT NULL,
+  `serial_number` varchar(100) DEFAULT NULL,
+  `status` enum('Available','In Use','Maintenance','Calibration Due','Retired') NOT NULL DEFAULT 'Available',
+  `condition_rating` enum('New','Good','Fair','Poor') NOT NULL DEFAULT 'Good',
+  `location` varchar(150) DEFAULT NULL,
+  `workshop_id` int(11) DEFAULT NULL,
+  `line_id` int(11) DEFAULT NULL,
+  `linked_equip_id` int(11) DEFAULT NULL COMMENT 'Optional home / allocated equipment',
+  `owner_dept` varchar(100) DEFAULT NULL,
+  `calibration_due` date DEFAULT NULL,
+  `last_calibration` date DEFAULT NULL,
+  `purchase_date` date DEFAULT NULL,
+  `cost` decimal(12,2) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`tooling_id`),
+  UNIQUE KEY `uq_tooling_code` (`tooling_code`),
+  KEY `idx_toolings_barcode` (`barcode`),
+  KEY `idx_toolings_status` (`status`),
+  KEY `idx_toolings_category` (`category`),
+  KEY `idx_toolings_linked_equip` (`linked_equip_id`),
+  KEY `idx_toolings_deleted` (`deleted_at`),
+  KEY `idx_toolings_asset_tag` (`asset_tag`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `toolings`
+--
+
+LOCK TABLES `toolings` WRITE;
+/*!40000 ALTER TABLE `toolings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `toolings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_registration_config`
+--
+
+DROP TABLE IF EXISTS `user_registration_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_registration_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `field_name` varchar(50) NOT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `is_required` tinyint(1) NOT NULL DEFAULT 0,
+  `label` varchar(100) NOT NULL,
+  `display_order` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `field_name` (`field_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_registration_config`
+--
+
+LOCK TABLES `user_registration_config` WRITE;
+/*!40000 ALTER TABLE `user_registration_config` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_registration_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_skills`
+--
+
+DROP TABLE IF EXISTS `user_skills`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_skills` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `skill_name` varchar(255) NOT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_skills`
+--
+
+LOCK TABLES `user_skills` WRITE;
+/*!40000 ALTER TABLE `user_skills` DISABLE KEYS */;
+INSERT INTO `user_skills` VALUES (1,1,'LOTO Authorised Person','2027-09-04','2025-08-05 13:47:48'),(2,1,'Plant Safety Officer','2027-04-07','2026-01-01 04:22:25'),(3,1,'ISO 55001 Asset Mgmt',NULL,'2026-01-02 17:52:58'),(4,2,'LOTO Authorised Person','2027-05-27','2025-07-11 03:06:45'),(5,2,'Root Cause Analysis (8D)',NULL,'2025-07-24 08:37:27'),(6,2,'Risk Assessment Lead','2027-01-27','2025-07-19 11:06:21'),(7,3,'Line Supervisor Cert','2027-03-08','2025-05-06 06:50:03'),(8,3,'Forklift Licence B','2026-09-14','2025-05-15 05:38:35'),(9,4,'LOTO Authorised Person','2027-07-31','2025-09-28 18:37:02'),(10,4,'KUKA Robot Programming','2026-11-28','2025-09-29 08:34:27'),(11,4,'Electrical LV Working','2026-08-30','2025-09-11 15:49:14'),(12,4,'Welding: MIG/MAG','2027-04-17','2025-12-11 06:42:57'),(13,4,'Confined Space Entry','2026-07-11','2025-06-14 09:54:29'),(14,5,'LOTO Authorised Person','2027-07-06','2025-12-12 17:03:25'),(15,5,'Overhead Crane Operator','2026-10-29','2025-12-26 05:08:32'),(16,5,'Conveyor Systems L2',NULL,'2025-10-14 06:50:41'),(17,5,'Working at Height','2026-08-15','2025-07-06 14:20:46'),(18,6,'LOTO Authorised Person','2027-09-14','2025-05-19 09:04:05'),(19,6,'CNC Maintenance L3','2027-02-16','2025-10-08 15:30:13'),(20,6,'Hydraulics & Pneumatics L2','2026-10-14','2025-03-26 07:04:13'),(21,6,'Thermography Level 1','2026-12-28','2025-10-31 14:15:58'),(22,6,'Siemens S7 PLC',NULL,'2025-08-07 08:55:26'),(23,7,'LOTO Authorised Person','2027-06-16','2025-07-27 17:24:38'),(24,7,'Metrology & Calibration','2026-11-18','2025-08-14 17:35:28'),(25,7,'Vision Systems (Cognex)',NULL,'2025-09-10 11:54:55'),(26,7,'First Aid at Work','2026-07-26','2025-12-14 08:16:56'),(27,8,'Machine Operator L2',NULL,'2025-05-07 03:22:16'),(28,8,'Forklift Licence B','2027-02-16','2025-05-25 09:10:44'),(29,9,'Machine Operator L1',NULL,'2025-03-19 05:24:29'),(30,10,'Warehouse Safety','2027-05-07','2025-05-23 08:42:43'),(31,10,'Dangerous Goods Handling','2026-09-29','2025-07-06 10:47:09'),(32,10,'Forklift Licence B','2026-12-28','2025-10-23 14:03:27'),(33,11,'Finance Systems Access',NULL,'2025-04-30 03:29:24');
+/*!40000 ALTER TABLE `user_skills` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `role_level` int(11) NOT NULL DEFAULT 1,
+  `permissions_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`permissions_json`)),
+  `api_key` varchar(64) DEFAULT NULL COMMENT 'REST API v1 key (X-API-Key). NULL = no key issued.',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `theme_pref` text DEFAULT NULL,
+  `session_timeout_mins` int(11) DEFAULT NULL,
+  `theme_prefs_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'JSON object for dark/light custom theme color prefs (Phase 4+)' CHECK (json_valid(`theme_prefs_json`) or `theme_prefs_json` is null),
+  `email` varchar(255) DEFAULT NULL,
+  `full_name` varchar(100) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `department` varchar(100) DEFAULT NULL,
+  `status` enum('active','inactive','pending') NOT NULL DEFAULT 'active',
+  `last_login` datetime DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `workshop_id` int(11) DEFAULT NULL,
+  `certifications` longtext DEFAULT NULL CHECK (json_valid(`certifications`) or `certifications` is null),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `must_change_password` tinyint(1) NOT NULL DEFAULT 0,
+  `badge_number` varchar(50) DEFAULT NULL COMMENT 'I-Badge / Employee badge number - public safe ID for UI and login safety (TISAX compliant)',
+  `admin_layout_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Ordered JSON array of admin_panel tile ids; NULL = default order' CHECK (json_valid(`admin_layout_json`) or `admin_layout_json` is null),
+  `locale` varchar(16) NOT NULL DEFAULT 'en',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `badge_number` (`badge_number`),
+  UNIQUE KEY `api_key` (`api_key`),
+  KEY `idx_status` (`status`),
+  KEY `idx_workshop` (`workshop_id`),
+  KEY `idx_last_login` (`last_login`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'a.rivera','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',4,NULL,NULL,'2025-10-04 08:13:39',NULL,NULL,NULL,'alex.rivera@meridian-works.example','Alex Rivera','+31 6 20687387','Maintenance','active','2026-07-31 19:24:58',NULL,NULL,NULL,'2026-07-31 16:24:58',0,'IB-10001',NULL,'en'),(2,'p.nair','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',3,NULL,NULL,'2025-09-07 12:22:07',NULL,NULL,NULL,'priya.nair@meridian-works.example','Priya Nair','+31 6 70419031','Maintenance','active','2026-07-29 14:47:47',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10002',NULL,'en'),(3,'m.dubois','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',3,NULL,NULL,'2025-09-27 12:04:15',NULL,NULL,NULL,'marc.dubois@meridian-works.example','Marc Dubois','+31 6 42909129','Production','active','2026-07-30 08:10:06',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10003',NULL,'en'),(4,'j.okafor','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',2,NULL,NULL,'2025-07-09 11:46:16',NULL,NULL,NULL,'jide.okafor@meridian-works.example','Jide Okafor','+31 6 33249810','Maintenance','active','2026-07-31 09:17:56',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10004',NULL,'en'),(5,'s.lindqvist','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',2,NULL,NULL,'2025-09-06 15:43:36',NULL,NULL,NULL,'sara.lindqvist@meridian-works.example','Sara Lindqvist','+31 6 43385498','Maintenance','active','2026-07-28 14:46:58',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10005',NULL,'en'),(6,'t.yamamoto','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',2,NULL,NULL,'2025-08-17 09:02:38',NULL,NULL,NULL,'taro.yamamoto@meridian-works.example','Taro Yamamoto','+31 6 75403091','Maintenance','active','2026-07-29 20:17:54',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10006',NULL,'en'),(7,'k.novak','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',2,NULL,NULL,'2025-09-19 03:06:37',NULL,NULL,NULL,'katerina.novak@meridian-works.example','Katerina Novak','+31 6 20231879','Maintenance','active','2026-07-29 10:01:08',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10007',NULL,'en'),(8,'r.silva','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',1,NULL,NULL,'2025-09-25 06:09:07',NULL,NULL,NULL,'rui.silva@meridian-works.example','Rui Silva','+31 6 39212026','Production','active','2026-07-30 14:50:31',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10008',NULL,'en'),(9,'e.moreau','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',1,NULL,NULL,'2025-07-16 12:33:26',NULL,NULL,NULL,'elise.moreau@meridian-works.example','Elise Moreau','+31 6 49457662','Production','active','2026-07-31 19:44:47',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10009',NULL,'en'),(10,'h.bakker','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',6,NULL,NULL,'2025-08-27 17:38:58',NULL,NULL,NULL,'hendrik.bakker@meridian-works.example','Hendrik Bakker','+31 6 27675234','Stores','active','2026-07-28 12:38:39',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10010',NULL,'en'),(11,'c.whitfield','$2y$10$ehEsQJf1DqfB2rlqlTRfjOFkV6eKP9uVgvZvFwNAxLWXiJBHp92Cq',5,NULL,NULL,'2025-07-28 07:18:49',NULL,NULL,NULL,'claire.whitfield@meridian-works.example','Claire Whitfield','+31 6 42096677','Finance','active','2026-07-30 20:34:53',NULL,NULL,NULL,'2026-07-31 15:59:28',0,'IB-10011',NULL,'en');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `uuid_rules`
+--
+
+DROP TABLE IF EXISTS `uuid_rules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `uuid_rules` (
+  `rule_id` int(11) NOT NULL AUTO_INCREMENT,
+  `target_entity` varchar(100) DEFAULT 'Equipment',
+  `category` varchar(255) NOT NULL,
+  `prefix` varchar(50) DEFAULT '',
+  `serial_length` int(11) DEFAULT 4,
+  `current_serial` int(11) DEFAULT 1,
+  `random_chars` int(11) DEFAULT 0,
+  `char_type` varchar(50) DEFAULT 'NUMERIC',
+  PRIMARY KEY (`rule_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `uuid_rules`
+--
+
+LOCK TABLES `uuid_rules` WRITE;
+/*!40000 ALTER TABLE `uuid_rules` DISABLE KEYS */;
+INSERT INTO `uuid_rules` VALUES (1,'Tooling','Die','TL-DIE-',3,1,0,'NUMERIC'),(2,'Tooling','Mold','TL-MLD-',3,1,0,'NUMERIC'),(3,'Tooling','Fixture','TL-FIX-',3,1,0,'NUMERIC'),(4,'Tooling','Jig','TL-JIG-',3,1,0,'NUMERIC'),(5,'Tooling','Gauge','TL-GAU-',3,3,0,'NUMERIC'),(6,'Tooling','Hand Tool','TL-HND-',3,1,0,'NUMERIC'),(7,'Tooling','Cutting Tool','TL-CUT-',3,1,0,'NUMERIC'),(8,'Tooling','Other','TL-GEN-',3,3,0,'NUMERIC'),(9,'Tooling','GLOBAL_DEFAULT','TL-GEN-',3,1,0,'NUMERIC');
+/*!40000 ALTER TABLE `uuid_rules` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vendors_suppliers`
+--
+
+DROP TABLE IF EXISTS `vendors_suppliers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vendors_suppliers` (
+  `vendor_id` int(11) NOT NULL AUTO_INCREMENT,
+  `vendor_name` varchar(100) NOT NULL,
+  `primary_contact_name` varchar(100) DEFAULT NULL,
+  `contact_email` varchar(100) DEFAULT NULL,
+  `contact_phone` varchar(50) DEFAULT NULL,
+  `emergency_contact` varchar(100) DEFAULT NULL,
+  `payment_terms` varchar(50) DEFAULT NULL,
+  `vendor_address` text DEFAULT NULL,
+  `shipping_time` varchar(100) DEFAULT NULL,
+  `vendor_type` varchar(50) DEFAULT NULL,
+  `vendor_remarks` text DEFAULT NULL,
+  `rating` decimal(3,2) DEFAULT 5.00,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`vendor_id`),
+  UNIQUE KEY `vendor_name` (`vendor_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vendors_suppliers`
+--
+
+LOCK TABLES `vendors_suppliers` WRITE;
+/*!40000 ALTER TABLE `vendors_suppliers` DISABLE KEYS */;
+INSERT INTO `vendors_suppliers` VALUES (1,'Nordwerk Industrial Supply','Ingrid Sørensen','orders@nordwerk.example','+47 22 55 10 40',NULL,'Net 30','Oslo, NO','3-5 days','Distributor',NULL,4.60,'2025-08-20 06:06:58'),(2,'SKF Authorised Partner BV','Ruud van Dijk','sales@skf-partner.example','+31 20 441 9020',NULL,'Net 45','Utrecht, NL','2-4 days','OEM',NULL,4.80,'2025-07-29 08:20:21'),(3,'Siemens Drive Services','Klaus Berger','service@siemens-ds.example','+49 911 895 220',NULL,'Net 60','Nürnberg, DE','5-10 days','OEM',NULL,4.40,'2025-09-16 04:26:03'),(4,'Atlas Pneumatic Group','Marta Kowalska','support@atlaspg.example','+48 22 310 8800',NULL,'Net 30','Warsaw, PL','4-7 days','OEM',NULL,4.10,'2025-09-28 03:33:57'),(5,'Baltic Bearing & Seal','Tomas Petrauskas','info@balticbs.example','+370 5 210 3344',NULL,'Net 30','Vilnius, LT','2-3 days','Distributor',NULL,3.90,'2025-08-23 03:18:47'),(6,'Hydratech Fluid Power','Elena Rossi','orders@hydratech.example','+39 02 8940 1177',NULL,'Net 45','Milan, IT','6-9 days','Distributor',NULL,4.20,'2025-07-28 16:29:45'),(7,'Volt & Circuit Electricals','Peter Hoffmann','desk@voltcircuit.example','+49 40 3070 5511',NULL,'Net 30','Hamburg, DE','1-2 days','Local',NULL,4.70,'2025-09-16 11:10:46'),(8,'ToolCraft Precision Ltd','Sian Roberts','quotes@toolcraft.example','+44 121 555 0188',NULL,'Net 60','Birmingham, UK','7-14 days','OEM',NULL,4.00,'2025-09-30 15:26:07');
+/*!40000 ALTER TABLE `vendors_suppliers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wo_attachments`
+--
+
+DROP TABLE IF EXISTS `wo_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wo_attachments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `wo_id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `caption` varchar(500) DEFAULT NULL,
+  `uploaded_by` int(11) DEFAULT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `wo_id` (`wo_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wo_attachments`
+--
+
+LOCK TABLES `wo_attachments` WRITE;
+/*!40000 ALTER TABLE `wo_attachments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wo_attachments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `work_orders`
+--
+
+DROP TABLE IF EXISTS `work_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `work_orders` (
+  `wo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `equipment_id` int(11) DEFAULT NULL,
+  `parts_list` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`parts_list`)),
+  `checklist_data` text DEFAULT NULL COMMENT 'JSON array snapshot of checklist items',
+  `assigned_to` int(11) DEFAULT NULL,
+  `status` enum('Scheduled','In Progress','Completed','Cancelled','Missed') DEFAULT 'Scheduled',
+  `completed_date` datetime DEFAULT NULL,
+  `completed_by` int(11) DEFAULT NULL,
+  `scheduled_date` date DEFAULT NULL,
+  `started_at` datetime DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`wo_id`),
+  KEY `assigned_to` (`assigned_to`),
+  KEY `idx_deleted_at` (`deleted_at`),
+  CONSTRAINT `work_orders_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `work_orders`
+--
+
+LOCK TABLES `work_orders` WRITE;
+/*!40000 ALTER TABLE `work_orders` DISABLE KEYS */;
+INSERT INTO `work_orders` VALUES (1,'Annual thermographic survey of panels','Planned maintenance task raised from the PM programme.',2,'[{\"part_id\":1,\"qty\":1}]',NULL,5,'Completed','2025-12-28 15:48:00',5,'2025-12-28','2025-12-28 12:15:00',NULL),(2,'Monthly PM - lubrication and inspection','Planned maintenance task raised from the PM programme.',7,'[{\"part_id\":4,\"qty\":1}]',NULL,7,'Completed','2026-07-18 13:18:00',7,'2026-07-18','2026-07-18 11:56:00',NULL),(3,'Replace conveyor tail bearing','Planned maintenance task raised from the PM programme.',12,'[{\"part_id\":7,\"qty\":2}]',NULL,7,'Completed','2026-06-22 13:58:00',7,'2026-06-22','2026-06-22 10:22:00',NULL),(4,'Vision system re-teach after lamp change','Planned maintenance task raised from the PM programme.',17,'[{\"part_id\":10,\"qty\":2}]',NULL,5,'Completed','2026-06-01 12:00:00',5,'2026-06-01','2026-06-01 09:04:00',NULL),(5,'Monthly PM - lubrication and inspection','Planned maintenance task raised from the PM programme.',22,'[{\"part_id\":13,\"qty\":3}]',NULL,4,'Completed','2025-12-31 14:29:00',4,'2025-12-31','2025-12-31 12:13:00',NULL),(6,'Safety interlock verification','Planned maintenance task raised from the PM programme.',3,'[{\"part_id\":16,\"qty\":1}]',NULL,4,'Completed','2026-04-27 18:51:00',4,'2026-04-27','2026-04-27 14:57:00',NULL),(7,'Monthly PM - lubrication and inspection','Planned maintenance task raised from the PM programme.',8,'[{\"part_id\":19,\"qty\":2}]',NULL,5,'Completed','2026-02-04 14:28:00',5,'2026-02-04','2026-02-04 10:42:00',NULL),(8,'Robot gearbox oil change','Planned maintenance task raised from the PM programme.',13,'[{\"part_id\":22,\"qty\":4}]',NULL,6,'Completed','2026-07-05 13:55:00',6,'2026-07-05','2026-07-05 12:19:00',NULL),(9,'Replace worn tool changer cam follower','Planned maintenance task raised from the PM programme.',18,'[{\"part_id\":25,\"qty\":3}]',NULL,4,'Completed','2026-05-25 09:28:00',4,'2026-05-25','2026-05-25 08:26:00',NULL),(10,'Coolant system deep clean and refill','Planned maintenance task raised from the PM programme.',23,'[{\"part_id\":28,\"qty\":3}]',NULL,7,'Completed','2025-12-24 17:09:00',7,'2025-12-24','2025-12-24 13:25:00',NULL),(11,'Coolant system deep clean and refill','Planned maintenance task raised from the PM programme.',4,'[{\"part_id\":31,\"qty\":2}]',NULL,5,'Completed','2026-05-01 14:35:00',5,'2026-05-01','2026-05-01 11:27:00',NULL),(12,'Quarterly PM - belt and drive inspection','Planned maintenance task raised from the PM programme.',9,'[{\"part_id\":34,\"qty\":3}]',NULL,7,'Completed','2026-05-17 12:13:00',7,'2026-05-17','2026-05-17 07:13:00',NULL),(13,'Coolant system deep clean and refill','Planned maintenance task raised from the PM programme.',14,'[{\"part_id\":2,\"qty\":4}]',NULL,6,'Completed','2026-03-14 11:05:00',6,'2026-03-14','2026-03-14 08:06:00',NULL),(14,'Crane annual load test and inspection','Planned maintenance task raised from the PM programme.',19,'[{\"part_id\":5,\"qty\":1}]',NULL,4,'Completed','2025-12-07 08:34:00',4,'2025-12-07','2025-12-07 07:42:00',NULL),(15,'Vision system re-teach after lamp change','Planned maintenance task raised from the PM programme.',24,'[{\"part_id\":8,\"qty\":1}]',NULL,4,'Completed','2026-01-27 12:00:00',4,'2026-01-27','2026-01-27 08:13:00',NULL),(16,'Robot gearbox oil change','Planned maintenance task raised from the PM programme.',5,'[{\"part_id\":11,\"qty\":3}]',NULL,7,'Completed','2026-06-03 14:23:00',7,'2026-06-03','2026-06-03 12:55:00',NULL),(17,'Coolant system deep clean and refill','Planned maintenance task raised from the PM programme.',10,'[{\"part_id\":14,\"qty\":1}]',NULL,6,'Completed','2026-04-09 13:06:00',6,'2026-04-09','2026-04-09 10:26:00',NULL),(18,'Replace worn tool changer cam follower','Planned maintenance task raised from the PM programme.',15,'[{\"part_id\":17,\"qty\":4}]',NULL,7,'Completed','2026-03-20 15:35:00',7,'2026-03-20','2026-03-20 12:18:00',NULL),(19,'Rebuild main hydraulic cylinder','Planned maintenance task raised from the PM programme.',20,'[{\"part_id\":20,\"qty\":4}]',NULL,5,'Completed','2026-06-14 11:53:00',5,'2026-06-14','2026-06-14 07:11:00',NULL),(20,'Replace worn tool changer cam follower','Planned maintenance task raised from the PM programme.',1,'[{\"part_id\":23,\"qty\":2}]',NULL,6,'Completed','2026-03-10 14:56:00',6,'2026-03-10','2026-03-10 10:04:00',NULL),(21,'Replace heater band, thermoformer zone 3','Planned maintenance task raised from the PM programme.',6,'[{\"part_id\":26,\"qty\":2}]',NULL,4,'Completed','2026-06-01 13:00:00',4,'2026-06-01','2026-06-01 12:07:00',NULL),(22,'Crane annual load test and inspection','Planned maintenance task raised from the PM programme.',11,'[{\"part_id\":29,\"qty\":2}]',NULL,4,'Completed','2026-06-07 17:57:00',4,'2026-06-07','2026-06-07 13:16:00',NULL),(23,'Monthly PM - lubrication and inspection','Planned maintenance task raised from the PM programme.',16,'[{\"part_id\":32,\"qty\":3}]',NULL,7,'Completed','2026-03-25 09:21:00',7,'2026-03-25','2026-03-25 08:25:00',NULL),(24,'Chiller glycol top-up and strainer clean','Planned maintenance task raised from the PM programme.',21,'[{\"part_id\":35,\"qty\":2}]',NULL,5,'Completed','2025-12-07 13:07:00',5,'2025-12-07','2025-12-07 11:14:00',NULL),(25,'Compressor cooler matrix clean','Planned maintenance task raised from the PM programme.',2,'[{\"part_id\":3,\"qty\":4}]',NULL,5,'Completed','2026-05-01 11:19:00',5,'2026-05-01','2026-05-01 08:34:00',NULL),(26,'Replace conveyor tail bearing','Planned maintenance task raised from the PM programme.',7,'[{\"part_id\":6,\"qty\":3}]',NULL,4,'Completed','2026-06-05 08:42:00',4,'2026-06-05','2026-06-05 07:49:00',NULL),(27,'Replace conveyor tail bearing','Planned maintenance task raised from the PM programme.',12,'[{\"part_id\":9,\"qty\":4}]',NULL,5,'Completed','2026-03-04 11:19:00',5,'2026-03-04','2026-03-04 10:14:00',NULL),(28,'Replace worn tool changer cam follower','Planned maintenance task raised from the PM programme.',17,'[{\"part_id\":12,\"qty\":3}]',NULL,5,'Completed','2026-06-10 11:21:00',5,'2026-06-10','2026-06-10 09:06:00',NULL),(29,'Replace worn tool changer cam follower','Planned maintenance task raised from the PM programme.',22,'[{\"part_id\":15,\"qty\":4}]',NULL,6,'Completed','2026-01-11 15:11:00',6,'2026-01-11','2026-01-11 10:40:00',NULL),(30,'Monthly PM - lubrication and inspection','Planned maintenance task raised from the PM programme.',3,'[{\"part_id\":18,\"qty\":1}]',NULL,5,'Completed','2026-01-15 14:15:00',5,'2026-01-15','2026-01-15 11:24:00',NULL),(31,'Crane annual load test and inspection','Planned maintenance task raised from the PM programme.',8,'[{\"part_id\":21,\"qty\":4}]',NULL,5,'Completed','2026-07-04 15:26:00',5,'2026-07-04','2026-07-04 14:39:00',NULL),(32,'Annual thermographic survey of panels','Planned maintenance task raised from the PM programme.',13,'[{\"part_id\":24,\"qty\":1}]',NULL,7,'Completed','2026-01-13 16:54:00',7,'2026-01-13','2026-01-13 11:57:00',NULL),(33,'Replace conveyor tail bearing','Planned maintenance task raised from the PM programme.',18,'[{\"part_id\":27,\"qty\":1}]',NULL,5,'Completed','2026-07-01 08:23:00',5,'2026-07-01','2026-07-01 07:21:00',NULL),(34,'Safety interlock verification','Planned maintenance task raised from the PM programme.',23,'[{\"part_id\":30,\"qty\":3}]',NULL,7,'Completed','2026-03-08 12:38:00',7,'2026-03-08','2026-03-08 10:59:00',NULL),(35,'Compressor cooler matrix clean','Work started, awaiting completion sign-off.',4,'[{\"part_id\":33,\"qty\":4}]',NULL,5,'In Progress',NULL,NULL,'2026-07-30','2026-07-30 08:50:00',NULL),(36,'Vision system re-teach after lamp change','Work started, awaiting completion sign-off.',9,'[{\"part_id\":1,\"qty\":4}]',NULL,4,'In Progress',NULL,NULL,'2026-07-31','2026-07-31 07:37:00',NULL),(37,'Monthly PM - lubrication and inspection','Work started, awaiting completion sign-off.',14,'[{\"part_id\":4,\"qty\":1}]',NULL,6,'In Progress',NULL,NULL,'2026-07-31','2026-07-31 11:35:00',NULL),(38,'Recalibrate torque transducer','Work started, awaiting completion sign-off.',19,'[{\"part_id\":7,\"qty\":3}]',NULL,4,'In Progress',NULL,NULL,'2026-07-30','2026-07-30 12:20:00',NULL),(39,'Rebuild main hydraulic cylinder','Upcoming planned task.',24,'[{\"part_id\":10,\"qty\":1}]',NULL,4,'Scheduled',NULL,NULL,'2026-09-14',NULL,NULL),(40,'Chiller glycol top-up and strainer clean','Upcoming planned task.',5,'[{\"part_id\":13,\"qty\":4}]',NULL,6,'Scheduled',NULL,NULL,'2026-09-07',NULL,NULL),(41,'Replace conveyor tail bearing','Upcoming planned task.',10,'[{\"part_id\":16,\"qty\":2}]',NULL,5,'Scheduled',NULL,NULL,'2026-08-16',NULL,NULL),(42,'Rebuild main hydraulic cylinder','Upcoming planned task.',15,'[{\"part_id\":19,\"qty\":4}]',NULL,4,'Scheduled',NULL,NULL,'2026-08-31',NULL,NULL),(43,'Quarterly PM - belt and drive inspection','Upcoming planned task.',20,'[{\"part_id\":22,\"qty\":4}]',NULL,6,'Scheduled',NULL,NULL,'2026-09-09',NULL,NULL),(44,'Vision system re-teach after lamp change','Upcoming planned task.',1,'[{\"part_id\":25,\"qty\":1}]',NULL,7,'Scheduled',NULL,NULL,'2026-08-21',NULL,NULL),(45,'Vision system re-teach after lamp change','Upcoming planned task.',6,'[{\"part_id\":28,\"qty\":2}]',NULL,6,'Scheduled',NULL,NULL,'2026-08-05',NULL,NULL),(46,'Coolant system deep clean and refill','Upcoming planned task.',11,'[{\"part_id\":31,\"qty\":2}]',NULL,6,'Scheduled',NULL,NULL,'2026-08-06',NULL,NULL),(47,'Coolant system deep clean and refill','Upcoming planned task.',16,'[{\"part_id\":34,\"qty\":1}]',NULL,5,'Scheduled',NULL,NULL,'2026-08-04',NULL,NULL),(48,'Replace heater band, thermoformer zone 3','Scheduled task not executed on the planned date.',21,'[{\"part_id\":2,\"qty\":2}]',NULL,5,'Missed',NULL,NULL,'2026-07-03',NULL,NULL),(49,'Replace conveyor tail bearing','Scheduled task not executed on the planned date.',2,'[{\"part_id\":5,\"qty\":4}]',NULL,5,'Missed',NULL,NULL,'2026-07-16',NULL,NULL),(50,'Replace conveyor tail bearing','Scheduled task not executed on the planned date.',7,'[{\"part_id\":8,\"qty\":2}]',NULL,4,'Missed',NULL,NULL,'2026-07-27',NULL,NULL),(51,'Coolant system deep clean and refill','Cancelled - asset taken off line for a project.',12,'[{\"part_id\":11,\"qty\":3}]',NULL,5,'Cancelled',NULL,NULL,'2026-05-09',NULL,NULL),(52,'Coolant system deep clean and refill','Cancelled - asset taken off line for a project.',17,'[{\"part_id\":14,\"qty\":3}]',NULL,5,'Cancelled',NULL,NULL,'2026-05-23',NULL,NULL);
+/*!40000 ALTER TABLE `work_orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workshops`
+--
+
+DROP TABLE IF EXISTS `workshops`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `workshops` (
+  `workshop_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `location` varchar(255) DEFAULT '',
+  `status` varchar(50) DEFAULT 'Active',
+  PRIMARY KEY (`workshop_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workshops`
+--
+
+LOCK TABLES `workshops` WRITE;
+/*!40000 ALTER TABLE `workshops` DISABLE KEYS */;
+INSERT INTO `workshops` VALUES (1,'Plant A — Machining & Fabrication','Building 1, North Yard','Active'),(2,'Plant B — Assembly & Packaging','Building 2, South Yard','Active');
+/*!40000 ALTER TABLE `workshops` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-07-31 19:25:33

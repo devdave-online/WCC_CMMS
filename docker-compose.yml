@@ -1,0 +1,48 @@
+# WCC CMMS — one-command demo stack.
+#
+#   docker compose up          → app on http://localhost:8080 with the demo loaded
+#   docker compose down        → stop
+#   docker compose down -v      → stop and wipe the database (next 'up' reloads the demo)
+#
+# The database container auto-loads docker/initdb/00_wcc_demo.sql on first boot, so
+# there is nothing to migrate or seed — it comes up fully populated.
+
+services:
+  db:
+    image: mariadb:10.6
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpw
+      MARIADB_DATABASE: workshop_db
+      MARIADB_USER: wcc
+      MARIADB_PASSWORD: wccpass
+    volumes:
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro   # runs the snapshot on first boot
+      - wcc_db_data:/var/lib/mysql                        # persists between runs
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+
+  app:
+    build: .
+    environment:
+      WCC_DB_HOST: db
+      WCC_DB_PORT: "3306"
+      WCC_DB_NAME: workshop_db
+      WCC_DB_USER: wcc
+      WCC_DB_PASS: wccpass
+      # Public showcase guard: visitors can explore and create, but cannot wipe the
+      # database, delete records, or take over accounts. Delete this line (or set it
+      # to 0) when running your own instance — every feature unlocks.
+      WCC_DEMO_MODE: "1"
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy   # app waits until the demo has finished loading
+    restart: unless-stopped
+
+volumes:
+  wcc_db_data:

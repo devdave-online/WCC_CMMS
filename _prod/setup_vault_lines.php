@@ -99,6 +99,8 @@ require_once __DIR__ . '/../inc/head.php';
     </style>
 <?php include __DIR__ . '/../nav.php'; ?>
     <?php require_once __DIR__ . '/../rbac.php'; ?>
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… style handlers
     <div class="dashboard-container">
         <div class="page-header">
             <h2>🏭 <?= __e('lines.directory') ?></h2>

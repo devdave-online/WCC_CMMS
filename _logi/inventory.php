@@ -6,6 +6,8 @@ require_perm('view_inventory');
 // Enterprise centralized DB connection (highest quality)
 require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/csrf.php';
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… style handlers
 require_once __DIR__ . '/../inc/icons.php';
 require_once __DIR__ . '/../inc/stock_status.php';
 $pdo = get_wcc_db_connection();

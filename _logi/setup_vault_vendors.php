@@ -63,6 +63,8 @@ try {
     }
 
     require_once __DIR__ . '/../rbac.php';
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… style handlers
     $stmt = $pdo->query("SELECT * FROM vendors_suppliers ORDER BY vendor_id ASC");
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) { die("DB Error: " . $e->getMessage()); }

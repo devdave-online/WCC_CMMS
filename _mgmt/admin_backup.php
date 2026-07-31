@@ -7,6 +7,13 @@ require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/csrf.php';
 require_once __DIR__ . '/../inc/audit.php';
 require_once __DIR__ . '/../inc/dbadmin.php';
+require_once __DIR__ . '/../inc/demo_mode.php';
+
+// Data Administration can back up, restore and TRUNCATE the whole database, and
+// it hands out dumps containing every password hash. There is no safe subset to
+// expose publicly, so on a demo instance the page is closed outright.
+wcc_demo_block_page('Data Administration (backup, restore and flush)');
+
 $pdo = get_wcc_db_connection();
 
 // ------------------------------------------------------------------

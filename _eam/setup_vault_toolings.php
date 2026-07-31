@@ -10,6 +10,8 @@ require_perm('manage_toolings');
 
 require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/csrf.php';
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… style handlers
 require_once __DIR__ . '/label_lib.php';
 $pdo = get_wcc_db_connection();
 $label_cfg = wcc_label_settings($pdo);

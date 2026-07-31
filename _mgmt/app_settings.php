@@ -1,6 +1,8 @@
 <?php
 include __DIR__ . '/../auth.php';
 require_perm('manage_settings');
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… handlers before they run
 
 // Enterprise centralized DB connection (highest quality, single source of truth)
 require_once __DIR__ . '/../inc/db.php';

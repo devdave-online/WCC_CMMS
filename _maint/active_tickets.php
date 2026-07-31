@@ -382,7 +382,17 @@ require_once __DIR__ . '/../inc/head.php';
                                                 <div class="timeline-entry" style="border-left: 3px solid <?= ($act['escalated_to'] !== 'None' ? 'var(--status-escalated-text)' : 'var(--success)') ?>;">
                                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px; gap: var(--space-2); flex-wrap: wrap;">
                                                         <span style="font-weight: bold; color: var(--text-primary);">👨‍🔧 <?= htmlspecialchars($act['tech_name']) ?></span>
-                                                        <span style="color: var(--text-secondary); font-size: var(--fs-sm); background: rgba(0,0,0,0.2); padding: 3px 8px; border-radius: 4px;">⏱️ <?= htmlspecialchars(date('M d, H:i', strtotime($act['action_start']))) ?> - <?= htmlspecialchars(date('H:i', strtotime($act['action_end']))) ?></span>
+                                                        <?php
+                                                            // An in-progress intervention has no action_end yet, and a bad row can
+                                                            // carry a zero-date. Both must render as "in progress" rather than being
+                                                            // passed to strtotime(), which is a fatal deprecation under PHP 8.1+.
+                                                            $tlStart = trim((string)($act['action_start'] ?? ''));
+                                                            $tlEnd   = trim((string)($act['action_end'] ?? ''));
+                                                            $tlBad   = static fn($v) => $v === '' || strncmp($v, '0000-00-00', 10) === 0;
+                                                            $tlFrom  = $tlBad($tlStart) ? '—' : date('M d, H:i', strtotime($tlStart));
+                                                            $tlTo    = $tlBad($tlEnd)   ? '…' : date('H:i', strtotime($tlEnd));
+                                                        ?>
+                                                        <span style="color: var(--text-secondary); font-size: var(--fs-sm); background: rgba(0,0,0,0.2); padding: 3px 8px; border-radius: 4px;">⏱️ <?= htmlspecialchars($tlFrom) ?> - <?= htmlspecialchars($tlTo) ?></span>
                                                     </div>
 
                                                     <div style="font-size: 0.95em; color: var(--text-secondary); margin-bottom: 5px;">

@@ -8,6 +8,26 @@ require_once __DIR__ . '/../inc/db.php';
 require_once __DIR__ . '/../inc/csrf.php';
 require_once __DIR__ . '/../inc/techident.php';
 require_once __DIR__ . '/../inc/gamification.php';
+require_once __DIR__ . '/../inc/demo_mode.php';
+
+// Public demo: the RBAC console stays fully browsable — the permission matrix is
+// one of the things worth showing — but account changes are blocked. Otherwise a
+// visitor could delete the demo accounts, reset a password and lock everyone out,
+// or mint themselves an admin login. Enforced server-side, not by hiding buttons.
+wcc_demo_guard_post(
+    [   // matched on $_POST['action']
+        'create_user'                => 'Creating users',
+        'delete_user'                => 'Deleting users',
+        'save_user'                  => 'Editing user accounts',
+        'reset_permissions'          => 'Resetting permissions',
+        'delete_skill_config'        => 'Deleting skill configuration',
+        'save_registration_config'   => 'Changing the registration configuration',
+    ],
+    [   // matched on the mere presence of a POST key (flag-triggered handlers)
+        'trigger_reset_password'     => 'Resetting passwords',
+    ]
+);
+
 $pdo = get_wcc_db_connection();
 
 /**

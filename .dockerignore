@@ -1,0 +1,14 @@
+# Keep the image lean and safe — none of this belongs in the shipped container.
+.git
+.gitignore
+*.rar
+*.bak
+*.zip
+backups/
+_dev_artifacts/
+archive/
+tests/
+docker/          # DB snapshot is mounted into the DB container, never web-served
+Dockerfile
+docker-compose.yml
+DOCKER.md

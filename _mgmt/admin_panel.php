@@ -1,6 +1,8 @@
 <?php
 include __DIR__ . '/../auth.php';
 require_perm('manage_settings');
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… handlers before they run
 
 // Enterprise centralized DB connection (highest quality)
 require_once __DIR__ . '/../inc/db.php';
@@ -406,6 +408,7 @@ require_once __DIR__ . '/../inc/head.php';
                 <button type="button" class="btn" onclick="resetLayout()">↺ <?= __e('admin.reset_layout') ?></button>
                 <button type="button" class="btn" onclick="location.reload()"><?= __e('btn.cancel') ?></button>
             </div>
+    <?= wcc_demo_notice("You are exploring the public WCC demo — everything is browsable; actions that would destroy the showcase (database tools, deleting records, account changes) are disabled.") ?>
         </div>
     </div>
 

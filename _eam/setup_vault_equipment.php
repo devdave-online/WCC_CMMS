@@ -2,6 +2,8 @@
 include __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../rbac.php';
 require_perm('manage_equipment');
+require_once __DIR__ . '/../inc/demo_mode.php';
+wcc_demo_guard_destructive_get();   // public demo: block ?delete_*=… handlers before they run
 
 // Enterprise centralized DB connection (Phase 1 fix)
 require_once __DIR__ . '/../inc/db.php';
