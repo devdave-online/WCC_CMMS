@@ -14,6 +14,20 @@ WCC removes the seat meter completely.
 
 ---
 
+<div align="center">
+
+## ⬇️ [**DOWNLOAD WCC**](../../releases/latest) &nbsp;·&nbsp; 🚀 [**LIVE DEMO**](https://141.147.117.183.nip.io)
+
+**[Get the latest release →](../../releases/latest)** &nbsp;|&nbsp;
+**[Try it in your browser →](https://141.147.117.183.nip.io)** &nbsp;|&nbsp;
+**[Install guide →](INSTALL.md)**
+
+*Demo login: `a.rivera` / `Demo2026!` — no signup, nothing to install.*
+
+</div>
+
+---
+
 ## Why WCC?
 
 - **Free** for your own use
