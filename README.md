@@ -12,12 +12,6 @@ That forces teams to share logins — and destroys data quality.
 
 WCC removes the seat meter completely.
 
-🚀 [Try it live HERE](https://141.147.117.183.nip.io)
-
-DEMO User: `a.rivera`
-
-DEMO Password: `Demo2026!`
-
 ---
 
 <div align="center">
