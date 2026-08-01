@@ -1,0 +1,140 @@
+{
+  "project": "WCC CMMS",
+  "full_name": "Workshop Control Center — Computerized Maintenance Management System",
+  "version": "OB1.0.0",
+  "codename": "Unified Horizon",
+  "release_type": "open_beta",
+  "deployment_model": "offline_on_prem_one_install_per_site",
+  "hardlocks": false,
+  "last_updated": "2026-08-01",
+  "description": "Raw PHP CMMS for manufacturing workshops. Tickets, work orders, equipment + tooling, inventory, procurement, 24-perm RBAC, i18n 34 locales, REST v1, companion APIs (separate package).",
+  "tech_stack": ["PHP 8", "MySQL/MariaDB PDO", "Vanilla JS/CSS", "No framework"],
+  "version_stamps": {
+    "version_json": "version.json",
+    "ui_version_constant": "inc/version.php WCC_UI_VERSION",
+    "value": "OB1.0.0"
+  },
+  "folder_convention": "Domain modules prefixed with _ (e.g. _maint, _eam, _logi)",
+  "core_folders": {
+    "_mgmt": "Admin, users, settings, data administration",
+    "_prod": "Production lines vault",
+    "_eam": "Equipment + tooling registry/vault/labels",
+    "_maint": "Tickets, work orders, takeover, closeout, PM calendar",
+    "_logi": "Inventory, vendors, purchase orders/requests",
+    "_rpt": "Statistics, history, analytics vault",
+    "_trck": "PO tracking stepper",
+    "api/v1": "REST integration surface",
+    "api/companion": "Companion app hive — do not break when extending REST",
+    "_ai_ctxt": "AI agent context layer",
+    "docs": "In-app manual chapters",
+    "lang": "i18n JSON packs",
+    "tests": "security_gates + full_audit harness"
+  },
+  "key_files": {
+    "ai_agent.ini": "Agent bootstrap",
+    "auth.php": "Session + login enforcement",
+    "rbac.php": "24 permissions; can/require_perm",
+    "nav.php": "Permission-driven sidebar",
+    "inc/db.php": "Central PDO",
+    "inc/i18n.php": "Localization",
+    "inc/version.php": "WCC_UI_VERSION",
+    "version.json": "About modal version",
+    "api/v1/resources/toolings.php": "REST toolings + bom + documents"
+  },
+  "main_flows": [
+    "Ticket: register → active → takeover → escalate/hold → closeout → history (closed_at)",
+    "Instant resolve → CLOSED + closed_at",
+    "Work orders: scheduled → in progress → completed (+ ledger consume)",
+    "Tooling: vault CRUD / ledger BOM+docs / REST / companion list",
+    "Procurement: PR → approve or auto-approve → Storekeeper fulfil → ledger + budget",
+    "Inventory: consume → auto-reorder PR when threshold hit"
+  ],
+  "rbac": {
+    "roles": {
+      "1": "Operator",
+      "2": "Technician",
+      "3": "Supervisor",
+      "4": "Admin",
+      "5": "Custom Viewer",
+      "6": "Storekeeper"
+    },
+    "permissions_count": 24,
+    "tooling_perms": ["view_toolings", "manage_toolings"],
+    "equipment_perms": ["view_equipment", "manage_equipment"],
+    "authority": "DB role_definitions; rbac.php ROLE_PERMISSIONS fallback levels 1-4",
+    "procurement_split": "approve_purchase_orders vs fulfill_purchase_orders"
+  },
+  "i18n": {
+    "locale_count": 34,
+    "keys_approx": 747,
+    "english_authoritative": true,
+    "equal_groups": true,
+    "no_high_impact_tiers": true,
+    "user_column": "users.locale"
+  },
+  "api": {
+    "rest_base": "/api/v1/",
+    "auth": ["X-API-Key", "Basic", "session fallback"],
+    "resources": [
+      "users", "roles", "equipment", "toolings", "production-lines",
+      "tickets", "ticket-actions", "work-orders", "inventory", "vendors",
+      "purchase-orders", "purchase-requests", "stats", "audit", "api-keys",
+      "ai-context", "me"
+    ],
+    "toolings": {
+      "list_filters": ["search", "barcode", "asset_tag", "tooling_code", "category", "status", "is_active", "linked_equip_id", "workshop_id"],
+      "nested": ["bom", "documents"],
+      "delete": "soft (deleted_at)",
+      "perms": ["view_toolings", "manage_toolings"]
+    },
+    "companion_base": "/api/companion/",
+    "companion_toolings": "/api/companion/toolings.php",
+    "companion_policy": "separate_hive_do_not_break"
+  },
+  "qa": {
+    "security_gates": "tests/security_gates.php",
+    "full_audit": "tests/full_audit/run.php --mutate",
+    "rest": "tests/full_audit/rest_v1_full.php",
+    "fqa": "tests/full_audit/fqa_manual_path.php",
+    "cqa": "tests/full_audit/cqa_static.php",
+    "signoff": "tests/full_audit/reports/LAUNCH_SIGNOFF_20260728.md"
+  },
+  "open_beta_docs": [
+    "docs/OPEN_BETA.md",
+    "docs/DISTRIBUTION_CHECKLIST.md",
+    "docs/README_OPEN_BETA.txt"
+  ],
+  "ai_context": {
+    "folder": "_ai_ctxt/",
+    "must_read_first": [
+      "AGENT_INSTRUCTIONS.md",
+      "PRODUCT_STATUS.md",
+      "OVERVIEW.md"
+    ],
+    "generator": "_ai_ctxt/generate-context.php [--live]",
+    "print_summary": "_ai_ctxt/print-init-summary.php",
+    "initialization_file": "ai_agent.ini",
+    "local_overrides_example": "ai_agent.local.ini.example"
+  },
+  "per_user_json": {
+    "permissions_json": "RBAC overrides",
+    "theme_prefs_json": "dormant",
+    "admin_layout_json": "admin panel tile order",
+    "api_key": "REST auth",
+    "locale": "UI language pack"
+  },
+  "styling": {
+    "system": "Unified Design System v2",
+    "themes": ["dark (default)", "light"],
+    "shell": "inc/head.php + nav.php + js/wcc-ui.js",
+    "cache_bust": "WCC_UI_VERSION"
+  },
+  "data_model_summary": "See _ai_ctxt/DATA_MODEL.md — live DB authoritative; migrations through 0021",
+  "product_owner_rules": [
+    "offline one-site installs only",
+    "no hardlocks",
+    "companion is separate",
+    "English is i18n reference",
+    "technician-first"
+  ]
+}
