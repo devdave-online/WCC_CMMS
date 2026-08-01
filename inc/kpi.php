@@ -256,6 +256,40 @@ function wcc_kpi_plant_rollup(array $assets): array
 }
 
 /**
+ * The "glance" chips shown on the operations pages (Factory Health on
+ * _maint/active_tickets.php, the header strip on _maint/pm_calendar.php).
+ *
+ * Deliberately a ROLLING window, not month-to-date. Month-to-date collapses at the
+ * turn of every month: on the 1st the range is a single day, so there are no closed
+ * failures yet, MTBF comes back null and the chip renders "—" even though the plant
+ * has plenty of history. A trailing 30 days is always populated and is the usual
+ * reading of a headline reliability number anyway.
+ *
+ * Shift parameters mirror _rpt/statistics.php so the chips and the dashboard agree.
+ *
+ * @return array{mtbf:?float,labour:int,from:string,to:string,failures:int}
+ *         mtbf in HOURS (null only when the window genuinely had no failures),
+ *         labour in minutes (mean hands-on repair effort per ticket).
+ */
+function wcc_kpi_glance(PDO $pdo, int $days = 30): array
+{
+    $from = date('Y-m-d', strtotime('-' . $days . ' days'));
+    $to   = date('Y-m-d');
+
+    $holJson  = $pdo->query("SELECT setting_value FROM app_settings WHERE setting_key='plant_holidays'")->fetchColumn() ?: '[]';
+    $cal      = new ShiftCalendar('06:00:00', '22:00:00', [1, 2, 3, 4, 5], json_decode($holJson, true) ?? []);
+    $op       = wcc_kpi_window_summary($pdo, $from, $to, $cal, 16, [1, 2, 3, 4, 5]);
+
+    return [
+        'mtbf'     => $op['mtbf'] === null ? null : round($op['mtbf'] / 60, 1), // hours
+        'labour'   => $op['labour'],                                            // minutes, mean per ticket
+        'failures' => $op['failures'],
+        'from'     => $from,
+        'to'       => $to,
+    ];
+}
+
+/**
  * DB-backed convenience: the whole KPI picture for a date range, computed with the
  * same pure functions the dashboard uses. This is what the lighter consumers call
  * — the ops-page Factory Health chips, the trend API and the diagnostics page — so

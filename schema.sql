@@ -1,7 +1,15 @@
 -- WCC CMMS — database schema (OB1.0.0)
--- Complete structure, no data. Import into an empty database:
---     mysql -u root workshop_db < schema.sql
--- Then browse to the app; the first run creates the default admin account.
+--
+-- Complete structure for a fresh installation, plus the configuration
+-- reference data an install needs to behave correctly:
+--   role_definitions  the 6 built-in roles and their permission sets
+--   app_settings      KPI targets, session timeout, procurement workflow
+--   uuid_rules        equipment identifier rules
+--
+-- No tickets, equipment, users or other business data — the system starts empty.
+-- On first visit the app creates an 'admin' account and forces a password change.
+--
+--   mysql -u root workshop_db < schema.sql
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -1367,6 +1375,84 @@ CREATE TABLE `workshops` (
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+-- ---------------------------------------------------------------- config
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+LOCK TABLES `role_definitions` WRITE;
+/*!40000 ALTER TABLE `role_definitions` DISABLE KEYS */;
+INSERT INTO `role_definitions` VALUES (1,'Operator','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":false,\"closeout_tickets\":false,\"view_history\":true,\"view_statistics\":false,\"view_equipment\":true,\"manage_equipment\":false,\"view_toolings\":true,\"manage_toolings\":false,\"view_inventory\":false,\"manage_inventory\":false,\"view_vendors\":false,\"manage_vendors\":false,\"view_purchase_requests\":false,\"create_purchase_requests\":false,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":false,\"manage_work_orders\":false,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33','Basic access - create and view tickets, limited visibility.');
+INSERT INTO `role_definitions` VALUES (2,'Technician','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":true,\"closeout_tickets\":false,\"view_history\":true,\"view_statistics\":true,\"view_equipment\":true,\"manage_equipment\":false,\"view_toolings\":true,\"manage_toolings\":false,\"view_inventory\":true,\"manage_inventory\":false,\"view_vendors\":true,\"manage_vendors\":false,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":true,\"manage_work_orders\":false,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33','Field technicians - can take over and view most operational data.');
+INSERT INTO `role_definitions` VALUES (3,'Supervisor','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":true,\"closeout_tickets\":true,\"view_history\":true,\"view_statistics\":true,\"view_equipment\":true,\"manage_equipment\":true,\"view_toolings\":true,\"manage_toolings\":true,\"view_inventory\":true,\"manage_inventory\":false,\"view_vendors\":true,\"manage_vendors\":false,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":true,\"manage_work_orders\":true,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33','Supervisors - full ticket lifecycle + manage equipment/tooling and work orders.');
+INSERT INTO `role_definitions` VALUES (4,'Admin','{\"view_tickets\":true,\"create_tickets\":true,\"takeover_tickets\":true,\"closeout_tickets\":true,\"view_history\":true,\"view_statistics\":true,\"view_equipment\":true,\"manage_equipment\":true,\"view_toolings\":true,\"manage_toolings\":true,\"view_inventory\":true,\"manage_inventory\":true,\"view_vendors\":true,\"manage_vendors\":true,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":true,\"fulfill_purchase_orders\":true,\"view_work_orders\":true,\"manage_work_orders\":true,\"manage_users\":true,\"manage_settings\":true,\"reset_passwords\":true,\"delete_users\":true}','2026-07-27 16:00:33','Full system access including user management and settings.');
+INSERT INTO `role_definitions` VALUES (5,'Custom Viewer','{\"view_toolings\":false,\"manage_toolings\":false,\"view_tickets\":false,\"create_tickets\":false,\"takeover_tickets\":false,\"closeout_tickets\":false,\"view_history\":false,\"view_statistics\":false,\"view_equipment\":false,\"manage_equipment\":false,\"view_inventory\":false,\"manage_inventory\":false,\"view_vendors\":false,\"manage_vendors\":false,\"view_purchase_requests\":false,\"create_purchase_requests\":false,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":false,\"view_work_orders\":false,\"manage_work_orders\":false,\"manage_users\":false,\"manage_settings\":false,\"reset_passwords\":false,\"delete_users\":false}','2026-07-27 16:00:33',NULL);
+INSERT INTO `role_definitions` VALUES (6,'Storekeeper','{\"view_tickets\":false,\"create_tickets\":false,\"takeover_tickets\":false,\"closeout_tickets\":false,\"view_history\":false,\"view_statistics\":false,\"view_equipment\":true,\"view_inventory\":true,\"view_vendors\":true,\"view_work_orders\":false,\"manage_work_orders\":false,\"view_purchase_requests\":true,\"create_purchase_requests\":true,\"approve_purchase_orders\":false,\"fulfill_purchase_orders\":true,\"manage_users\":false,\"manage_settings\":false,\"manage_equipment\":false,\"manage_inventory\":true,\"manage_vendors\":false,\"reset_passwords\":false,\"delete_users\":false,\"view_toolings\":true,\"manage_toolings\":false}','2026-07-27 16:00:33',NULL);
+/*!40000 ALTER TABLE `role_definitions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `app_settings` WRITE;
+/*!40000 ALTER TABLE `app_settings` DISABLE KEYS */;
+INSERT INTO `app_settings` VALUES (1,'EquipmentLabels','equip_label_symbology','qrcode');
+INSERT INTO `app_settings` VALUES (2,'EquipmentLabels','tooling_label_symbology','code128');
+INSERT INTO `app_settings` VALUES (3,'EquipmentLabels','equip_label_fields','{\"uuid\":true,\"serial\":true,\"brand_model\":false,\"location\":true,\"category_crit\":false}');
+INSERT INTO `app_settings` VALUES (4,'EquipmentLabels','equip_label_method','browser_sheet');
+INSERT INTO `app_settings` VALUES (5,'EquipmentLabels','equip_label_width_mm','50.8');
+INSERT INTO `app_settings` VALUES (6,'EquipmentLabels','equip_label_height_mm','25.4');
+INSERT INTO `app_settings` VALUES (7,'EquipmentLabels','equip_label_page_preset','a4');
+INSERT INTO `app_settings` VALUES (8,'EquipmentLabels','equip_label_page_width_mm','210');
+INSERT INTO `app_settings` VALUES (9,'EquipmentLabels','equip_label_page_height_mm','297');
+INSERT INTO `app_settings` VALUES (10,'EquipmentLabels','equip_label_margin_mm','10');
+INSERT INTO `app_settings` VALUES (11,'EquipmentLabels','equip_label_gap_x_mm','3');
+INSERT INTO `app_settings` VALUES (12,'EquipmentLabels','equip_label_gap_y_mm','3');
+INSERT INTO `app_settings` VALUES (13,'EquipmentLabels','equip_label_printer_ip','');
+INSERT INTO `app_settings` VALUES (14,'EquipmentLabels','equip_label_printer_port','9100');
+INSERT INTO `app_settings` VALUES (15,'EquipmentLabels','equip_label_dpi','203');
+INSERT INTO `app_settings` VALUES (16,'EquipmentLabels','equip_label_darkness','10');
+INSERT INTO `app_settings` VALUES (17,'EquipmentLabels','equip_label_speed','4');
+INSERT INTO `app_settings` VALUES (18,'Procurement','procurement_workflow_enabled','1');
+INSERT INTO `app_settings` VALUES (19,'Procurement','po_auto_approve_limit','0');
+INSERT INTO `app_settings` VALUES (20,'Inventory','stock_warn_pct','25');
+INSERT INTO `app_settings` VALUES (21,'KPI','target_calc_mode','static');
+INSERT INTO `app_settings` VALUES (22,'KPI','target_mttd','60');
+INSERT INTO `app_settings` VALUES (23,'KPI','target_mttr','120');
+INSERT INTO `app_settings` VALUES (24,'KPI','target_mtbf','48');
+INSERT INTO `app_settings` VALUES (25,'KPI','kpi_failure_classes','[\"failure\",\"induced\"]');
+INSERT INTO `app_settings` VALUES (26,'Security','session_lockout_time','360');
+INSERT INTO `app_settings` VALUES (27,'KPI','plant_holidays','[]');
+/*!40000 ALTER TABLE `app_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `uuid_rules` WRITE;
+/*!40000 ALTER TABLE `uuid_rules` DISABLE KEYS */;
+INSERT INTO `uuid_rules` VALUES (1,'Tooling','Die','TL-DIE-',3,1,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (2,'Tooling','Mold','TL-MLD-',3,1,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (3,'Tooling','Fixture','TL-FIX-',3,1,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (4,'Tooling','Jig','TL-JIG-',3,1,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (5,'Tooling','Gauge','TL-GAU-',3,3,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (6,'Tooling','Hand Tool','TL-HND-',3,1,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (7,'Tooling','Cutting Tool','TL-CUT-',3,1,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (8,'Tooling','Other','TL-GEN-',3,3,0,'NUMERIC');
+INSERT INTO `uuid_rules` VALUES (9,'Tooling','GLOBAL_DEFAULT','TL-GEN-',3,1,0,'NUMERIC');
+/*!40000 ALTER TABLE `uuid_rules` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

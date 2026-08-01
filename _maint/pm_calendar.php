@@ -97,16 +97,9 @@ try {
     $annual_pct = $annual_scheduled > 0 ? round(($annual_completed / $annual_scheduled) * 100) : 100;
     $month_pct = $month_scheduled > 0 ? round(($month_completed / $month_scheduled) * 100) : 100;
 
-    // Month-to-date operations snapshot from the single KPI engine (matches the dashboard).
+    // Trailing-30-day operations snapshot from the single KPI engine (matches the dashboard).
     require_once __DIR__ . '/../inc/kpi.php';
-    require_once __DIR__ . '/../inc/shift_calendar.php';
-    $holJson = $pdo->query("SELECT setting_value FROM app_settings WHERE setting_key='plant_holidays'")->fetchColumn() ?: '[]';
-    $mtdCal  = new ShiftCalendar('06:00:00', '22:00:00', [1,2,3,4,5], json_decode($holJson, true) ?? []);
-    $op      = wcc_kpi_window_summary($pdo, date('Y-m-01'), date('Y-m-d'), $mtdCal, 16, [1,2,3,4,5]);
-    $op_kpis = [
-        'mtbf'   => $op['mtbf'] === null ? null : round($op['mtbf'] / 60, 1),
-        'labour' => $op['labour'],
-    ];
+    $op_kpis = wcc_kpi_glance($pdo);
 
 } catch (PDOException $e) { die("DB Error: " . $e->getMessage()); }
 ?>
@@ -279,10 +272,12 @@ require_once __DIR__ . '/../inc/head.php';
                     <div style="text-align: center;">
                         <h2 style="margin-bottom: 8px;"><?= date('F Y', mktime(0,0,0,$month,1,$year)) ?></h2>
                         <span style="display: inline-flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                            <span style="background: var(--success-bg); border: 1px solid var(--success-border); padding: 4px 10px; border-radius: var(--radius-sm); color: var(--success); font-size: var(--fs-sm); font-weight: bold;">
+                            <span style="background: var(--success-bg); border: 1px solid var(--success-border); padding: 4px 10px; border-radius: var(--radius-sm); color: var(--success); font-size: var(--fs-sm); font-weight: bold;"
+                                  title="Mean time between failures — <?= $op_kpis['from'] ?> to <?= $op_kpis['to'] ?> (<?= $op_kpis['failures'] ?> failures)">
                                 🛡️ <?= __e('pm.mtbf_mtd') ?> <strong><?= $op_kpis['mtbf'] === null ? '—' : $op_kpis['mtbf'] . 'h' ?></strong>
                             </span>
-                            <span style="background: var(--warning-bg); border: 1px solid var(--warning-border); padding: 4px 10px; border-radius: var(--radius-sm); color: var(--warning); font-size: var(--fs-sm); font-weight: bold;">
+                            <span style="background: var(--warning-bg); border: 1px solid var(--warning-border); padding: 4px 10px; border-radius: var(--radius-sm); color: var(--warning); font-size: var(--fs-sm); font-weight: bold;"
+                                  title="Mean hands-on repair effort per ticket — <?= $op_kpis['from'] ?> to <?= $op_kpis['to'] ?>">
                                 🔧 <?= __e('pm.repair_labour') ?> <strong><?= $op_kpis['labour'] ?>m</strong>
                             </span>
                         </span>

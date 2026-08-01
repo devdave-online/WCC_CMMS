@@ -61,17 +61,10 @@ try {
     $health_pct = $total_machines > 0 ? round((($total_machines - $down_machines) / $total_machines) * 100, 1) : 100;
     $health_var = $health_pct >= 90 ? 'var(--success)' : ($health_pct >= 75 ? 'var(--warning)' : 'var(--danger)');
 
-    // Month-to-date operations snapshot, from the single KPI engine (same maths as
+    // Trailing-30-day operations snapshot, from the single KPI engine (same maths as
     // the dashboard) so the chips never disagree with _rpt/statistics.php.
     require_once __DIR__ . '/../inc/kpi.php';
-    require_once __DIR__ . '/../inc/shift_calendar.php';
-    $holJson = $pdo->query("SELECT setting_value FROM app_settings WHERE setting_key='plant_holidays'")->fetchColumn() ?: '[]';
-    $mtdCal  = new ShiftCalendar('06:00:00', '22:00:00', [1,2,3,4,5], json_decode($holJson, true) ?? []);
-    $op      = wcc_kpi_window_summary($pdo, date('Y-m-01'), date('Y-m-d'), $mtdCal, 16, [1,2,3,4,5]);
-    $op_kpis = [
-        'mtbf'   => $op['mtbf'] === null ? null : round($op['mtbf'] / 60, 1), // hours
-        'labour' => $op['labour'],                                            // minutes (hands-on effort)
-    ];
+    $op_kpis = wcc_kpi_glance($pdo);
     // ==============================================================
 
     // ================= WORK ORDERS (SCHEDULED) ====================
@@ -260,10 +253,12 @@ require_once __DIR__ . '/../inc/head.php';
         <div class="health-meta">
             <span><?= __e('health.machines_operational', ['up' => $total_machines - $down_machines, 'total' => $total_machines]) ?></span>
             <span style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <span class="health-chip" style="background: var(--success-bg); border-color: var(--success-border); color: var(--success);">
+                <span class="health-chip" style="background: var(--success-bg); border-color: var(--success-border); color: var(--success);"
+                      title="Mean time between failures — <?= $op_kpis['from'] ?> to <?= $op_kpis['to'] ?> (<?= $op_kpis['failures'] ?> failures)">
                     🛡️ <?= __e('health.mtbf_mtd') ?> <strong><?= $op_kpis['mtbf'] === null ? '—' : $op_kpis['mtbf'] . 'h' ?></strong>
                 </span>
-                <span class="health-chip" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning);">
+                <span class="health-chip" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning);"
+                      title="Mean hands-on repair effort per ticket — <?= $op_kpis['from'] ?> to <?= $op_kpis['to'] ?>">
                     🔧 <?= __e('health.repair_labour') ?> <strong><?= $op_kpis['labour'] ?>m</strong>
                 </span>
             </span>

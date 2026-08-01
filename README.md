@@ -69,7 +69,7 @@ Built for the people who actually keep the lines running.
 
 1. Clone or download the repository
 2. Point your web server to the project or configure it on XAMPP
-3. Import the database ( create workshop_db -> import workshop_db.sql )
+3. Import the database ( create `workshop_db` -> import `schema.sql` )
 4. Open the app and log in ( admin/password )
 5. Change the default password
 
