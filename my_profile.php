@@ -10,7 +10,19 @@ require_once __DIR__ . '/inc/db.php';
 require_once __DIR__ . '/inc/techident.php';
 require_once __DIR__ . '/inc/gamification.php';
 require_once __DIR__ . '/inc/i18n.php';
+require_once __DIR__ . '/inc/demo_mode.php';
 $pdo = get_wcc_db_connection();
+
+// Public demo only: the showcase accounts are shared, and their credentials are
+// published. Without this, one visitor changing the password (they know the current
+// one — it is in the README) locks out everyone else until the nightly reset, and
+// editing the profile rewrites the persona the next visitor sees. Language and
+// session timeout stay open: they are per-visit niceties and 34 languages is a
+// feature worth letting people try. No effect on a normal install.
+wcc_demo_guard_post([
+    'change_password' => 'Changing the demo account password',
+    'save_profile'    => 'Editing the demo account profile',
+]);
 
 $uid  = (int)$_SESSION['user_id'];
 $msg  = '';
